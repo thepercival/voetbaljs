@@ -23,6 +23,9 @@ export class CompetitionSeason {
     static readonly QUALIFICATION_RULE_WC = 1;
     static readonly QUALIFICATION_RULE_EC = 2;
 
+    static readonly MIN_LENGTH_NAME = 3;
+    static readonly MAX_LENGTH_NAME = 30;
+
     // constructor
     constructor( association: Association, competition: Competition, season: Season ){
         this.setAssociation(association);
