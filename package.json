@@ -1,5 +1,26 @@
 {
   "name": "voetbaljs",
   "version": "0.0.1",
-  
+  "description": "jslib for angular 4",
+  "main": "library",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thepercival/voetbaljs.git"
+  },
+  "keywords": [
+    "football",
+    "voetbal",
+    "sport",
+    "library",
+    "bibliotheek"
+  ],
+  "author": "Coen Dunnink",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thepercival/voetbaljs/issues"
+  },
+  "homepage": "https://github.com/thepercival/voetbaljs#readme"
 }
