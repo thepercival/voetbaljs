@@ -2,14 +2,14 @@
  * Created by coen on 27-2-17.
  */
 
-import { CompetitionSeason } from './competitionseason';
+import { Competitionseason } from './competitionseason';
 import { Poule } from './poule';
 import { Team } from './team';
 import { Game } from './game';
 
 export class Round {
     protected id: number;
-    protected competitionseason: CompetitionSeason;
+    protected competitionseason: Competitionseason;
     protected number: number;
     protected nrofheadtoheadmatches: number;
     protected name: string;
@@ -18,8 +18,8 @@ export class Round {
     static readonly classname = "Round";
 
     // constructor
-    constructor( competitionseason: CompetitionSeason, number: number ){
-        this.setCompetitionSeason(competitionseason);
+    constructor( competitionseason: Competitionseason, number: number ){
+        this.setCompetitionseason(competitionseason);
         this.setNumber(number);
     }
 
@@ -31,11 +31,11 @@ export class Round {
         this.id = id;
     };
 
-    getCompetitionSeason(): CompetitionSeason {
+    getCompetitionseason(): Competitionseason {
         return this.competitionseason;
     };
 
-    setCompetitionSeason( competitionseason: CompetitionSeason): void {
+    setCompetitionseason( competitionseason: Competitionseason): void {
         this.competitionseason = competitionseason;
     };
 

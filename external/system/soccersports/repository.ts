@@ -10,7 +10,7 @@ import 'rxjs/add/operator/catch';
 import { Association } from '../../../association';
 import { Competition } from '../../../competition';
 import { Season } from '../../../season';
-import { CompetitionSeason } from '../../../competitionseason';
+import { Competitionseason } from '../../../competitionseason';
 import { Team } from '../../../team';
 import { Round } from '../../../round';
 import { Poule } from '../../../poule';
@@ -25,7 +25,7 @@ export class ExternalSystemSoccerSportsRepository{
     private headers = new Headers({'Content-Type': 'application/json'});
     private asspociationsByCompetitionId: any = {};
 
-    private competitionseasons: CompetitionSeason[];
+    private competitionseasons: Competitionseason[];
 
 
 
@@ -259,9 +259,9 @@ export class ExternalSystemSoccerSportsRepository{
         return season;
     }
 
-    getCompetitionSeasons(): Observable<CompetitionSeason[]>
+    getCompetitionseasons(): Observable<Competitionseason[]>
     {
-        let cacheName = CompetitionSeason.classname;
+        let cacheName = Competitionseason.classname;
         let jsonObjects = this.getCacheItem( cacheName );
         if ( jsonObjects != null ){
             return Observable.create(observer => {
@@ -283,8 +283,8 @@ export class ExternalSystemSoccerSportsRepository{
                         continue;
                     }
 
-                    let observableCompetitionSeasonsTmp = this.getCompetitionSeasonsHelper(externalcompetition);
-                    observableCompetitionSeasonsTmp.forEach(competitionseasonsIt => {
+                    let observableCompetitionseasonsTmp = this.getCompetitionseasonsHelper(externalcompetition);
+                    observableCompetitionseasonsTmp.forEach(competitionseasonsIt => {
                         for( let competitionseasonIt of competitionseasonsIt){
                             competitionseasons.push(competitionseasonIt);
                         }
@@ -300,13 +300,13 @@ export class ExternalSystemSoccerSportsRepository{
         });
     }
 
-    getCompetitionSeasonsHelper( externalcompetition: Competition ): Observable<CompetitionSeason[]>
+    getCompetitionseasonsHelper( externalcompetition: Competition ): Observable<Competitionseason[]>
     {
-        let cacheName = CompetitionSeason.classname + '-' + Competition.classname + '-' + externalcompetition.getId();
+        let cacheName = Competitionseason.classname + '-' + Competition.classname + '-' + externalcompetition.getId();
         let jsonObjects = this.getCacheItem( cacheName );
         if ( jsonObjects != null ){
             return Observable.create(observer => {
-                observer.next( this.jsonCompetitionSeasonsToArrayHelper( jsonObjects, externalcompetition ) );
+                observer.next( this.jsonCompetitionseasonsToArrayHelper( jsonObjects, externalcompetition ) );
                 observer.complete();
             });
         }
@@ -315,24 +315,24 @@ export class ExternalSystemSoccerSportsRepository{
         return this.http.get(url, new RequestOptions({ headers: this.getHeaders() }) )
             .map((res: Response) => {
                 let json = res.json().data;
-                let objects = this.jsonCompetitionSeasonsToArrayHelper(json.seasons, externalcompetition )
-                this.setCacheItem(cacheName, JSON.stringify(json.seasons), this.getExpireDate(CompetitionSeason.classname) );
+                let objects = this.jsonCompetitionseasonsToArrayHelper(json.seasons, externalcompetition )
+                this.setCacheItem(cacheName, JSON.stringify(json.seasons), this.getExpireDate(Competitionseason.classname) );
                 return objects;
             })
             .catch( this.handleError );
     }
 
-    jsonCompetitionSeasonsToArrayHelper( jsonArray : any, externalcompetition: Competition ): CompetitionSeason[]
+    jsonCompetitionseasonsToArrayHelper( jsonArray : any, externalcompetition: Competition ): Competitionseason[]
     {
-        let competitionseasons: CompetitionSeason[] = [];
+        let competitionseasons: Competitionseason[] = [];
         for (let json of jsonArray) {
-            let object = this.jsonCompetitionSeasonToObjectHelper(json, externalcompetition);
+            let object = this.jsonCompetitionseasonToObjectHelper(json, externalcompetition);
             competitionseasons.push( object );
         }
         return competitionseasons;
     }
 
-    jsonCompetitionSeasonToObjectHelper( json : any, competition: Competition ): CompetitionSeason
+    jsonCompetitionseasonToObjectHelper( json : any, competition: Competition ): Competitionseason
     {
         // "identifier": "ef5f67b10885e37c43bccb02c70b6e1d",
         // "league_identifier": "726a53a8c50d6c7a66fe0ab16bdf9bb1",
@@ -344,28 +344,28 @@ export class ExternalSystemSoccerSportsRepository{
         let season: Season = this.jsonSeasonToObjectHelper( json );
         let association = this.getAsspociationByCompetitionId( competition.getId());
         // console.log(association);
-        let competitionseason = new CompetitionSeason(association, competition, season);
+        let competitionseason = new Competitionseason(association, competition, season);
         competitionseason.setId( association.getId().toString() + '_' + competition.getId().toString() + '_' + season.getId().toString() );
 
         return competitionseason;
     }
 
-    getTeams( competitionSeason: CompetitionSeason ): Observable<Team[]>
+    getTeams( competitionseason: Competitionseason ): Observable<Team[]>
     {
-        let cacheName = Team.classname + '-' + CompetitionSeason.classname + '-' + competitionSeason.getId();
+        let cacheName = Team.classname + '-' + Competitionseason.classname + '-' + competitionseason.getId();
         let jsonObjects = this.getCacheItem( cacheName );
         if ( jsonObjects != null ){
             return Observable.create(observer => {
-                observer.next( this.jsonTeamsToArrayHelper( jsonObjects, competitionSeason.getCompetition() ) );
+                observer.next( this.jsonTeamsToArrayHelper( jsonObjects, competitionseason.getCompetition() ) );
                 observer.complete();
             });
         }
 
-        let url = this.externalSystem.getApiurl() + 'leagues' + '/' + competitionSeason.getCompetition().getId() + '/seasons/' + competitionSeason.getSeason().getId() + '/teams';
+        let url = this.externalSystem.getApiurl() + 'leagues' + '/' + competitionseason.getCompetition().getId() + '/seasons/' + competitionseason.getSeason().getId() + '/teams';
         return this.http.get(url, new RequestOptions({ headers: this.getHeaders() }) )
             .map((res) => {
                 let json = res.json().data;
-                let objects = this.jsonTeamsToArrayHelper(json.teams, competitionSeason.getCompetition() );
+                let objects = this.jsonTeamsToArrayHelper(json.teams, competitionseason.getCompetition() );
                 this.setCacheItem(cacheName, JSON.stringify(json.teams), this.getExpireDate(Team.classname) );
                 return objects;
             })
@@ -400,13 +400,13 @@ export class ExternalSystemSoccerSportsRepository{
         return team;
     }
 
-    getStructure( competitionSeason: CompetitionSeason ): Observable<Round[]>
+    getStructure( competitionseason: Competitionseason ): Observable<Round[]>
     {
         return Observable.create(observer => {
 
             let rounds: Round[] = [];
             let firstroundNumber: number = 1;
-            let round = new Round(competitionSeason, firstroundNumber);
+            let round = new Round(competitionseason, firstroundNumber);
             {
                 round.setId(firstroundNumber);
                 // @TODO CALCULATE WITH NROFTEAMS AND NROFGAMEROUNDS
@@ -418,7 +418,7 @@ export class ExternalSystemSoccerSportsRepository{
                     poule.setId(firstpouleNumber);
                     let pouleplaces = poule.getPlaces();
 
-                    this.getTeams(competitionSeason)
+                    this.getTeams(competitionseason)
                         .subscribe(
                             /* happy path */ teams => {
                                 let counter = 0;

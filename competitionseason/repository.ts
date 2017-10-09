@@ -7,17 +7,17 @@ import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { CompetitionSeason } from '../competitionseason';
+import { Competitionseason } from '../competitionseason';
 import { AssociationRepository } from '../association/repository';
 import { CompetitionRepository } from '../competition/repository';
 import { SeasonRepository } from '../season/repository';
 
 @Injectable()
-export class CompetitionSeasonRepository {
+export class CompetitionseasonRepository {
 
     private url : string;
     private http: Http;
-    private objects: CompetitionSeason[];
+    private objects: Competitionseason[];
 
     constructor( http: Http,
          private associationRepository: AssociationRepository,
@@ -52,7 +52,7 @@ export class CompetitionSeasonRepository {
         return headers;
     }
 
-    getObjects(): Observable<CompetitionSeason[]>
+    getObjects(): Observable<Competitionseason[]>
     {
         if ( this.objects != null ){
             return Observable.create(observer => {
@@ -70,9 +70,9 @@ export class CompetitionSeasonRepository {
             .catch( this.handleError );
     }
 
-    jsonArrayToObject( jsonArray : any ): CompetitionSeason[]
+    jsonArrayToObject( jsonArray : any ): Competitionseason[]
     {
-        let competitionseasons: CompetitionSeason[] = [];
+        let competitionseasons: Competitionseason[] = [];
         for (let json of jsonArray) {
             let object = this.jsonToObjectHelper(json);
             competitionseasons.push( object );
@@ -80,7 +80,7 @@ export class CompetitionSeasonRepository {
         return competitionseasons;
     }
 
-    getObject( id: number): Observable<CompetitionSeason>
+    getObject( id: number): Observable<Competitionseason>
     {
         console.log('id',id);
         let observable = Observable.create(observer => {
@@ -99,7 +99,7 @@ export class CompetitionSeasonRepository {
         return observable;
     }
 
-    jsonToObjectHelper( json : any ): CompetitionSeason
+    jsonToObjectHelper( json : any ): Competitionseason
     {
         if ( this.objects != null ){
             let foundObjects = this.objects.filter(
@@ -114,7 +114,7 @@ export class CompetitionSeasonRepository {
         let competition = this.competitionRepository.jsonToObjectHelper(json.competition);
         let season = this.seasonRepository.jsonToObjectHelper(json.season);
 
-        let competitionseason = new CompetitionSeason(association, competition, season);
+        let competitionseason = new Competitionseason(association, competition, season);
         competitionseason.setId(json.id);
         competitionseason.setState(json.state);
         competitionseason.setQualificationrule(json.qualificationrule);
@@ -122,7 +122,7 @@ export class CompetitionSeasonRepository {
         return competitionseason;
     }
 
-    objectToJsonHelper( object : CompetitionSeason ): any
+    objectToJsonHelper( object : Competitionseason ): any
     {
         let json = {
             "id":object.getId(),
@@ -135,7 +135,7 @@ export class CompetitionSeasonRepository {
         return json;
     }
 
-    createObject( jsonObject: any ): Observable<CompetitionSeason>
+    createObject( jsonObject: any ): Observable<Competitionseason>
     {
         return this.http
             .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
@@ -145,7 +145,7 @@ export class CompetitionSeasonRepository {
             .catch(this.handleError);
     }
 
-    editObject( object: CompetitionSeason ): Observable<CompetitionSeason>
+    editObject( object: Competitionseason ): Observable<Competitionseason>
     {
         let url = this.url + '/'+object.getId();
 
@@ -157,7 +157,7 @@ export class CompetitionSeasonRepository {
             .catch(this.handleError);
     }
 
-    removeObject( object: CompetitionSeason): Observable<void>
+    removeObject( object: Competitionseason): Observable<void>
     {
         let url = this.url + '/'+object.getId();
         return this.http

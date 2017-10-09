@@ -7,10 +7,10 @@ import { Headers, Http, Response, RequestOptions, URLSearchParams } from '@angul
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { CompetitionSeason } from '../competitionseason';
+import { Competitionseason } from '../competitionseason';
 import { PouleRepository } from '../poule/repository';
 import { Round } from '../round';
-import { CompetitionSeasonRepository } from '../competitionseason/repository';
+import { CompetitionseasonRepository } from '../competitionseason/repository';
 
 @Injectable()
 export class RoundRepository {
@@ -20,7 +20,7 @@ export class RoundRepository {
     constructor(
         private http: Http,
         private pouleRepos: PouleRepository,
-        private competitionseasonRepos: CompetitionSeasonRepository )
+        private competitionseasonRepos: CompetitionseasonRepository )
     {
         this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
     }
@@ -48,31 +48,31 @@ export class RoundRepository {
         return headers;
     }
 
-    getObjects( competitionSeason: CompetitionSeason ): Observable<Round[]>
+    getObjects( competitionseason: Competitionseason ): Observable<Round[]>
     {
         let params: URLSearchParams = new URLSearchParams();
-        params.set('competitionseasonid', competitionSeason.getId() );
+        params.set('competitionseasonid', competitionseason.getId() );
         let requestOptions = new RequestOptions();
         requestOptions.headers = this.getHeaders();
         requestOptions.search = params;
 
         // add competitionseasonid to url
         return this.http.get(this.url, requestOptions )
-            .map((res) => this.jsonArrayToObject(res.json(), competitionSeason))
+            .map((res) => this.jsonArrayToObject(res.json(), competitionseason))
             .catch( this.handleError );
     }
 
-    jsonArrayToObject( jsonArray: any, competitionSeason: CompetitionSeason ): Round[]
+    jsonArrayToObject( jsonArray: any, competitionseason: Competitionseason ): Round[]
     {
         let objects: Round[] = [];
         for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json, competitionSeason);
+            let object = this.jsonToObjectHelper(json, competitionseason);
             objects.push( object );
         }
         return objects;
     }
 
-    jsonToObjectHelper( json : any, competitionseason: CompetitionSeason ): Round
+    jsonToObjectHelper( json : any, competitionseason: Competitionseason ): Round
     {
         let round = new Round(competitionseason, json.number);
         round.setId(json.id);
@@ -99,13 +99,13 @@ export class RoundRepository {
             "number":object.getNumber(),
             "nrofheadtoheadmatches":object.getNrofheadtoheadmatches(),
             "name":object.getName(),
-            "competitionseason":this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionSeason()),
+            "competitionseason":this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionseason()),
             "poules":this.pouleRepos.objectsToJsonHelper(object.getPoules())
         };
         return json;
     }
 
-    createObject( jsonObject: any, competitionseason: CompetitionSeason ): Observable<Round>
+    createObject( jsonObject: any, competitionseason: Competitionseason ): Observable<Round>
     {
         return this.http
             .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))

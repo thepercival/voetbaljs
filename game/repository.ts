@@ -11,7 +11,7 @@ import { Game } from '../game';
 import { Poule } from '../poule';
 import { PoulePlaceRepository } from '../pouleplace/repository';
 import { PoulePlace } from '../pouleplace';
-import { CompetitionSeason } from '../competitionseason';
+import { Competitionseason } from '../competitionseason';
 import { StructureService } from '../structure/service';
 
 @Injectable()
@@ -52,7 +52,7 @@ export class GameRepository {
     // getObjects( structureService: StructureService ): Observable<Game[]>
     // {
     //     let params: URLSearchParams = new URLSearchParams();
-    //     params.set('competitionseasonid', structureService.getCompetitionSeason().getId() );
+    //     params.set('competitionseasonid', structureService.getCompetitionseason().getId() );
     //     let requestOptions = new RequestOptions();
     //     requestOptions.headers = this.getHeaders();
     //     requestOptions.search = params;

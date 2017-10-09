@@ -6,7 +6,7 @@ import { Association } from './association';
 import { Competition } from './competition';
 import { Season } from './season';
 
-export class CompetitionSeason {
+export class Competitionseason {
     protected id: any;
     protected association: Association;
     protected competition: Competition;
@@ -15,7 +15,7 @@ export class CompetitionSeason {
     protected qualificationrule: number;
     protected has_structure: boolean;
 
-    static readonly classname = "CompetitionSeason";
+    static readonly classname = "Competitionseason";
 
     static readonly STATE_CREATED = 1;
     static readonly STATE_PUBLISHED = 2;
@@ -28,7 +28,7 @@ export class CompetitionSeason {
         this.setAssociation(association);
         this.setCompetition(competition);
         this.setSeason(season);
-        this.setQualificationrule(CompetitionSeason.QUALIFICATION_RULE_WC);
+        this.setQualificationrule(Competitionseason.QUALIFICATION_RULE_WC);
     }
 
     getId(): any {
@@ -72,10 +72,10 @@ export class CompetitionSeason {
     };
 
     getStateDescription(): string {
-        if ( this.state == CompetitionSeason.STATE_CREATED ){
+        if ( this.state == Competitionseason.STATE_CREATED ){
             return 'aangemaakt';
         }
-        else if ( this.state == CompetitionSeason.STATE_PUBLISHED ){
+        else if ( this.state == Competitionseason.STATE_PUBLISHED ){
             return 'gepubliceerd';
         }
 

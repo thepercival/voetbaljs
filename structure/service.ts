@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { CompetitionSeason } from '../competitionseason';
+import { Competitionseason } from '../competitionseason';
 import { Round } from '../round';
 import { Poule } from '../poule';
 import { PoulePlace } from '../pouleplace';
@@ -12,12 +12,12 @@ import { Game } from '../game';
 @Injectable()
 export class StructureService {
 
-    constructor( private competitionseason: CompetitionSeason, private rounds : Round[] )
+    constructor( private competitionseason: Competitionseason, private rounds : Round[] )
     {
 
     }
 
-    getCompetitionSeason(): CompetitionSeason
+    getCompetitionseason(): Competitionseason
     {
         return this.competitionseason;
     }

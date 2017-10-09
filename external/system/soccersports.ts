@@ -7,7 +7,7 @@ import { ExternalSystem } from './../system';
 import { Association } from './../../association';
 import { Competition } from './../../competition';
 import { Season } from './../../season';
-import { CompetitionSeason } from './../../competitionseason';
+import { Competitionseason } from './../../competitionseason';
 import { Round } from '../../round';
 import { Team } from './../../team';
 import { ExternalSystemSoccerSportsRepository } from './soccersports/repository';
@@ -21,7 +21,7 @@ export class ExternalSystemSoccerSports extends ExternalSystem implements Extern
     // protected associations: Association[];
     // protected competitions: Competition[];
     // protected seasons: Season[];
-    // protected competitionseasons: CompetitionSeason[];
+    // protected competitionseasons: Competitionseason[];
 
     // constructor
     constructor( name: string, http: Http, externalSystemRepository: ExternalSystemRepository )
@@ -37,7 +37,7 @@ export class ExternalSystemSoccerSports extends ExternalSystem implements Extern
             { "name": Association.classname, "source": true },
             { "name": Competition.classname, "source": true },
             { "name": Season.classname, "source": true },
-            { "name": CompetitionSeason.classname, "source": true },
+            { "name": Competitionseason.classname, "source": true },
             { "name": Team.classname, "source": true },
             { "name": Round.classname, "source": true }
         ];
@@ -58,18 +58,18 @@ export class ExternalSystemSoccerSports extends ExternalSystem implements Extern
         return this.repos.getSeasons()
     }
 
-    getCompetitionSeasons(): Observable<CompetitionSeason[]>
+    getCompetitionseasons(): Observable<Competitionseason[]>
     {
-        return this.repos.getCompetitionSeasons()
+        return this.repos.getCompetitionseasons()
     }
 
-    getTeams( competitionSeason: CompetitionSeason ): Observable<Team[]>
+    getTeams( competitionseason: Competitionseason ): Observable<Team[]>
     {
-        return this.repos.getTeams( competitionSeason );
+        return this.repos.getTeams( competitionseason );
     }
 
-    getStructure( competitionSeason: CompetitionSeason ): Observable<Round[]>
+    getStructure( competitionseason: Competitionseason ): Observable<Round[]>
     {
-        return this.repos.getStructure( competitionSeason );
+        return this.repos.getStructure( competitionseason );
     }
 }
