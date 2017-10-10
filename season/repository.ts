@@ -8,9 +8,10 @@ import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Season } from '../season';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class SeasonRepository {
+export class SeasonRepository extends VoetbalRepository{
 
     private url : string;
     private http: Http;
@@ -18,31 +19,14 @@ export class SeasonRepository {
 
     constructor( http: Http )
     {
+        super();
         this.http = http;
-        this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
     getUrlpostfix(): string
     {
         return 'seasons';
-    }
-
-    getToken(): string
-    {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
-        }
-        return null;
-    }
-
-    getHeaders(): Headers
-    {
-        let headers = new Headers({'Content-Type': 'application/json; charset=utf-8'});
-        if ( this.getToken() != null ) {
-            headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-        }
-        return headers;
     }
 
     getObjects(): Observable<Season[]>
@@ -54,7 +38,7 @@ export class SeasonRepository {
             });
         }
 
-        return this.http.get(this.url, new RequestOptions({ headers: this.getHeaders() }) )
+        return this.http.get(this.url, new RequestOptions({ headers: super.getHeaders() }) )
             .map((res) => {
                 let objects = this.jsonArrayToObject(res.json());
                 this.objects = objects;
@@ -105,7 +89,7 @@ export class SeasonRepository {
     createObject( jsonObject: any ): Observable<Season>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
+            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json()))
             //...errors if any
@@ -116,7 +100,7 @@ export class SeasonRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .put(url, JSON.stringify( this.objectToJsonHelper(object) ), { headers: this.getHeaders() })
+            .put(url, JSON.stringify( this.objectToJsonHelper(object) ), { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
             .map((res) => { return this.jsonToObjectHelper(res.json()); })
             //...errors if any
@@ -127,7 +111,7 @@ export class SeasonRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any

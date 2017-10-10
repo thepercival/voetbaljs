@@ -3,19 +3,17 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
+import { Headers, Http, Response, RequestOptions } from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Game } from '../game';
 import { Poule } from '../poule';
 import { PoulePlaceRepository } from '../pouleplace/repository';
-import { PoulePlace } from '../pouleplace';
-import { Competitionseason } from '../competitionseason';
-import { StructureService } from '../structure/service';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class GameRepository {
+export class GameRepository extends VoetbalRepository{
 
     private url : string;
 
@@ -23,7 +21,8 @@ export class GameRepository {
         private http: Http,
         private pouleplaceRepos: PoulePlaceRepository )
     {
-        this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
+        super();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
     getUrlpostfix(): string
@@ -31,30 +30,12 @@ export class GameRepository {
         return 'games';
     }
 
-    getToken(): string
-    {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
-        }
-        return null;
-    }
-
-    getHeaders(): Headers
-    {
-        let headers = new Headers({'Content-Type': 'application/json;charset=utf-8'});
-        if ( this.getToken() != null ) {
-            headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-        }
-        return headers;
-    }
-
     // getObjects( structureService: StructureService ): Observable<Game[]>
     // {
     //     let params: URLSearchParams = new URLSearchParams();
     //     params.set('competitionseasonid', structureService.getCompetitionseason().getId() );
     //     let requestOptions = new RequestOptions();
-    //     requestOptions.headers = this.getHeaders();
+    //     requestOptions.headers = super.getHeaders();
     //     requestOptions.search = params;
     //
     //     let pouleplaces = structureService.getPoulePlaces();
@@ -115,7 +96,7 @@ export class GameRepository {
     createObject( jsonObject: any, poule: Poule ): Observable<Game>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
+            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json(), poule))
             //...errors if any
@@ -126,7 +107,7 @@ export class GameRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => {
 

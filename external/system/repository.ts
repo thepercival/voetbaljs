@@ -10,38 +10,25 @@ import 'rxjs/add/operator/catch';
 import { ExternalSystem } from '../system';
 import { ExternalSystemSoccerOdds } from './soccerodds';
 import { ExternalSystemSoccerSports } from './soccersports';
+import { VoetbalRepository } from '../../repository';
 
 @Injectable()
-export class ExternalSystemRepository {
+export class ExternalSystemRepository extends VoetbalRepository{
 
-    private headers = new Headers({'Content-Type': 'application/json'});
-    private url : string = "http://localhost:2999/voetbal/external/systems";
+    private url : string;
     private http: Http;
     private objects: ExternalSystem[];
     private specificObjects: ExternalSystem[] = [];
 
     constructor( http: Http )
     {
-        this.http = http;
-        console.log('ExternalSystemRepository constructor');
+        this.http = http;super();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
-    getToken(): string
+    getUrlpostfix(): string
     {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
-        }
-        return null;
-    }
-
-    getHeaders(): Headers
-    {
-        let headers = new Headers(this.headers);
-        if ( this.getToken() != null ) {
-            headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-        }
-        return headers;
+        return 'external/systems';
     }
 
     getObjects(): Observable<ExternalSystem[]>
@@ -53,7 +40,7 @@ export class ExternalSystemRepository {
                 observer.complete();
             });
         }
-        return this.http.get(this.url, new RequestOptions({ headers: this.getHeaders() }) )
+        return this.http.get(this.url, new RequestOptions({ headers: super.getHeaders() }) )
             .map((res) => {
                 let objects = this.jsonArrayToObject(res.json());
                 this.objects = objects;
@@ -124,7 +111,7 @@ export class ExternalSystemRepository {
     createObject( jsonObject: any ): Observable<ExternalSystem>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
+            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json()))
             //...errors if any
@@ -140,7 +127,7 @@ export class ExternalSystemRepository {
         //return Observable.throw( "wat gaat er fout?" );
 
         return this.http
-            .put(url, JSON.stringify( this.objectToJsonHelper(object) ), new RequestOptions({ headers: this.getHeaders() }))
+            .put(url, JSON.stringify( this.objectToJsonHelper(object) ), new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json()))
             //...errors if any
@@ -175,7 +162,7 @@ export class ExternalSystemRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any

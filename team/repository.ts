@@ -9,10 +9,10 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Team } from '../team';
 import { AssociationRepository } from '../association/repository';
-import { Association } from '../association';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class TeamRepository {
+export class TeamRepository extends VoetbalRepository{
 
     private url : string;
     private http: Http;
@@ -20,31 +20,14 @@ export class TeamRepository {
 
     constructor( http: Http, private associationRepository: AssociationRepository )
     {
+        super();
         this.http = http;
-        this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
     getUrlpostfix(): string
     {
         return 'teams';
-    }
-
-    getToken(): string
-    {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
-        }
-        return null;
-    }
-
-    getHeaders(): Headers
-    {
-        let headers = new Headers({'Content-Type': 'application/json;charset=utf-8'});
-        if ( this.getToken() != null ) {
-            headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-        }
-        return headers;
     }
 
     getObjects(): Observable<Team[]>
@@ -56,7 +39,7 @@ export class TeamRepository {
             });
         }
 
-        return this.http.get(this.url, new RequestOptions({ headers: this.getHeaders() }) )
+        return this.http.get(this.url, new RequestOptions({ headers: super.getHeaders() }) )
             .map((res) => {
                 let objects = this.jsonArrayToObject(res.json());
                 this.objects = objects;
@@ -109,7 +92,7 @@ export class TeamRepository {
     {
         try {
             return this.http
-                .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
+                .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
                 // ...and calling .json() on the response to return data
                 .map((res) => this.jsonToObjectHelper(res.json()))
                 //...errors if any
@@ -127,7 +110,7 @@ export class TeamRepository {
 
         try {
             return this.http
-                .put(url, this.objectToJsonHelper( object ), { headers: this.getHeaders() })
+                .put(url, this.objectToJsonHelper( object ), { headers: super.getHeaders() })
                 // ...and calling .json() on the response to return data
                 .map((res) => { console.log(res.json()); return this.jsonToObjectHelper(res.json()); })
                 //...errors if any
@@ -143,7 +126,7 @@ export class TeamRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any

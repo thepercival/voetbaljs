@@ -8,9 +8,10 @@ import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Association } from '../association';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class AssociationRepository {
+export class AssociationRepository extends VoetbalRepository {
 
     private url : string;
     private http: Http;
@@ -18,8 +19,9 @@ export class AssociationRepository {
 
     constructor( http: Http )
     {
+        super();
         this.http = http;
-        this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
     getUrlpostfix(): string
@@ -54,7 +56,7 @@ export class AssociationRepository {
             });
         }
 
-        return this.http.get(this.url, new RequestOptions({ headers: this.getHeaders() }) )
+        return this.http.get(this.url, new RequestOptions({ headers: super.getHeaders() }) )
             .map((res) => {
                 let objects = this.jsonArrayToObject(res.json());
                 this.objects = objects;
@@ -86,7 +88,7 @@ export class AssociationRepository {
     createObject( jsonObject: any ): Observable<Association>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
+            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json()))
             //...errors if any
@@ -122,7 +124,7 @@ export class AssociationRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .put(url, JSON.stringify( object ), new RequestOptions({ headers: this.getHeaders() }))
+            .put(url, JSON.stringify( object ), new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json()))
             //...errors if any
@@ -133,7 +135,7 @@ export class AssociationRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any

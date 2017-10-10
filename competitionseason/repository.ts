@@ -11,9 +11,10 @@ import { Competitionseason } from '../competitionseason';
 import { AssociationRepository } from '../association/repository';
 import { CompetitionRepository } from '../competition/repository';
 import { SeasonRepository } from '../season/repository';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class CompetitionseasonRepository {
+export class CompetitionseasonRepository extends VoetbalRepository{
 
     private url : string;
     private http: Http;
@@ -25,31 +26,14 @@ export class CompetitionseasonRepository {
          private seasonRepository: SeasonRepository
     )
     {
+        super();
         this.http = http;
-        this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
     getUrlpostfix(): string
     {
         return 'competitionseasons';
-    }
-
-    getToken(): string
-    {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
-        }
-        return null;
-    }
-
-    getHeaders(): Headers
-    {
-        let headers = new Headers({'Content-Type': 'application/json; charset=utf-8'});
-        if ( this.getToken() != null ) {
-            headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-        }
-        return headers;
     }
 
     getObjects(): Observable<Competitionseason[]>
@@ -61,7 +45,12 @@ export class CompetitionseasonRepository {
             });
         }
 
-        return this.http.get(this.url, new RequestOptions({ headers: this.getHeaders() }) )
+        // ERROR in /home/coen/Projecten/fctoernooiv2/frontend/node_modules/voetbaljs/competitionseason/repository.ts (49,59): Argument of type '{ headers: Headers; }' is not assignable to parameter of type 'RequestOptionsArgs'.
+        // Types of property 'headers' are incompatible.
+        // Type 'Headers' is not assignable to type 'Headers'. Two different types with this name exist, but they are unrelated.
+
+
+        return this.http.get(this.url, new RequestOptions({ headers: super.getHeaders() }) )
             .map((res) => {
                 let objects = this.jsonArrayToObject(res.json());
                 this.objects = objects;
@@ -138,7 +127,7 @@ export class CompetitionseasonRepository {
     createObject( jsonObject: any ): Observable<Competitionseason>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
+            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json()))
             //...errors if any
@@ -150,7 +139,7 @@ export class CompetitionseasonRepository {
         let url = this.url + '/'+object.getId();
 
         return this.http
-            .put(url, JSON.stringify( object ), { headers: this.getHeaders() })
+            .put(url, JSON.stringify( object ), { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
             .map((res) => { console.log(res.json()); return this.jsonToObjectHelper(res.json()); })
             //...errors if any
@@ -161,7 +150,7 @@ export class CompetitionseasonRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any

@@ -11,9 +11,10 @@ import { Competitionseason } from '../competitionseason';
 import { PouleRepository } from '../poule/repository';
 import { Round } from '../round';
 import { CompetitionseasonRepository } from '../competitionseason/repository';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class RoundRepository {
+export class RoundRepository extends VoetbalRepository{
 
     private url : string;
 
@@ -22,7 +23,8 @@ export class RoundRepository {
         private pouleRepos: PouleRepository,
         private competitionseasonRepos: CompetitionseasonRepository )
     {
-        this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
+        super();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
     getUrlpostfix(): string
@@ -30,34 +32,17 @@ export class RoundRepository {
         return 'rounds';
     }
 
-    getToken(): string
-    {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
-        }
-        return null;
-    }
-
-    getHeaders(): Headers
-    {
-        let headers = new Headers({'Content-Type': 'application/json;charset=utf-8'});
-        if ( this.getToken() != null ) {
-            headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-        }
-        return headers;
-    }
-
     getObjects( competitionseason: Competitionseason ): Observable<Round[]>
     {
         let params: URLSearchParams = new URLSearchParams();
         params.set('competitionseasonid', competitionseason.getId() );
-        let requestOptions = new RequestOptions();
-        requestOptions.headers = this.getHeaders();
-        requestOptions.search = params;
+        const options = new RequestOptions( {
+                headers: super.getHeaders(),
+                params: params
+            }
+        );
 
-        // add competitionseasonid to url
-        return this.http.get(this.url, requestOptions )
+        return this.http.get(this.url, options )
             .map((res) => this.jsonArrayToObject(res.json(), competitionseason))
             .catch( this.handleError );
     }
@@ -108,7 +93,7 @@ export class RoundRepository {
     createObject( jsonObject: any, competitionseason: Competitionseason ): Observable<Round>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: this.getHeaders() }))
+            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json(), competitionseason))
             //...errors if any
@@ -119,7 +104,7 @@ export class RoundRepository {
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => {
 

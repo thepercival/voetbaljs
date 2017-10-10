@@ -24,15 +24,9 @@ export class ExternalSystemSoccerSportsRepository{
 
     private headers = new Headers({'Content-Type': 'application/json'});
     private asspociationsByCompetitionId: any = {};
-
     private competitionseasons: Competitionseason[];
 
-
-
-    // localStorage.setItem('user', JSON.stringify({ id: json.user.id, token: json.token }));
-// var user = JSON.parse(localStorage.getItem('user'));
-
-// maak hier een cache voor, omdat er maar weinig api-calls mogelijk zijn
+    // maak hier een cache voor, omdat er maar weinig api-calls mogelijk zijn
     constructor(
         private http: Http,
         private externalSystem: ExternalSystemSoccerSports,

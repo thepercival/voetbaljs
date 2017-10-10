@@ -10,44 +10,26 @@ import 'rxjs/add/operator/catch';
 import { PoulePlaceRepository } from '../pouleplace/repository';
 import { Poule } from '../poule';
 import { GameRepository } from '../game/repository';
-import { Game } from '../game';
+import { VoetbalRepository } from '../repository';
 import { Round } from '../round';
 
 @Injectable()
-export class PouleRepository {
+export class PouleRepository extends VoetbalRepository{
 
     private url : string;
     private http: Http;
 
     constructor( http: Http, private pouleplaceRepos: PoulePlaceRepository, private gameRepos: GameRepository )
     {
+        super();
         this.http = http;
-        this.url = "http://localhost:2999/voetbal/" + this.getUrlpostfix();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
     getUrlpostfix(): string
     {
         return 'poules';
     }
-
-    // getToken(): string
-    // {
-    //     let user = JSON.parse( localStorage.getItem('user') );
-    //     if ( user != null && user.token != null ) {
-    //         return user.token;
-    //     }
-    //     return null;
-    // }
-    //
-    // getHeaders(): Headers
-    // {
-    //     let headers = new Headers({'Content-Type': 'application/json;charset=utf-8'});
-    //     if ( this.getToken() != null ) {
-    //         headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-    //     }
-    //     return headers;
-    // }
-
 
     jsonArrayToObject( jsonArray: any, round: Round ): Poule[]
     {

@@ -15,38 +15,27 @@ import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { ExternalSystem } from '../system';
+import { VoetbalRepository } from '../../repository';
 
 @Injectable()
-export class ExternalObjectRepository {
+export class ExternalObjectRepository extends VoetbalRepository{
 
-    private url : string = "http://localhost:2999/voetbal/external";
+    private url : string;
 
-    constructor( private http: Http, private externalSystemRepository: ExternalSystemRepository )
-    {
+    constructor( private http: Http, private externalSystemRepository: ExternalSystemRepository ) {
+        super();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
-    getToken(): string
+    getUrlpostfix(): string
     {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
-        }
-        return null;
-    }
-
-    getHeaders(): Headers
-    {
-        let headers = new Headers({'Content-Type': 'application/json; charset=utf-8'});
-        if ( this.getToken() != null ) {
-            headers.append( 'Authorization', 'Bearer ' + this.getToken() );
-        }
-        return headers;
+        return 'external';
     }
 
     getObjects( importableObjectRepository:any ): Observable<ExternalObject[]>
     {
         let url = this.url + '/'+importableObjectRepository.getUrlpostfix();
-        return this.http.get(url, new RequestOptions({ headers: this.getHeaders() }) )
+        return this.http.get(url, new RequestOptions({ headers: super.getHeaders() }) )
             .map((res) => {
                 return this.jsonArrayToObject(res.json(), importableObjectRepository);
             })
@@ -82,7 +71,7 @@ export class ExternalObjectRepository {
         let json = {"importableobjectid":object.getId(), "externalid":externalid, "externalsystemid":externalSystem.getId()};
         let url = this.url + '/'+importableObjectRepository.getUrlpostfix();
         return this.http
-            .post(url, json, new RequestOptions({ headers: this.getHeaders() }))
+            .post(url, json, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res.json(),importableObjectRepository))
             //...errors if any
@@ -94,7 +83,7 @@ export class ExternalObjectRepository {
         let url = this.url + '/'+urlpostfix + '/'+object.getId();
 
         return this.http
-            .delete(url, new RequestOptions({ headers: this.getHeaders() }))
+            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any
