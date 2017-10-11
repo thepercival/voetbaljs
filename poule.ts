@@ -70,4 +70,8 @@ export class Poule {
     getGames(): Game[] {
         return this.games;
     }
+
+    needsRanking(): boolean {
+        return ( this.getPlaces().length > 2 );
+    }
 }

@@ -22,6 +22,11 @@ export class StructureService {
         return this.competitionseason;
     }
 
+    getRounds(): Round[]
+    {
+        return this.rounds;
+    }
+
     getPoulePlaces(): PoulePlace[]
     {
         let pouleplaces = [];
@@ -44,5 +49,39 @@ export class StructureService {
             });
         });
         return games;
+    }
+
+    getRoundName( round: Round ) {
+
+        let pouleRounds = 0;
+        this.rounds.some(function(roundIt) {
+            const knockOut = ( roundIt.getType() == Round.TYPE_KNOCKOUT);
+            pouleRounds += knockOut ? 0 : 1;
+            return knockOut;
+        });
+
+        if ( round.getNumber() > pouleRounds) {
+            const nrOfRoundsFromWinning = this.rounds.length - ( round.getNumber() );
+            if (nrOfRoundsFromWinning == 5) {
+                return "<span style='font-size: 80%'><sup>1</sup>&frasl;<sub>16</sub></span> finale";
+            }
+            else if (nrOfRoundsFromWinning == 4) {
+                return "&frac18; finale";
+            }
+            else if (nrOfRoundsFromWinning == 3) {
+                return "&frac14; finale";
+            }
+            else if (nrOfRoundsFromWinning == 2) {
+                return "&frac12; finale";
+            }
+            else if (nrOfRoundsFromWinning == 1) {
+                return "finale";
+            }
+            else if (nrOfRoundsFromWinning == 0) {
+                return "winnaar";
+            }
+        }
+
+        return ( round.getNumber() ) + '<sup>' + ( round.getNumber() == 1 ? 'st' : 'd' ) + "e</sup> ronde";
     }
 }
