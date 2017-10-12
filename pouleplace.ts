@@ -16,7 +16,10 @@ export class PoulePlace {
     static readonly classname = "PoulePlace";
 
     // constructor
-    constructor( poule: Poule, number: number ){
+    constructor( poule: Poule, number: number = null ){
+        if( number === null){
+            number = poule.getPlaces().length + 1;
+        }
         this.setPoule(poule);
         this.setNumber(number);
     }
@@ -33,8 +36,9 @@ export class PoulePlace {
         return this.poule;
     };
 
-    setPoule( poule: Poule): void {
+    setPoule( poule: Poule ): void {
         this.poule = poule;
+        this.poule.getPlaces().push( this );
     };
 
     getNumber(): number {

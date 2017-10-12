@@ -49,6 +49,7 @@ export class RoundRepository extends VoetbalRepository{
 
     jsonArrayToObject( jsonArray: any, competitionseason: Competitionseason ): Round[]
     {
+        console.log('rounds',jsonArray);
         let objects: Round[] = [];
         for (let json of jsonArray) {
             let object = this.jsonToObjectHelper(json, competitionseason);

@@ -122,4 +122,17 @@ export class Round {
         }
         return this.bNeedsRanking;
     }
+
+    movePoulePlace( poulePlace: PoulePlace, toPoule: Poule, toNumber: number = null ){
+        const removed = poulePlace.getPoule().removePlace( poulePlace );
+        if( !removed ){
+            return false;
+        }
+
+        // zet poule and position
+        poulePlace.setPoule( toPoule );
+        poulePlace.setNumber( toPoule.getPlaces().length );
+
+        toPoule.movePlace( poulePlace, toNumber );
+    }
 }

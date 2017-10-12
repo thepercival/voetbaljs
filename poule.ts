@@ -13,12 +13,15 @@ export class Poule {
     protected number: number;
     protected name: string;
     protected places: PoulePlace[] = [];
-    protected games: Game[];
+    protected games: Game[] = [];
 
     static readonly classname = "Poule";
 
     // constructor
-    constructor( round: Round, number: number ){
+    constructor( round: Round, number: number = null ){
+        if( number === null){
+            number = round.getPoules().length + 1;
+        }
         this.setRound(round);
         this.setNumber(number);
     }
@@ -36,7 +39,14 @@ export class Poule {
     };
 
     setRound( round: Round): void {
+        // if( this.round != null ){ // remove from old round
+        //     var index = this.round.getPoules().indexOf(this);
+        //     if (index > -1) {
+        //         this.round.getPoules().splice(index, 1);
+        //     }
+        // }
         this.round = round;
+        this.round.getPoules().push(this);
     };
 
     getNumber(): number {
@@ -71,7 +81,60 @@ export class Poule {
         return this.games;
     }
 
+    getGamesNotStarted(): Game[] {
+        return this.getGames().filter( (gameIt) => gameIt.getState() === Game.STATE_CREATED );
+    }
+
     needsRanking(): boolean {
         return ( this.getPlaces().length > 2 );
+    }
+
+    removePlace( place: PoulePlace ): boolean {
+        var index = this.places.indexOf(place);
+        if (index == -1 ) {
+            return false;
+        }
+        this.places.splice(index, 1);
+
+        this.places.forEach( function( placeIt ){
+            if( placeIt.getNumber() > place.getNumber() ){
+                placeIt.setNumber( placeIt.getNumber() - 1 );
+            }
+        });
+        return true;
+    }
+
+    movePlace( place: PoulePlace, toNumber: number ) {
+        if( toNumber > this.places.length ){
+            toNumber = this.places.length;
+        }
+        if( toNumber < 1 ){
+            toNumber = 1;
+        }
+
+        // find index of place with same number
+        const foundPlace = this.places.find( pouleplaceIt => toNumber == pouleplaceIt.getNumber() );
+
+        // remove item
+        {
+            const index = this.places.indexOf(place);
+            if (index == -1) {
+                return;
+            }
+            this.places.splice(index, 1);
+        }
+
+        // insert item
+        {
+            const index = this.places.indexOf(foundPlace);
+            // insert item
+            this.places.splice(index, 0, place);
+        }
+
+        // update numbers from foundPlace
+        let number = 1;
+        this.places.forEach( function( poulePlaceIt ){
+            poulePlaceIt.setNumber( number++ );
+        });
     }
 }

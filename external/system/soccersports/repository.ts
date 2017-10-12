@@ -410,24 +410,18 @@ export class ExternalSystemSoccerSportsRepository{
                 let poule = new Poule(round, firstpouleNumber);
                 {
                     poule.setId(firstpouleNumber);
-                    let pouleplaces = poule.getPlaces();
-
                     this.getTeams(competitionseason)
                         .subscribe(
                             /* happy path */ teams => {
-                                let counter = 0;
                                 for( let team of teams){
-                                    let pouleplace = new PoulePlace(poule, ++counter);
-                                    pouleplace.setId(counter);
+                                    let pouleplace = new PoulePlace(poule);
+                                    pouleplace.setId( pouleplace.getNumber() );
                                     pouleplace.setTeam(team);
-                                    pouleplaces.push(pouleplace);
                                 }
                             },
                             /* error path */ e => {},
                             /* onComplete */ () => {}
                         );
-
-                    round.getPoules().push(poule);
                 }
 
                 rounds.push(round);

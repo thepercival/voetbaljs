@@ -47,7 +47,6 @@ export class PouleRepository extends VoetbalRepository{
         poule.setName(json.name);
         this.pouleplaceRepos.jsonArrayToObject( json.places, poule );
         this.gameRepos.jsonArrayToObject( json.games, poule );
-        round.getPoules().push(poule);
         return poule;
     }
 

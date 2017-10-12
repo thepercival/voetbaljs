@@ -43,11 +43,11 @@ export class PoulePlaceRepository extends VoetbalRepository{
     jsonToObjectHelper( json : any, poule: Poule ): PoulePlace
     {
         let pouleplace = new PoulePlace(poule, json.number);
+        pouleplace.setId(json.id);
         poule.setName(json.name);
         if (json.team){
             pouleplace.setTeam(this.teamRepos.jsonToObjectHelper(json.team));
         }
-        poule.getPlaces().push(pouleplace);
         return pouleplace;
     }
 
