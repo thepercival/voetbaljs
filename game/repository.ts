@@ -70,7 +70,7 @@ export class GameRepository extends VoetbalRepository{
         return game;
     }
 
-    objectsToJsonHelper( objects: any[] ): any[]
+    objectsToJsonArray( objects: any[] ): any[]
     {
         let jsonArray: any[] = [];
         for (let object of objects) {

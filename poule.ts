@@ -89,18 +89,32 @@ export class Poule {
         return ( this.getPlaces().length > 2 );
     }
 
+    next(): Poule {
+        const poules = this.getRound().getPoules();
+        return poules[this.getNumber()];
+    }
+
+    addPlace( place: PoulePlace ) {
+        if( place.getNumber() <= this.getPlaces().length ) {
+            throw new Error('de pouleplek kan niet toegevoegd worden, omdat het nummer van de plek kleiner is dan het aantal huidige plekken');
+        }
+        place.setPoule( this );
+        this.getPlaces().push( place );
+    }
+
     removePlace( place: PoulePlace ): boolean {
         var index = this.places.indexOf(place);
         if (index == -1 ) {
             return false;
         }
         this.places.splice(index, 1);
-
+        place.setPoule(null);
         this.places.forEach( function( placeIt ){
             if( placeIt.getNumber() > place.getNumber() ){
                 placeIt.setNumber( placeIt.getNumber() - 1 );
             }
         });
+        place.setNumber(null);
         return true;
     }
 
@@ -113,7 +127,9 @@ export class Poule {
         }
 
         // find index of place with same number
-        const foundPlace = this.places.find( pouleplaceIt => toNumber == pouleplaceIt.getNumber() );
+        const foundPlace = this.places.find( function( pouleplaceIt ) {
+            return toNumber == pouleplaceIt.getNumber()
+        });
 
         // remove item
         {
@@ -136,5 +152,7 @@ export class Poule {
         this.places.forEach( function( poulePlaceIt ){
             poulePlaceIt.setNumber( number++ );
         });
+
+        return true;
     }
 }

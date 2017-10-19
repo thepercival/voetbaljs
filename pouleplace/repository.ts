@@ -3,31 +3,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 import { PoulePlace } from '../pouleplace';
 import { Poule } from '../poule';
 import { TeamRepository } from '../team/repository';
-import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class PoulePlaceRepository extends VoetbalRepository{
+export class PoulePlaceRepository {
 
-    private url : string;
-    private http: Http;
+    constructor( private teamRepos: TeamRepository ) {
 
-    constructor( http: Http, private teamRepos: TeamRepository )
-    {
-        super();
-        this.http = http;
-        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
-    }
-
-    getUrlpostfix(): string
-    {
-        return 'pouleplaces';
     }
 
     jsonArrayToObject( jsonArray: any, poule: Poule ): PoulePlace[]
@@ -51,7 +35,7 @@ export class PoulePlaceRepository extends VoetbalRepository{
         return pouleplace;
     }
 
-    objectsToJsonHelper( objects: any[] ): any[]
+    objectsToJsonArray( objects: any[] ): any[]
     {
         let jsonArray: any[] = [];
         for (let object of objects) {
@@ -70,13 +54,5 @@ export class PoulePlaceRepository extends VoetbalRepository{
             "team":this.teamRepos.objectToJsonHelper(object.getTeam())
         };
         return json;
-    }
-
-
-    // this could also be a private method of the component class
-    handleError(res: Response): Observable<any> {
-        console.error( res );
-        // throw an application level error
-        return Observable.throw( res.statusText );
     }
 }

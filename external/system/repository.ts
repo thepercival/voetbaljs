@@ -134,7 +134,7 @@ export class ExternalSystemRepository extends VoetbalRepository{
             .catch(this.handleError);
     }
 
-    objectsToJsonHelper( objects: any[] ): any[]
+    objectsToJsonArray( objects: any[] ): any[]
     {
         let jsonArray: any[] = [];
         for (let object of objects) {

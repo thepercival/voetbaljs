@@ -5,6 +5,7 @@
 import { Poule } from './poule';
 import { Team } from './team';
 import { Game } from './game';
+import { QualifyRule } from './qualifyrule';
 
 export class PoulePlace {
     protected id: number;
@@ -12,6 +13,9 @@ export class PoulePlace {
     protected number: number;
     protected name: string;
     protected team: Team;
+    protected toPoulePlace: PoulePlace;
+    protected fromQualifyRule: QualifyRule;
+    protected toQualifyRule: QualifyRule;
 
     static readonly classname = "PoulePlace";
 
@@ -20,8 +24,8 @@ export class PoulePlace {
         if( number === null){
             number = poule.getPlaces().length + 1;
         }
-        this.setPoule(poule);
         this.setNumber(number);
+        poule.addPlace( this );
     }
 
     getId(): number {
@@ -36,9 +40,8 @@ export class PoulePlace {
         return this.poule;
     };
 
-    setPoule( poule: Poule ): void {
+    setPoule( poule: Poule ) {
         this.poule = poule;
-        this.poule.getPlaces().push( this );
     };
 
     getNumber(): number {
@@ -65,6 +68,30 @@ export class PoulePlace {
         this.team = team;
     };
 
+    // getToPoulePlace(): PoulePlace {
+    //     return this.toPoulePlace;
+    // }
+    //
+    // setToPoulePlace( toPoulePlace: PoulePlace): void {
+    //     this.toPoulePlace = toPoulePlace;
+    // };
+
+    getFromQualifyRule(): QualifyRule {
+        return this.fromQualifyRule;
+    }
+
+    setFromQualifyRule( qualifyRule: QualifyRule): void {
+        this.fromQualifyRule = qualifyRule;
+    };
+    
+    getToQualifyRule(): QualifyRule {
+        return this.toQualifyRule;
+    }
+
+    setToQualifyRule( qualifyRule: QualifyRule): void {
+        this.toQualifyRule = qualifyRule;
+    };
+    
     getGames(): Game[]{
         return this.getPoule().getGames().filter( (gameIt) => gameIt.getHomePoulePlace() == this || gameIt.getAwayPoulePlace() == this );
     }

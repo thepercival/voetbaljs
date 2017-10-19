@@ -12,6 +12,8 @@ import { PouleRepository } from '../poule/repository';
 import { Round } from '../round';
 import { CompetitionseasonRepository } from '../competitionseason/repository';
 import { VoetbalRepository } from '../repository';
+import { QualifyService } from "../qualifyrule/service";
+import {QualifyRuleRepository} from "../qualifyrule/repository";
 
 @Injectable()
 export class RoundRepository extends VoetbalRepository{
@@ -21,7 +23,8 @@ export class RoundRepository extends VoetbalRepository{
     constructor(
         private http: Http,
         private pouleRepos: PouleRepository,
-        private competitionseasonRepos: CompetitionseasonRepository )
+        private competitionseasonRepos: CompetitionseasonRepository,
+        private qualifyRuleRepos: QualifyRuleRepository)
     {
         super();
         this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
@@ -47,28 +50,34 @@ export class RoundRepository extends VoetbalRepository{
             .catch( this.handleError );
     }
 
-    jsonArrayToObject( jsonArray: any, competitionseason: Competitionseason ): Round[]
+    jsonArrayToObject( jsonArray: any, competitionseason: Competitionseason, parentRound: Round = null ): Round[]
     {
         console.log('rounds',jsonArray);
         let objects: Round[] = [];
         for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json, competitionseason);
+            let object = this.jsonToObjectHelper(json, competitionseason, parentRound);
             objects.push( object );
         }
         return objects;
     }
 
-    jsonToObjectHelper( json : any, competitionseason: Competitionseason ): Round
+    jsonToObjectHelper( json : any, competitionseason: Competitionseason, parentRound: Round = null ): Round
     {
-        let round = new Round(competitionseason, json.number);
+        let round = new Round(competitionseason, parentRound, json.winnersOrLosers);
         round.setId(json.id);
         round.setNrofheadtoheadmatches(json.nrofheadtoheadmatches);
         round.setName(json.name);
         this.pouleRepos.jsonArrayToObject( json.poules, round );
+        this.jsonArrayToObject( json.childRounds, competitionseason, round );
+        if ( parentRound != null ) {
+            const qualifyService = new QualifyService( round );
+            qualifyService.createObjectsForParentRound();
+        }
+
         return round;
     }
 
-    objectsToJsonHelper( objects: any[] ): any[]
+    objectsToJsonArray( objects: any[] ): any[]
     {
         let jsonArray: any[] = [];
         for (let object of objects) {
@@ -86,7 +95,7 @@ export class RoundRepository extends VoetbalRepository{
             "nrofheadtoheadmatches":object.getNrofheadtoheadmatches(),
             "name":object.getName(),
             "competitionseason":this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionseason()),
-            "poules":this.pouleRepos.objectsToJsonHelper(object.getPoules())
+            "poules":this.pouleRepos.objectsToJsonArray(object.getPoules())
         };
         return json;
     }

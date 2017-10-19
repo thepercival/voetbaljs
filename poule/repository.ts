@@ -3,32 +3,16 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
 import { PoulePlaceRepository } from '../pouleplace/repository';
 import { Poule } from '../poule';
 import { GameRepository } from '../game/repository';
-import { VoetbalRepository } from '../repository';
 import { Round } from '../round';
 
 @Injectable()
-export class PouleRepository extends VoetbalRepository{
+export class PouleRepository {
 
-    private url : string;
-    private http: Http;
+    constructor( private pouleplaceRepos: PoulePlaceRepository, private gameRepos: GameRepository ) {
 
-    constructor( http: Http, private pouleplaceRepos: PoulePlaceRepository, private gameRepos: GameRepository )
-    {
-        super();
-        this.http = http;
-        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
-    }
-
-    getUrlpostfix(): string
-    {
-        return 'poules';
     }
 
     jsonArrayToObject( jsonArray: any, round: Round ): Poule[]
@@ -50,7 +34,7 @@ export class PouleRepository extends VoetbalRepository{
         return poule;
     }
 
-    objectsToJsonHelper( objects: any[] ): any[]
+    objectsToJsonArray( objects: any[] ): any[]
     {
         let jsonArray: any[] = [];
         for (let object of objects) {
@@ -66,15 +50,8 @@ export class PouleRepository extends VoetbalRepository{
             "id":object.getId(),
             "number":object.getNumber(),
             "name":object.getName(),
-            "places":this.pouleplaceRepos.objectsToJsonHelper(object.getPlaces())
+            "places":this.pouleplaceRepos.objectsToJsonArray(object.getPlaces())
         };
         return json;
-    }
-
-    // this could also be a private method of the component class
-    handleError(res: Response): Observable<any> {
-        console.error( res );
-        // throw an application level error
-        return Observable.throw( res.statusText );
     }
 }
