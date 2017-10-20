@@ -9,9 +9,9 @@ export class VoetbalConfig {
 
     static getToken(): string
     {
-        let user = JSON.parse( localStorage.getItem('user') );
-        if ( user != null && user.token != null ) {
-            return user.token;
+        let auth = JSON.parse( localStorage.getItem('auth') );
+        if ( auth != null && auth.token != null ) {
+            return auth.token;
         }
         return null;
     }
