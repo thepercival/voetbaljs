@@ -18,22 +18,24 @@
    }
 
    createObjectsForParentRound() {
-     const poulePlacesPerNumberParentRound = this.parentRound.getPoulePlacesPerNumber();
+     const poulePlacesPerNumberParentRound = this.parentRound.getPoulePlacesPerNumber( this.childRound.getWinnersOrLosers() );
      const orderedByPlace = true;
      let poulePlacesOrderedByPlaceChildRound = this.childRound.getPoulePlaces( orderedByPlace );
 
      while ( poulePlacesOrderedByPlaceChildRound.length > 0 ) {
-
+       if ( this.childRound.getWinnersOrLosers() === Round.LOSERS) {
+            poulePlacesOrderedByPlaceChildRound.reverse();
+       }
        let qualifyRule = new QualifyRule( this.parentRound, this.childRound );
        // from places
        let poulePlaces = null;
        {
-         if ( this.childRound.getWinnersOrLosers() === Round.WINNERS) {
+         // if ( this.childRound.getWinnersOrLosers() === Round.WINNERS) {
            poulePlaces = poulePlacesPerNumberParentRound.shift();
-         }
-         else {
-           poulePlaces = poulePlacesPerNumberParentRound.pop();
-         }
+         // }
+         // else {
+         //   poulePlaces = poulePlacesPerNumberParentRound.pop();
+         // }
          poulePlaces.forEach(function (poulePlaceIt) {
            qualifyRule.addFromPoulePlace(poulePlaceIt);
          });
@@ -45,12 +47,12 @@
            break;
          }
          let toPoulePlace = null;
-         if ( this.childRound.getWinnersOrLosers() === Round.WINNERS ) {
+         // if ( this.childRound.getWinnersOrLosers() === Round.WINNERS ) {
            toPoulePlace = poulePlacesOrderedByPlaceChildRound.shift();
-         }
-         else {
-           toPoulePlace = poulePlacesOrderedByPlaceChildRound.pop();
-         }
+         // }
+         // else {
+           // toPoulePlace = poulePlacesOrderedByPlaceChildRound.pop();
+         // }
          qualifyRule.addToPoulePlace( toPoulePlace );
        }
      }
@@ -69,6 +71,23 @@
            qualifyRuleIt.setToRound( null );
        });
        fromQualifyRules = null;
+   }
+
+   oneMultipleToSingle() {
+       let fromQualifyRules = this.parentRound.getToQualifyRules();
+       let multiples = fromQualifyRules.filter( function( qualifyRuleIt ) {
+           return qualifyRuleIt.isMultiple();
+       });
+       if ( multiples.length !== 1 ) {
+           return;
+       }
+
+       let multiple = multiples.pop();
+       console.log(multiple.getWinnersOrLosers(), multiple);
+       let multipleFromPlaces = multiple.getFromPoulePlaces().slice();
+       while( multiple.getFromPoulePlaces().length > 1 ) {
+           multiple.removeFromPoulePlace( multipleFromPlaces.pop() );
+       }
    }
 
   // getActiveQualifyRules( winnersOrLosers: number ): QualifyRule[] {

@@ -35,8 +35,8 @@ export class Round {
     // constructor
     constructor( competitionseason: Competitionseason, parentRound: Round, winnersOrLosers: number ){
         this.setCompetitionseason(competitionseason);
-        this.setParentRound(parentRound);
         this.winnersOrLosers = winnersOrLosers;
+        this.setParentRound(parentRound);
     }
 
     getId(): number {
@@ -63,7 +63,12 @@ export class Round {
         this.parentRound = round;
         this.number = this.parentRound !== null ? ( this.parentRound.getNumber() + 1 ) : 1;
         if( this.parentRound !== null ) {
-            this.parentRound.getChildRounds().push( this );
+            let childRounds = this.parentRound.getChildRounds();
+            if( childRounds.length === 1 && this.getWinnersOrLosers() === Round.WINNERS ) {
+                childRounds.unshift( this ) ;
+            } else {
+                childRounds.push( this ) ;
+            }
         }
     }
 
@@ -130,22 +135,34 @@ export class Round {
         return poulePlaces;
     }
 
-    getPoulePlacesPerNumber(): PoulePlace[][] {
+    getPoulePlacesPerNumber( winnersOrLosers: number ): PoulePlace[][] {
         let poulePlacesPerNumber = [];
-        this.getPoules().forEach( function ( pouleIt ) {
-            pouleIt.getPlaces().forEach( function ( placeIt ) {
-                let poulePlaces = poulePlacesPerNumber.find( function( poulePlacesIt ) {
-                   return poulePlacesIt.some( function( poulePlaceIt ) {
-                       return poulePlaceIt.getNumber() === placeIt.getNumber();
-                   });
-                });
 
-                if( poulePlaces == null ) {
-                    poulePlaces = [];
-                    this.push( poulePlaces );
-                }
-                poulePlaces.push( placeIt );
-            }, this );
+        let poulePlacesOrderedByPlace = this.getPoulePlaces( true );
+        if( winnersOrLosers === Round.LOSERS ) {
+            poulePlacesOrderedByPlace.reverse();
+        }
+
+        poulePlacesOrderedByPlace.forEach( function ( placeIt ) {
+            let poulePlaces = this.find( function( poulePlacesIt ) {
+               return poulePlacesIt.some( function( poulePlaceIt ) {
+                   let poulePlaceNrIt = poulePlaceIt.getNumber();
+                   if ( winnersOrLosers === Round.LOSERS ) {
+                       poulePlaceNrIt = ( poulePlaceIt.getPoule().getPlaces().length + 1 ) - poulePlaceNrIt;
+                   }
+                   let placeNrIt = placeIt.getNumber();
+                   if ( winnersOrLosers === Round.LOSERS ) {
+                       placeNrIt = ( placeIt.getPoule().getPlaces().length + 1 ) - placeNrIt;
+                   }
+                   return poulePlaceNrIt === placeNrIt;
+               });
+            });
+
+            if( poulePlaces == null ) {
+                poulePlaces = [];
+                this.push( poulePlaces );
+            }
+            poulePlaces.push( placeIt );
         }, poulePlacesPerNumber);
 
         return poulePlacesPerNumber;
@@ -213,6 +230,11 @@ export class Round {
 
     getToQualifyRules(): QualifyRule[]{
         return this.toQualifyRules;
+    }
+
+    getNrOfPlacesChildRound( winnersOrLosers: number ): number {
+        const childRound = this.getChildRound( winnersOrLosers );
+        return childRound != null ? childRound.getPoulePlaces().length : 0;
     }
 
 

@@ -67,7 +67,7 @@ export class QualifyRule {
 
     addFromPoulePlace(poulePlace: PoulePlace): void {
         if( poulePlace == null ) { return; }
-        poulePlace.setToQualifyRule( this );
+        poulePlace.setToQualifyRule( this.getWinnersOrLosers(), this );
         this.fromPoulePlaces.push( poulePlace );
     };
 
@@ -79,7 +79,7 @@ export class QualifyRule {
         const index = fromPoulePlaces.indexOf( poulePlace );
         if (index > -1) {
             this.getFromPoulePlaces().splice(index, 1);
-            poulePlace.setToQualifyRule( null );
+            poulePlace.setToQualifyRule( this.getWinnersOrLosers(), null );
         }
     };
 
@@ -106,7 +106,7 @@ export class QualifyRule {
     };
 
     isMultiple(): boolean {
-        return this.fromPoulePlaces.length > 1;
+        return this.fromPoulePlaces.length > this.toPoulePlaces.length;
     }
 
     getWinnersOrLosers(): number {

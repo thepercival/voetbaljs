@@ -15,7 +15,7 @@ export class PoulePlace {
     protected team: Team;
     protected toPoulePlace: PoulePlace;
     protected fromQualifyRule: QualifyRule;
-    protected toQualifyRule: QualifyRule;
+    protected toQualifyRules: QualifyRule[] = [];
 
     static readonly classname = "PoulePlace";
 
@@ -84,12 +84,28 @@ export class PoulePlace {
         this.fromQualifyRule = qualifyRule;
     };
     
-    getToQualifyRule(): QualifyRule {
-        return this.toQualifyRule;
+    getToQualifyRules(): QualifyRule[] {
+        return this.toQualifyRules;
     }
 
-    setToQualifyRule( qualifyRule: QualifyRule): void {
-        this.toQualifyRule = qualifyRule;
+    getToQualifyRule( winnersOrLosers: number ): QualifyRule {
+        return this.toQualifyRules.find( function( qualifyRuleIt ) {
+            return qualifyRuleIt.getWinnersOrLosers() == this
+        }, winnersOrLosers );
+    }
+
+    setToQualifyRule( winnersOrLosers: number, qualifyRule: QualifyRule): void {
+        const toQualifyRuleOld = this.getToQualifyRule( winnersOrLosers );
+        if( toQualifyRuleOld != null ) {
+            // toQualifyRuleOld.removeFromPoulePlace( this );
+            const index = this.toQualifyRules.indexOf( toQualifyRuleOld );
+            if (index > -1) {
+                this.toQualifyRules.splice(index, 1);
+            }
+        }
+        if( qualifyRule ) {
+            this.toQualifyRules.push( qualifyRule );
+        }
     };
     
     getGames(): Game[]{
