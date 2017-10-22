@@ -72,7 +72,10 @@ export class Poule {
     getTeams(): Team[]{
         let teams: Team[] = [];
         for( let pouleplace of this.getPlaces() ){
-            teams.push(pouleplace.getTeam());
+            const team = pouleplace.getTeam();
+            if( team != null ) {
+                teams.push(team);
+            }
         }
         return teams;
     }
