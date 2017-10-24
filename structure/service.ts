@@ -93,11 +93,29 @@ export class StructureService {
 
     getPouleName( poule: Poule, withPrefix: boolean ) {
         const round = poule.getRound();
-        // ///////////////////////
+        let previousNrOfPoules = this.getNrOfPreviousPoules( round, poule );
         let pouleName = '';
         if ( withPrefix == true )
             pouleName = round.getType() == Round.TYPE_KNOCKOUT ? 'wed.' : 'poule';
-        return pouleName + ' x';
+        return pouleName + ' ' + ( String.fromCharCode( "A".charCodeAt(0) + previousNrOfPoules ) );
+    }
+
+    private getNrOfPreviousPoules( round: Round, poule: Poule = null ) {
+        let nrOfPreviousPoules = poule != null ? ( poule.getNumber() - 1 ) : round.getPoules().length;
+        if( round.getParentRound() != null ) {
+            nrOfPreviousPoules += this.getNrOfPreviousPoules( round.getParentRound() );
+        }
+        return nrOfPreviousPoules;
+    }
+
+    getPoulePlaceName( pouleplace: PoulePlace ) {
+
+        const poule = pouleplace.getPoule();
+        const round = poule.getRound();
+
+        // ///////////////////////
+        let pouleplaceName = this.getPouleName( poule, false );
+        return pouleplaceName + pouleplace.getNumber();
         // ///////////////////////////////////
         // let previousNrOfPoules = 0;
         // this.rounds.some(function(roundIt) {

@@ -3,8 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Rx';
+import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
+import { Observable, Observer } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Competitionseason } from '../competitionseason';
@@ -13,12 +13,13 @@ import { Round } from '../round';
 import { CompetitionseasonRepository } from '../competitionseason/repository';
 import { VoetbalRepository } from '../repository';
 import { QualifyService } from "../qualifyrule/service";
-import {QualifyRuleRepository} from "../qualifyrule/repository";
+import { QualifyRuleRepository } from "../qualifyrule/repository";
 
 @Injectable()
 export class RoundRepository extends VoetbalRepository{
 
     private url : string;
+    private structures : Round[] = [];
 
     constructor(
         private http: Http,
@@ -35,8 +36,19 @@ export class RoundRepository extends VoetbalRepository{
         return 'rounds';
     }
 
-    getObjects( competitionseason: Competitionseason ): Observable<Round[]>
+    getObject( competitionseason: Competitionseason ): Observable<Round>
     {
+        const foundStructure = this.structures.find( function( structure ) {
+            return structure.getCompetitionseason() === competitionseason;
+        });
+        if ( foundStructure != null ) {
+            console.log('getStructureFromCache', foundStructure);
+            return Observable.create( (observer: Observer<Round> ) => {
+                observer.next(foundStructure);
+                observer.complete();
+            });
+        }
+
         let params: URLSearchParams = new URLSearchParams();
         params.set('competitionseasonid', competitionseason.getId() );
         const options = new RequestOptions( {
@@ -46,13 +58,18 @@ export class RoundRepository extends VoetbalRepository{
         );
 
         return this.http.get(this.url, options )
-            .map((res) => this.jsonArrayToObject(res.json(), competitionseason))
+            .map( (res) => {
+                const jsonRound = res.json().shift();
+                console.log(jsonRound);
+                const round = this.jsonToObjectHelper(jsonRound, competitionseason);
+                this.structures.push( round );
+                return round;
+            })
             .catch( this.handleError );
     }
 
     jsonArrayToObject( jsonArray: any, competitionseason: Competitionseason, parentRound: Round = null ): Round[]
     {
-        console.log('rounds',jsonArray);
         let objects: Round[] = [];
         for (let json of jsonArray) {
             let object = this.jsonToObjectHelper(json, competitionseason, parentRound);
@@ -73,7 +90,6 @@ export class RoundRepository extends VoetbalRepository{
             const qualifyService = new QualifyService( round );
             qualifyService.createObjectsForParentRound();
         }
-
         return round;
     }
 

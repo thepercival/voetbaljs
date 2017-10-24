@@ -13,7 +13,6 @@ export class Competitionseason {
     protected season: Season;
     protected state: number;
     protected qualificationrule: number;
-    protected has_structure: boolean;
 
     static readonly classname = "Competitionseason";
 
@@ -88,14 +87,6 @@ export class Competitionseason {
 
     setQualificationrule( qualificationrule: number): void {
         this.qualificationrule = qualificationrule;
-    };
-
-    hasStructure(): boolean {
-        return this.has_structure;
-    };
-
-    setHasStructure( hasStructure: boolean): void {
-        this.has_structure = hasStructure;
     };
 
     getName(): string {

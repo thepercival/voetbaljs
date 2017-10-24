@@ -107,7 +107,6 @@ export class CompetitionseasonRepository extends VoetbalRepository{
         competitionseason.setId(json.id);
         competitionseason.setState(json.state);
         competitionseason.setQualificationrule(json.qualificationrule);
-        competitionseason.setHasStructure(json.hasstructure);
         return competitionseason;
     }
 
