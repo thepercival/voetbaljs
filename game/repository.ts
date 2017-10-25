@@ -61,8 +61,8 @@ export class GameRepository extends VoetbalRepository{
         let game = new Game(
             json.number,
             new Date(json.startdate),
-            poule.getPlaces().find( pouleplaceIt => json.homepouleplace.id == pouleplaceIt.getId() ),
-            poule.getPlaces().find( pouleplaceIt => json.awaypouleplace.id == pouleplaceIt.getId() )
+            poule.getPlaces().find( pouleplaceIt => json.homePoulePlaceNr == pouleplaceIt.getNumber() ),
+            poule.getPlaces().find( pouleplaceIt => json.awayPoulePlaceNr == pouleplaceIt.getNumber() )
         );
         game.setId(json.id);
         game.setState(json.state);
