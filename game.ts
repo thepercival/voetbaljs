@@ -6,10 +6,12 @@ import { PoulePlace } from './pouleplace';
 
 export class Game {
     protected id: number;
-    protected number: number;
-    protected startdate: Date;
+    protected roundNumber: number;
+    protected subNumber: number;
+    protected fieldNumber: number;
     protected homePoulePlace: PoulePlace;
     protected awayPoulePlace: PoulePlace;
+    protected startDateTime: Date;
     protected state: number;
 
     static readonly STATE_CREATED = 1;
@@ -19,9 +21,9 @@ export class Game {
     static readonly classname = "Game";
 
     // constructor
-    constructor( number: number, startdate: Date, homePouleplace: PoulePlace, awayPouleplace: PoulePlace){
-        this.setNumber(number);
-        this.setStartdate(startdate);
+    constructor( homePouleplace: PoulePlace, awayPouleplace: PoulePlace, roundNumber: number, subNumber: number ){
+        this.setRoundNumber(roundNumber);
+        this.setSubNumber(subNumber);
         this.setHomePoulePlace(homePouleplace);
         this.setAwayPoulePlace(awayPouleplace);
     }
@@ -34,20 +36,36 @@ export class Game {
         this.id = id;
     };
 
-    getNumber(): number {
-        return this.number;
+    getRoundNumber(): number {
+        return this.roundNumber;
     };
 
-    setNumber( number: number): void {
-        this.number = number;
+    setRoundNumber( roundNumber: number): void {
+        this.roundNumber = roundNumber;
     };
 
-    getStartdate(): Date {
-        return this.startdate;
+    getSubNumber(): number {
+        return this.subNumber;
     };
 
-    setStartdate(startdate: Date): void {
-        this.startdate = startdate;
+    setSubNumber( subNumber: number): void {
+        this.subNumber = subNumber;
+    };
+
+    getFieldNumber(): number {
+        return this.fieldNumber;
+    };
+
+    setFieldNumber( fieldNumber: number): void {
+        this.fieldNumber = fieldNumber;
+    };
+
+    getStartDateTime(): Date {
+        return this.startDateTime;
+    };
+
+    setStartDateTime(startDateTime: Date): void {
+        this.startDateTime = startDateTime;
     };
 
     getHomePoulePlace(): PoulePlace {

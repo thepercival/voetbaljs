@@ -19,7 +19,6 @@ export class Round {
     protected nrofheadtoheadmatches: number;
     protected name: string;
     protected poules: Poule[] = [];
-    protected bNeedsRanking: boolean = null;
     protected fromQualifyRules: QualifyRule[] = [];
     protected toQualifyRules: QualifyRule[] = [];
 
@@ -81,7 +80,8 @@ export class Round {
     };
 
     getChildRound( winnersOrLosers: number ): Round {
-        return this.childRounds.find( ( roundIt ) => roundIt.getWinnersOrLosers() == winnersOrLosers );
+        let childRound = this.childRounds.find( ( roundIt ) => roundIt.getWinnersOrLosers() == winnersOrLosers );
+        return ( childRound == null ) ? null : childRound;
     };
 
     getWinnersOrLosers(): number {
@@ -199,13 +199,9 @@ export class Round {
     }
 
     needsRanking(): boolean {
-        if ( this.bNeedsRanking === null ) {
-
-            this.bNeedsRanking = this.getPoules().some(function(pouleIt) {
+        return this.getPoules().some(function(pouleIt) {
                 return pouleIt.needsRanking();
             });
-        }
-        return this.bNeedsRanking;
     }
 
     movePoulePlace( poulePlace: PoulePlace, toPoule: Poule, toNumber: number = null ){

@@ -23,14 +23,21 @@ export class StructureService {
         this.rangeNrOfCompetitors = rangeNrOfCompetitors;
     }
 
-    getCompetitionseason(): Competitionseason
-    {
+    getCompetitionseason(): Competitionseason {
         return this.competitionseason;
     }
 
-    getFirstRound(): Round
-    {
+    getFirstRound(): Round {
         return this.round;
+    }
+
+    getRounds( round: Round = this.getFirstRound(), rounds: Round[] = [] ): Round[] {
+        if( round == null ) {
+            return rounds;
+        }
+        rounds.push( round );
+        rounds = this.getRounds( round.getChildRound( Round.WINNERS ), rounds );
+        return this.getRounds( round.getChildRound( Round.LOSERS ), rounds );
     }
 
     // getPoulePlaces(): PoulePlace[]
@@ -57,38 +64,55 @@ export class StructureService {
     //     return games;
     // }
 
+    private roundAndParentsNeedsRanking( round: Round ) {
+
+        if( round.needsRanking() ) {
+            if( round.getParentRound() != null ) {
+                return this.roundAndParentsNeedsRanking( round.getParentRound() );
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private getNrOfRoundsToGo( round: Round, nrOfRoundsToGo = 0 ) {
+        const childRound = round.getChildRound( round.getWinnersOrLosers() );
+        if( childRound == null ) {
+            return nrOfRoundsToGo;
+        }
+        nrOfRoundsToGo++;
+        return this.getNrOfRoundsToGo( childRound, nrOfRoundsToGo );
+    }
+
     getRoundName( round: Round ) {
-        return "ronde x";
-        // let pouleRounds = 0;
-        // this.rounds.some(function(roundIt) {
-        //     const knockOut = ( roundIt.getType() == Round.TYPE_KNOCKOUT);
-        //     pouleRounds += knockOut ? 0 : 1;
-        //     return knockOut;
-        // });
-        //
-        // if ( round.getNumber() > pouleRounds) {
-        //     const nrOfRoundsFromWinning = this.rounds.length - ( round.getNumber() );
-        //     if (nrOfRoundsFromWinning == 5) {
-        //         return "<span style='font-size: 80%'><sup>1</sup>&frasl;<sub>16</sub></span> finale";
-        //     }
-        //     else if (nrOfRoundsFromWinning == 4) {
-        //         return "&frac18; finale";
-        //     }
-        //     else if (nrOfRoundsFromWinning == 3) {
-        //         return "&frac14; finale";
-        //     }
-        //     else if (nrOfRoundsFromWinning == 2) {
-        //         return "&frac12; finale";
-        //     }
-        //     else if (nrOfRoundsFromWinning == 1) {
-        //         return "finale";
-        //     }
-        //     else if (nrOfRoundsFromWinning == 0) {
-        //         return "winnaar";
-        //     }
-        // }
-        //
-        // return ( round.getNumber() ) + '<sup>' + ( round.getNumber() == 1 ? 'st' : 'd' ) + "e</sup> ronde";
+        if( this.roundAndParentsNeedsRanking( round ) ) {
+            return ( round.getNumber() ) + '<sup>' + ( round.getNumber() == 1 ? 'st' : 'd' ) + "e</sup> ronde";
+        }
+
+        const nrOfRoundsToGo = this.getNrOfRoundsToGo( round );
+        if (nrOfRoundsToGo == 5) {
+            return "<span style='font-size: 80%'><sup>1</sup>&frasl;<sub>16</sub></span> finale";
+        }
+        else if (nrOfRoundsToGo == 4) {
+            return "&frac18; finale";
+        }
+        else if (nrOfRoundsToGo == 3) {
+            return "&frac14; finale";
+        }
+        else if (nrOfRoundsToGo == 2) {
+            return "&frac12; finale";
+        }
+        else if (nrOfRoundsToGo == 1) {
+            return "finale";
+        }
+        else if (nrOfRoundsToGo == 0) {
+            return this.getWinnersLosersDescription( round.getWinnersOrLosers() );
+        }
+        return "?";
+    }
+
+    getWinnersLosersDescription( winnersOrLosers: number ): string {
+        return winnersOrLosers === Round.WINNERS ? 'winnaar' : ( winnersOrLosers === Round.LOSERS ? 'verliezer' : '' );
     }
 
     getPouleName( poule: Poule, withPrefix: boolean ) {
@@ -108,8 +132,10 @@ export class StructureService {
         return nrOfPreviousPoules;
     }
 
-    getPoulePlaceName( pouleplace: PoulePlace ) {
-
+    getPoulePlaceName( pouleplace: PoulePlace, teamName = false ) {
+        if( teamName === true && pouleplace.getTeam() != null ) {
+            return pouleplace.getTeam().getName();
+        }
         const poule = pouleplace.getPoule();
         const round = poule.getRound();
 

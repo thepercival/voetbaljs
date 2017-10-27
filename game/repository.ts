@@ -59,13 +59,15 @@ export class GameRepository extends VoetbalRepository{
     jsonToObjectHelper( json : any, poule: Poule ): Game
     {
         let game = new Game(
-            json.number,
-            new Date(json.startdate),
             poule.getPlaces().find( pouleplaceIt => json.homePoulePlaceNr == pouleplaceIt.getNumber() ),
-            poule.getPlaces().find( pouleplaceIt => json.awayPoulePlaceNr == pouleplaceIt.getNumber() )
+            poule.getPlaces().find( pouleplaceIt => json.awayPoulePlaceNr == pouleplaceIt.getNumber() ),
+            json.roundNumber, json.subNumber
         );
+        console.log('game',json);
         game.setId(json.id);
         game.setState(json.state);
+        game.setFieldNumber( json.fieldNumber );
+        game.setStartDateTime( new Date(json.startDateTime) );
         poule.getGames().push(game);
         return game;
     }
@@ -84,10 +86,11 @@ export class GameRepository extends VoetbalRepository{
     {
         let json = {
             "id":object.getId(),
-            "number":object.getNumber(),
-            "startdate":object.getStartdate().toISOString(),
             "homepouleplace":this.pouleplaceRepos.objectToJsonHelper(object.getHomePoulePlace()),
             "awaypouleplace":this.pouleplaceRepos.objectToJsonHelper(object.getAwayPoulePlace()),
+            "roundNumber":object.getRoundNumber(),
+            "subNumber":object.getSubNumber(),
+            "startDateTime":object.getStartDateTime().toISOString(),
             "state":object.getState()
         };
         return json;
