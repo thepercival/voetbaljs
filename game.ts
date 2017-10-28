@@ -3,12 +3,15 @@
  */
 
 import { PoulePlace } from './pouleplace';
+import { Field } from './field';
+import { Referee } from './referee';
 
 export class Game {
     protected id: number;
     protected roundNumber: number;
     protected subNumber: number;
-    protected fieldNumber: number;
+    protected field: Field;
+    protected referee: Referee;
     protected homePoulePlace: PoulePlace;
     protected awayPoulePlace: PoulePlace;
     protected startDateTime: Date;
@@ -52,12 +55,20 @@ export class Game {
         this.subNumber = subNumber;
     };
 
-    getFieldNumber(): number {
-        return this.fieldNumber;
+    getField(): Field {
+        return this.field;
     };
 
-    setFieldNumber( fieldNumber: number): void {
-        this.fieldNumber = fieldNumber;
+    setField( field: Field): void {
+        this.field = field;
+    };
+
+    getReferee(): Referee {
+        return this.referee;
+    };
+
+    setReferee( referee: Referee): void {
+        this.referee = referee;
     };
 
     getStartDateTime(): Date {

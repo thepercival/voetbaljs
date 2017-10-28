@@ -10,6 +10,8 @@ import 'rxjs/add/operator/catch';
 import { Game } from '../game';
 import { Poule } from '../poule';
 import { PoulePlaceRepository } from '../pouleplace/repository';
+import { FieldRepository } from '../field/repository';
+import { RefereeRepository } from '../referee/repository';
 import { VoetbalRepository } from '../repository';
 
 @Injectable()
@@ -19,7 +21,10 @@ export class GameRepository extends VoetbalRepository{
 
     constructor(
         private http: Http,
-        private pouleplaceRepos: PoulePlaceRepository )
+        private pouleplaceRepos: PoulePlaceRepository,
+        private fieldRepos: FieldRepository,
+        private refereeRepos: RefereeRepository,
+    )
     {
         super();
         this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
@@ -66,7 +71,8 @@ export class GameRepository extends VoetbalRepository{
         console.log('game',json);
         game.setId(json.id);
         game.setState(json.state);
-        game.setFieldNumber( json.fieldNumber );
+        game.setField( this.fieldRepos.getObject( json.field.id ) );
+        // game.setReferee( this.refereeRepos.jsonToObjectHelper( json.referee ) );
         game.setStartDateTime( new Date(json.startDateTime) );
         poule.getGames().push(game);
         return game;
@@ -91,6 +97,8 @@ export class GameRepository extends VoetbalRepository{
             "roundNumber":object.getRoundNumber(),
             "subNumber":object.getSubNumber(),
             "startDateTime":object.getStartDateTime().toISOString(),
+            "field":this.fieldRepos.objectToJsonHelper(object.getField()),
+            "referee":this.refereeRepos.objectToJsonHelper(object.getReferee()),
             "state":object.getState()
         };
         return json;

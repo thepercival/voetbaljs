@@ -12,6 +12,7 @@ import { AssociationRepository } from '../association/repository';
 import { CompetitionRepository } from '../competition/repository';
 import { SeasonRepository } from '../season/repository';
 import { VoetbalRepository } from '../repository';
+import { FieldRepository } from '../field/repository';
 
 @Injectable()
 export class CompetitionseasonRepository extends VoetbalRepository{
@@ -23,7 +24,8 @@ export class CompetitionseasonRepository extends VoetbalRepository{
     constructor( http: Http,
          private associationRepository: AssociationRepository,
          private competitionRepository: CompetitionRepository,
-         private seasonRepository: SeasonRepository
+         private seasonRepository: SeasonRepository,
+         private fieldRepository: FieldRepository
     )
     {
         super();
@@ -107,6 +109,7 @@ export class CompetitionseasonRepository extends VoetbalRepository{
         competitionseason.setId(json.id);
         competitionseason.setState(json.state);
         competitionseason.setQualificationrule(json.qualificationrule);
+        this.fieldRepository.jsonArrayToObject( json.fields, competitionseason );
         return competitionseason;
     }
 
