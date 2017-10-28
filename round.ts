@@ -8,6 +8,8 @@ import { Team } from './team';
 import { Game } from './game';
 import { PoulePlace } from './pouleplace';
 import { QualifyRule } from './qualifyrule';
+import { RoundConfig } from "./round/config";
+import { RoundScoreConfig } from "./round/scoreconfig";
 
 export class Round {
     protected id: number;
@@ -18,6 +20,8 @@ export class Round {
     protected number: number;
     protected nrofheadtoheadmatches: number;
     protected name: string;
+    protected config: RoundConfig;
+    protected scoreConfig: RoundScoreConfig;
     protected poules: Poule[] = [];
     protected fromQualifyRules: QualifyRule[] = [];
     protected toQualifyRules: QualifyRule[] = [];
@@ -103,6 +107,22 @@ export class Round {
     setName(name: string): void {
         this.name = name;
     };
+
+    getConfig(): RoundConfig {
+        return this.config;
+    }
+
+    setConfig( config: RoundConfig) {
+        this.config = config;
+    }
+
+    getScoreConfig(): RoundScoreConfig {
+        return this.scoreConfig;
+    }
+
+    setScoreConfig( scoreConfig: RoundScoreConfig) {
+        this.scoreConfig = scoreConfig;
+    }
 
     getPoules(): Poule[] {
         return this.poules;

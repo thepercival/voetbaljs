@@ -12,8 +12,10 @@ import { PouleRepository } from '../poule/repository';
 import { Round } from '../round';
 import { CompetitionseasonRepository } from '../competitionseason/repository';
 import { VoetbalRepository } from '../repository';
-import { QualifyService } from "../qualifyrule/service";
-import { QualifyRuleRepository } from "../qualifyrule/repository";
+import { QualifyService } from '../qualifyrule/service';
+import { RoundConfigRepository } from './config/repository';
+import { RoundScoreConfigRepository } from './scoreconfig/repository';
+import { QualifyRuleRepository } from '../qualifyrule/repository';
 
 @Injectable()
 export class RoundRepository extends VoetbalRepository{
@@ -23,6 +25,8 @@ export class RoundRepository extends VoetbalRepository{
 
     constructor(
         private http: Http,
+        private configRepos: RoundConfigRepository,
+        private scoreConfigRepos: RoundScoreConfigRepository,
         private pouleRepos: PouleRepository,
         private competitionseasonRepos: CompetitionseasonRepository,
         private qualifyRuleRepos: QualifyRuleRepository)
@@ -84,6 +88,8 @@ export class RoundRepository extends VoetbalRepository{
         round.setId(json.id);
         round.setNrofheadtoheadmatches(json.nrofheadtoheadmatches);
         round.setName(json.name);
+        this.configRepos.jsonToObjectHelper( json.config, round );
+        round.setScoreConfig( this.scoreConfigRepos.jsonToObjectHelper( json.scoreConfig, round, json.parent ) );
         this.pouleRepos.jsonArrayToObject( json.poules, round );
         this.jsonArrayToObject( json.childRounds, competitionseason, round );
         if ( parentRound != null ) {
@@ -106,12 +112,14 @@ export class RoundRepository extends VoetbalRepository{
     objectToJsonHelper( object : Round ): any
     {
         let json = {
-            "id":object.getId(),
-            "number":object.getNumber(),
-            "nrofheadtoheadmatches":object.getNrofheadtoheadmatches(),
-            "name":object.getName(),
-            "competitionseason":this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionseason()),
-            "poules":this.pouleRepos.objectsToJsonArray(object.getPoules())
+            'id':object.getId(),
+            'number':object.getNumber(),
+            'nrofheadtoheadmatches':object.getNrofheadtoheadmatches(),
+            'name':object.getName(),
+            'competitionseason':this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionseason()),
+            'config':this.configRepos.objectToJsonHelper(object.getConfig()),
+            'scoreConfig':this.scoreConfigRepos.objectToJsonHelper(object.getScoreConfig()),
+            'poules':this.pouleRepos.objectsToJsonArray(object.getPoules())
         };
         return json;
     }

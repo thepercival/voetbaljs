@@ -31,6 +31,9 @@ export class RoundConfig {
 
     private setRound( round: Round) {
         this.round = round;
+        if( round != null ) {
+            round.setConfig( this );
+        }
     };
 
     getNrofheadtoheadmatches(): number {

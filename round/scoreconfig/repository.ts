@@ -13,24 +13,13 @@ export class RoundScoreConfigRepository {
 
     }
 
-    jsonArrayToObject( jsonArray: any, round: Round ): RoundScoreConfig[]
+    jsonToObjectHelper( json : any, round: Round, parent: RoundScoreConfig ): RoundScoreConfig
     {
-        let objects: RoundScoreConfig[] = [];
-        for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json, round);
-            objects.push( object );
-        }
-        return objects;
-    }
-
-    jsonToObjectHelper( json : any, round: Round ): RoundScoreConfig
-    {
-        let roundScoreConfig = new RoundScoreConfig( round );
+        let roundScoreConfig = new RoundScoreConfig( round, parent );
         roundScoreConfig.setId(json.id);
-        // roundConfig.setHasExtraTime(json.hasExtraTime);
-        // roundConfig.setNrOfMinutesPerGame(json.nrOfMinutesPerGame);
-        // roundConfig.setNrOfMinutesExtraTime(json.nrOfMinutesExtraTime);
-        // roundConfig.setNrOfMinutesInBetween(json.nrOfMinutesInBetween);
+        roundScoreConfig.setName(json.name);
+        roundScoreConfig.setStart(json.start);
+        roundScoreConfig.setGoal(json.goal);
         return roundScoreConfig;
     }
 
@@ -47,15 +36,11 @@ export class RoundScoreConfigRepository {
     objectToJsonHelper( object : RoundScoreConfig ): any
     {
         let json = {
-            "id": object.getId()//,
-            // "nrofheadtoheadmatches": object.getNrofheadtoheadmatches(),
-            // "qualifyRule": object.getQualifyRule(),
-            // "winPointsPerGame": object.getWinPointsPerGame(),
-            // "winPointsExtraTime": object.getWinPointsExtraTime(),
-            // "hasExtraTime": object.getHasExtraTime(),
-            // "nrOfMinutesPerGame": object.getNrOfMinutesPerGame(),
-            // "nrOfMinutesExtraTime": object.getNrOfMinutesExtraTime(),
-            // "nrOfMinutesInBetween": object.getNrOfMinutesInBetween()
+            "id": object.getId(),
+            "name": object.getName(),
+            "start": object.getStart(),
+            "goal": object.getGoal(),
+            "parent": object.getParent() != null ? this.objectToJsonHelper( object.getParent() ) : null
         };
         return json;
     }

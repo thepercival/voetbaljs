@@ -5,6 +5,8 @@
 import { Association } from './association';
 import { Competition } from './competition';
 import { Season } from './season';
+import { Field } from './field';
+import { Referee } from './referee';
 
 export class Competitionseason {
     protected id: any;
@@ -13,6 +15,8 @@ export class Competitionseason {
     protected season: Season;
     protected state: number;
     protected qualificationrule: number;
+    protected fields: Field[] = [];
+    protected referees: Referee[] = [];
 
     static readonly classname = "Competitionseason";
 
@@ -93,5 +97,11 @@ export class Competitionseason {
         return this.getCompetition().getName() + ' ' + this.getSeason().getName();
     }
 
+    getFields(): Field[] {
+        return this.fields;
+    }
 
+    getReferees(): Referee[] {
+        return this.referees;
+    }
 }
