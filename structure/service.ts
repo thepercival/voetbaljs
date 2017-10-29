@@ -28,8 +28,13 @@ export class StructureService {
     }
 
     getFirstRound(): Round {
+
         return this.round;
     }
+
+    getRoundById( id: number ) {
+        return this.getRounds().find( roundIt => id == roundIt.getId() );
+    };
 
     getRounds( round: Round = this.getFirstRound(), rounds: Round[] = [] ): Round[] {
         if( round == null ) {
