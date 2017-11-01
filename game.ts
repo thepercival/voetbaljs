@@ -5,9 +5,11 @@
 import { PoulePlace } from './pouleplace';
 import { Field } from './field';
 import { Referee } from './referee';
+import { Poule } from './poule';
 
 export class Game {
     protected id: number;
+    protected poule: Poule;
     protected roundNumber: number;
     protected subNumber: number;
     protected field: Field;
@@ -24,7 +26,13 @@ export class Game {
     static readonly classname = "Game";
 
     // constructor
-    constructor( homePouleplace: PoulePlace, awayPouleplace: PoulePlace, roundNumber: number, subNumber: number ){
+    constructor(
+        poule: Poule,
+        homePouleplace: PoulePlace,
+        awayPouleplace: PoulePlace,
+        roundNumber: number,
+        subNumber: number ) {
+        this.setPoule( poule );
         this.setRoundNumber(roundNumber);
         this.setSubNumber(subNumber);
         this.setHomePoulePlace(homePouleplace);
@@ -37,6 +45,15 @@ export class Game {
 
     setId( id: number): void {
         this.id = id;
+    };
+
+    getPoule(): Poule {
+        return this.poule;
+    };
+
+    private setPoule( poule: Poule ) {
+        poule.getGames().push( this );
+        this.poule = poule;
     };
 
     getRoundNumber(): number {

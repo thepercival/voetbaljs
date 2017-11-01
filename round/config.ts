@@ -99,5 +99,16 @@ export class RoundConfig {
     setNrOfMinutesInBetween(nrOfMinutesInBetween: number) {
         this.nrOfMinutesInBetween = nrOfMinutesInBetween;
     };
+
+    getMaximalNrOfMinutesPerGame( withMinutesInBetween: boolean = false ): number {
+        let nrOfMinutes = this.getNrOfMinutesPerGame();
+        if ( this.getHasExtraTime()) {
+            nrOfMinutes += this.getNrOfMinutesExtraTime();
+        }
+        if( withMinutesInBetween === true ) {
+            nrOfMinutes += this.getNrOfMinutesInBetween();
+        }
+        return nrOfMinutes;
+    }
 }
 

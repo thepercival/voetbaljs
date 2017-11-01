@@ -88,6 +88,13 @@ export class Round {
         return ( childRound == null ) ? null : childRound;
     };
 
+    getRootRound() {
+        if( this.getParentRound() != null ) {
+            return this.getParentRound().getRootRound();
+        }
+        return this;
+    }
+
     getWinnersOrLosers(): number {
         return this.winnersOrLosers;
     };
@@ -210,12 +217,24 @@ export class Round {
         return games;
     }
 
+    getGamesByNumber(): Game[]
+    {
+        return this.getGames().sort((g1,g2) => {
+            if ( g1.getRoundNumber() === g2.getRoundNumber() ) {
+                if ( g1.getSubNumber() === g2.getSubNumber() ) {
+                    return g1.getPoule().getNumber() - g2.getPoule().getNumber();
+                }
+                return g1.getSubNumber() - g2.getSubNumber();
+            }
+            return g1.getRoundNumber() - g2.getRoundNumber();
+        });
+    }
+
     getType(): number {
         if ( this.getPoules().length === 1 && this.getPoulePlaces().length < 2 ){
             return Round.TYPE_WINNER;
         }
         return ( this.needsRanking() ? Round.TYPE_POULE : Round.TYPE_KNOCKOUT );
-
     }
 
     needsRanking(): boolean {
@@ -253,7 +272,9 @@ export class Round {
         return childRound != null ? childRound.getPoulePlaces().length : 0;
     }
 
-
+    static getOpposing( winnersOrLosers: number ) {
+        return winnersOrLosers === Round.WINNERS ? Round.LOSERS : Round.WINNERS;
+    }
 
     // getActiveQualifyRuleMul() {
     //     return ( ( this.getToQualifyRules() % this.getPoules().length ) === 0 );

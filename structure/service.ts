@@ -28,7 +28,6 @@ export class StructureService {
     }
 
     getFirstRound(): Round {
-
         return this.round;
     }
 
@@ -319,10 +318,6 @@ export class StructureService {
         return true;
     }
 
-    getOpposing( winnersOrLosers: number ) {
-        return winnersOrLosers === Round.WINNERS ? Round.LOSERS : Round.WINNERS;
-    }
-
     changeNrOfPlacesChildRound( nrOfChildPlacesNew: number, parentRound: Round, winnersOrLosers: number ) {
         let childRound = parentRound.getChildRound( winnersOrLosers );
         if ( childRound == null && nrOfChildPlacesNew > 0 ) {
@@ -358,7 +353,7 @@ export class StructureService {
         qualifyService.createObjectsForParentRound();
 
         const nrOfChildPlaces = parentRound.getNrOfPlacesChildRound( winnersOrLosers );
-        const opposing = this.getOpposing( winnersOrLosers );
+        const opposing = Round.getOpposing( winnersOrLosers );
         const nrOfPlacesLeftForOpposing = parentRound.getPoulePlaces().length - nrOfChildPlaces;
         const nrOfChildPlacesOpposing = parentRound.getNrOfPlacesChildRound( opposing );
         if ( nrOfPlacesLeftForOpposing < nrOfChildPlacesOpposing ) {

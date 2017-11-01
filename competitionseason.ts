@@ -13,8 +13,8 @@ export class Competitionseason {
     protected association: Association;
     protected competition: Competition;
     protected season: Season;
+    protected startDateTime: Date;
     protected state: number;
-    protected qualificationrule: number;
     protected fields: Field[] = [];
     protected referees: Referee[] = [];
 
@@ -31,7 +31,6 @@ export class Competitionseason {
         this.setAssociation(association);
         this.setCompetition(competition);
         this.setSeason(season);
-        this.setQualificationrule(Competitionseason.QUALIFICATION_RULE_WC);
     }
 
     getId(): any {
@@ -65,6 +64,14 @@ export class Competitionseason {
     setSeason( season: Season): void {
         this.season = season;
     };
+
+    getStartDateTime(): Date {
+        return this.startDateTime;
+    }
+
+    setStartDateTime(dateTime: Date): void {
+        this.startDateTime = dateTime;
+    }
     
     getState(): number {
         return this.state;
@@ -83,14 +90,6 @@ export class Competitionseason {
         }
 
         return null;
-    };
-
-    getQualificationrule(): number {
-        return this.qualificationrule;
-    };
-
-    setQualificationrule( qualificationrule: number): void {
-        this.qualificationrule = qualificationrule;
     };
 
     getName(): string {

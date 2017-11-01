@@ -22,7 +22,7 @@ export class RefereeRepository {
 
     jsonToObjectHelper( json : any, competitionseason: Competitionseason ): Referee
     {
-        let referee = new Referee(competitionseason, json.stars);
+        let referee = new Referee(competitionseason, json.number);
         referee.setName(json.name);
         return referee;
     }
@@ -41,7 +41,7 @@ export class RefereeRepository {
     {
         let json = {
             "id":object.getId(),
-            "stars":object.getStars(),
+            "number":object.getNumber(),
             "name":object.getName()
         };
         return json;
