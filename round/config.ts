@@ -3,7 +3,7 @@ import { Round } from '../round';
 export class RoundConfig {
     protected id: number;
     protected round: Round;
-    protected nrofheadtoheadmatches: number;
+    protected nrOfHeadtoheadMatches: number;
     protected qualifyRule: number;
     protected winPointsPerGame: number;
     protected winPointsExtraTime: number;
@@ -36,12 +36,12 @@ export class RoundConfig {
         }
     };
 
-    getNrofheadtoheadmatches(): number {
-        return this.nrofheadtoheadmatches;
+    getNrOfHeadtoheadMatches(): number {
+        return this.nrOfHeadtoheadMatches;
     };
 
-    setNrofheadtoheadmatches(nrofheadtoheadmatches: number) {
-        this.nrofheadtoheadmatches = nrofheadtoheadmatches;
+    setNrOfHeadtoheadMatches( nrOfHeadtoheadMatches: number) {
+        this.nrOfHeadtoheadMatches = nrOfHeadtoheadMatches;
     };
 
     getQualifyRule(): number {

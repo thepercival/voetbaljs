@@ -18,7 +18,6 @@ export class Round {
     protected childRounds: Round[] = [];
     protected winnersOrLosers: number;
     protected number: number;
-    protected nrofheadtoheadmatches: number;
     protected name: string;
     protected config: RoundConfig;
     protected scoreConfig: RoundScoreConfig;
@@ -97,14 +96,6 @@ export class Round {
 
     getWinnersOrLosers(): number {
         return this.winnersOrLosers;
-    };
-
-    getNrofheadtoheadmatches(): number {
-        return this.nrofheadtoheadmatches;
-    };
-
-    setNrofheadtoheadmatches( nrofheadtoheadmatches: number): void {
-        this.nrofheadtoheadmatches = nrofheadtoheadmatches;
     };
 
     getName(): string {

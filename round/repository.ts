@@ -86,7 +86,6 @@ export class RoundRepository extends VoetbalRepository{
     {
         let round = new Round(competitionseason, parentRound, json.winnersOrLosers);
         round.setId(json.id);
-        round.setNrofheadtoheadmatches(json.nrofheadtoheadmatches);
         round.setName(json.name);
         this.configRepos.jsonToObjectHelper( json.config, round );
         round.setScoreConfig( this.scoreConfigRepos.jsonToObjectHelper( json.scoreConfig, round, json.parent ) );
@@ -114,7 +113,6 @@ export class RoundRepository extends VoetbalRepository{
         let json = {
             'id':object.getId(),
             'number':object.getNumber(),
-            'nrofheadtoheadmatches':object.getNrofheadtoheadmatches(),
             'name':object.getName(),
             'competitionseason':this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionseason()),
             'config':this.configRepos.objectToJsonHelper(object.getConfig()),

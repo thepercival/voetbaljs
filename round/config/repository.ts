@@ -27,7 +27,7 @@ export class RoundConfigRepository {
     {
         let roundConfig = new RoundConfig( round );
         roundConfig.setId(json.id);
-        roundConfig.setNrofheadtoheadmatches(json.nrofheadtoheadmatches);
+        roundConfig.setNrOfHeadtoheadMatches(json.nrOfHeadtoheadMatches);
         roundConfig.setQualifyRule(json.qualifyRule);
         roundConfig.setWinPointsPerGame(json.winPointsPerGame);
         roundConfig.setWinPointsExtraTime(json.winPointsExtraTime);
@@ -52,7 +52,7 @@ export class RoundConfigRepository {
     {
         let json = {
             "id": object.getId(),
-            "nrofheadtoheadmatches": object.getNrofheadtoheadmatches(),
+            "nrOfHeadtoheadMatches": object.getNrOfHeadtoheadMatches(),
             "qualifyRule": object.getQualifyRule(),
             "winPointsPerGame": object.getWinPointsPerGame(),
             "winPointsExtraTime": object.getWinPointsExtraTime(),

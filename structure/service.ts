@@ -162,7 +162,7 @@ export class StructureService {
 
     addRound( parentRound: Round, winnersOrLosers: number ): Round {
         let round = new Round( this.competitionseason, parentRound, winnersOrLosers );
-        round.setNrofheadtoheadmatches(1)
+        // @TODO ADD CONFIG!!  round.setNrofheadtoheadmatches(1)
         const poule = new Poule( round );
         const poulePlace = new PoulePlace( poule );
         return round;
