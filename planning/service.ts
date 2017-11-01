@@ -91,9 +91,8 @@ export class PlanningService
                         if (schedGame[0] === null || schedGame[1] === null) {
                             return;
                         }
-                        const homePoulePlace = schedGame[0];
-                        const awayPoulePlace = schedGame[1];
-
+                        const homePoulePlace = ( headToHead % 2 === 0 ) ? schedGame[1] : schedGame[0];
+                        const awayPoulePlace = ( headToHead % 2 === 0 ) ? schedGame[0] : schedGame[1];
                         new Game(poule, homePoulePlace, awayPoulePlace, headToHeadNumber + roundNumber + 1, subNumber++);
                     });
                 }
