@@ -5,10 +5,11 @@ export class RoundConfig {
     protected round: Round;
     protected nrOfHeadtoheadMatches: number;
     protected qualifyRule: number;
-    protected winPointsPerGame: number;
-    protected winPointsExtraTime: number;
-    protected hasExtraTime: boolean;
+    protected winPoints: number;
+    protected drawPoints: number;
     protected nrOfMinutesPerGame: number;
+    protected hasExtraTime: boolean;
+    protected winPointsExtraTime: number;
     protected nrOfMinutesExtraTime: number;
     protected nrOfMinutesInBetween: number;
 
@@ -52,12 +53,20 @@ export class RoundConfig {
         this.qualifyRule = qualifyRule;
     };
 
-    getWinPointsPerGame(): number {
-        return this.winPointsPerGame;
+    getWinPoints(): number {
+        return this.winPoints;
     };
 
-    setWinPointsPerGame(winPointsPerGame: number) {
-        this.winPointsPerGame = winPointsPerGame;
+    setWinPoints(winPoints: number) {
+        this.winPoints = winPoints;
+    };
+
+    getDrawPoints(): number {
+        return this.drawPoints;
+    };
+
+    setDrawPoints(drawPoints: number) {
+        this.drawPoints = drawPoints;
     };
 
     getWinPointsExtraTime(): number {

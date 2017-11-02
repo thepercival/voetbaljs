@@ -29,9 +29,10 @@ export class RoundConfigRepository {
         roundConfig.setId(json.id);
         roundConfig.setNrOfHeadtoheadMatches(json.nrOfHeadtoheadMatches);
         roundConfig.setQualifyRule(json.qualifyRule);
-        roundConfig.setWinPointsPerGame(json.winPointsPerGame);
-        roundConfig.setWinPointsExtraTime(json.winPointsExtraTime);
+        roundConfig.setWinPoints(json.winPoints);
+        roundConfig.setDrawPoints(json.drawPoints);
         roundConfig.setHasExtraTime(json.hasExtraTime);
+        roundConfig.setWinPointsExtraTime(json.winPointsExtraTime);
         roundConfig.setNrOfMinutesPerGame(json.nrOfMinutesPerGame);
         roundConfig.setNrOfMinutesExtraTime(json.nrOfMinutesExtraTime);
         roundConfig.setNrOfMinutesInBetween(json.nrOfMinutesInBetween);
@@ -54,9 +55,10 @@ export class RoundConfigRepository {
             "id": object.getId(),
             "nrOfHeadtoheadMatches": object.getNrOfHeadtoheadMatches(),
             "qualifyRule": object.getQualifyRule(),
-            "winPointsPerGame": object.getWinPointsPerGame(),
-            "winPointsExtraTime": object.getWinPointsExtraTime(),
+            "winPoints": object.getWinPoints(),
+            "drawPoints": object.getDrawPoints(),
             "hasExtraTime": object.getHasExtraTime(),
+            "winPointsExtraTime": object.getWinPointsExtraTime(),
             "nrOfMinutesPerGame": object.getNrOfMinutesPerGame(),
             "nrOfMinutesExtraTime": object.getNrOfMinutesExtraTime(),
             "nrOfMinutesInBetween": object.getNrOfMinutesInBetween()
