@@ -1,6 +1,6 @@
 {
   "name": "voetbaljs",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "jslib for voetbal and angular 4",
   "main": "library",
   "scripts": {
