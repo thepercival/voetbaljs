@@ -3,7 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Http, Response, RequestOptions, URLSearchParams } from '@angular/http';
+import { Response } from '@angular/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Observer } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -24,7 +25,7 @@ export class RoundRepository extends VoetbalRepository{
     private structures : Round[] = [];
 
     constructor(
-        private http: Http,
+        private http: HttpClient,
         private configRepos: RoundConfigRepository,
         private scoreConfigRepos: RoundScoreConfigRepository,
         private pouleRepos: PouleRepository,
@@ -53,17 +54,14 @@ export class RoundRepository extends VoetbalRepository{
             });
         }
 
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('competitionseasonid', competitionseason.getId() );
-        const options = new RequestOptions( {
-                headers: super.getHeaders(),
-                params: params
-            }
-        );
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+        };
 
-        return this.http.get(this.url, options )
+        return this.http.get<Array<Round>>(this.url, options )
             .map( (res) => {
-                const jsonRound = res.json().shift();
+                const jsonRound = res.shift();
                 console.log(jsonRound);
                 const round = this.jsonToObjectHelper(jsonRound, competitionseason);
                 this.structures.push( round );
@@ -125,9 +123,9 @@ export class RoundRepository extends VoetbalRepository{
     createObject( jsonObject: any, competitionseason: Competitionseason ): Observable<Round>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
+            .post(this.url, jsonObject, { headers: super.getHeaders() } )
             // ...and calling .json() on the response to return data
-            .map((res) => this.jsonToObjectHelper(res.json(), competitionseason))
+            .map((res) => this.jsonToObjectHelper(res, competitionseason))
             //...errors if any
             .catch(this.handleError);
     }
@@ -136,7 +134,7 @@ export class RoundRepository extends VoetbalRepository{
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
+            .delete(url, { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
             .map((res:Response) => {
 

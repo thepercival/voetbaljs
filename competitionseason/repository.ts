@@ -3,7 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
+import { Response } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -18,10 +19,9 @@ import { FieldRepository } from '../field/repository';
 export class CompetitionseasonRepository extends VoetbalRepository{
 
     private url : string;
-    private http: Http;
     private objects: Competitionseason[];
 
-    constructor( http: Http,
+    constructor( private http: HttpClient,
          private associationRepository: AssociationRepository,
          private competitionRepository: CompetitionRepository,
          private seasonRepository: SeasonRepository,
@@ -47,14 +47,9 @@ export class CompetitionseasonRepository extends VoetbalRepository{
             });
         }
 
-        // ERROR in /home/coen/Projecten/fctoernooiv2/frontend/node_modules/voetbaljs/competitionseason/repository.ts (49,59): Argument of type '{ headers: Headers; }' is not assignable to parameter of type 'RequestOptionsArgs'.
-        // Types of property 'headers' are incompatible.
-        // Type 'Headers' is not assignable to type 'Headers'. Two different types with this name exist, but they are unrelated.
-
-
-        return this.http.get(this.url, new RequestOptions({ headers: super.getHeaders() }) )
+        return this.http.get(this.url, { headers: super.getHeaders() } )
             .map((res) => {
-                let objects = this.jsonArrayToObject(res.json());
+                let objects = this.jsonArrayToObject(res);
                 this.objects = objects;
                 return this.objects;
             })
@@ -129,9 +124,9 @@ export class CompetitionseasonRepository extends VoetbalRepository{
     createObject( jsonObject: any ): Observable<Competitionseason>
     {
         return this.http
-            .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
+            .post(this.url, jsonObject, { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
-            .map((res) => this.jsonToObjectHelper(res.json()))
+            .map((res) => this.jsonToObjectHelper(res))
             //...errors if any
             .catch(this.handleError);
     }
@@ -143,7 +138,7 @@ export class CompetitionseasonRepository extends VoetbalRepository{
         return this.http
             .put(url, JSON.stringify( object ), { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
-            .map((res) => { console.log(res.json()); return this.jsonToObjectHelper(res.json()); })
+            .map((res) => { console.log(res); return this.jsonToObjectHelper(res); })
             //...errors if any
             .catch(this.handleError);
     }
@@ -152,7 +147,7 @@ export class CompetitionseasonRepository extends VoetbalRepository{
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
+            .delete(url, { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any

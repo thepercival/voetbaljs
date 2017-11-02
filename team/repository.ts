@@ -3,7 +3,8 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
+import { Response } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -15,13 +16,12 @@ import { VoetbalRepository } from '../repository';
 export class TeamRepository extends VoetbalRepository{
 
     private url : string;
-    private http: Http;
     private objects: Team[];
 
-    constructor( http: Http, private associationRepository: AssociationRepository )
-    {
+    constructor(
+        private http: HttpClient,
+        private associationRepository: AssociationRepository ) {
         super();
-        this.http = http;
         this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
@@ -39,9 +39,9 @@ export class TeamRepository extends VoetbalRepository{
             });
         }
 
-        return this.http.get(this.url, new RequestOptions({ headers: super.getHeaders() }) )
+        return this.http.get(this.url, { headers: super.getHeaders() } )
             .map((res) => {
-                let objects = this.jsonArrayToObject(res.json());
+                let objects = this.jsonArrayToObject(res);
                 this.objects = objects;
                 return this.objects;
             })
@@ -63,7 +63,7 @@ export class TeamRepository extends VoetbalRepository{
         let url = this.url + '/'+id;
         return this.http.get(url)
         // ...and calling .json() on the response to return data
-            .map((res) => this.jsonToObjectHelper(res.json()))
+            .map((res) => this.jsonToObjectHelper(res))
             //...errors if any
             .catch((error:any) => Observable.throw(error.message || 'Server error' ));
     }
@@ -92,9 +92,9 @@ export class TeamRepository extends VoetbalRepository{
     {
         try {
             return this.http
-                .post(this.url, jsonObject, new RequestOptions({ headers: super.getHeaders() }))
+                .post(this.url, jsonObject, { headers: super.getHeaders() } )
                 // ...and calling .json() on the response to return data
-                .map((res) => this.jsonToObjectHelper(res.json()))
+                .map((res) => this.jsonToObjectHelper(res))
                 //...errors if any
                 .catch(this.handleError);
         }
@@ -112,7 +112,7 @@ export class TeamRepository extends VoetbalRepository{
             return this.http
                 .put(url, this.objectToJsonHelper( object ), { headers: super.getHeaders() })
                 // ...and calling .json() on the response to return data
-                .map((res) => { console.log(res.json()); return this.jsonToObjectHelper(res.json()); })
+                .map((res) => { console.log(res); return this.jsonToObjectHelper(res); })
                 //...errors if any
                 .catch(this.handleError);
         }
@@ -126,7 +126,7 @@ export class TeamRepository extends VoetbalRepository{
     {
         let url = this.url + '/'+object.getId();
         return this.http
-            .delete(url, new RequestOptions({ headers: super.getHeaders() }))
+            .delete(url, { headers: super.getHeaders() } )
             // ...and calling .json() on the response to return data
             .map((res:Response) => res)
             //...errors if any

@@ -2,7 +2,7 @@
  * Created by coen on 10-10-17.
  */
 
-import { Headers } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
 import { VoetbalConfig } from './config';
 
 export class VoetbalRepository {
@@ -14,9 +14,9 @@ export class VoetbalRepository {
     getApiUrl(): string {
         return VoetbalConfig.apiurl;
     }
-    getHeaders(): Headers
+    getHeaders(): HttpHeaders
     {
-        let headers = new Headers({'Content-Type': 'application/json; charset=utf-8'});
+        let headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
         const token = VoetbalConfig.getToken();
         if ( token != null ) {
             headers.append( 'Authorization', 'Bearer ' + token );
