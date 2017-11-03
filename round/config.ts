@@ -7,11 +7,13 @@ export class RoundConfig {
     protected qualifyRule: number;
     protected winPoints: number;
     protected drawPoints: number;
-    protected nrOfMinutesPerGame: number;
-    protected hasExtraTime: boolean;
-    protected winPointsExtraTime: number;
-    protected nrOfMinutesExtraTime: number;
-    protected nrOfMinutesInBetween: number;
+    protected hasExtension: boolean;
+    protected winPointsExt: number;
+    protected drawPointsExt: number;
+    protected minutesPerGameExt: number;
+    protected enableTime: boolean;
+    protected minutesPerGame: number;
+    protected minutesInBetween: number;
 
     // constructor
     constructor(round: Round ) {
@@ -69,53 +71,69 @@ export class RoundConfig {
         this.drawPoints = drawPoints;
     };
 
-    getWinPointsExtraTime(): number {
-        return this.winPointsExtraTime;
+    getHasExtension(): boolean {
+        return this.hasExtension;
     };
 
-    setWinPointsExtraTime(winPointsExtraTime: number) {
-        this.winPointsExtraTime = winPointsExtraTime;
+    setHasExtension(hasExtension: boolean) {
+        this.hasExtension = hasExtension;
     };
 
-    getHasExtraTime(): boolean {
-        return this.hasExtraTime;
+    getWinPointsExt(): number {
+        return this.winPointsExt;
     };
 
-    setHasExtraTime(hasExtraTime: boolean) {
-        this.hasExtraTime = hasExtraTime;
+    setWinPointsExt(winPointsExt: number) {
+        this.winPointsExt = winPointsExt;
     };
 
-    getNrOfMinutesPerGame(): number {
-        return this.nrOfMinutesPerGame;
+    getDrawPointsExt(): number {
+        return this.drawPointsExt;
     };
 
-    setNrOfMinutesPerGame(nrOfMinutesPerGame: number) {
-        this.nrOfMinutesPerGame = nrOfMinutesPerGame;
+    setDrawPointsExt(drawPointsExt: number) {
+        this.drawPointsExt = drawPointsExt;
     };
 
-    getNrOfMinutesExtraTime(): number {
-        return this.nrOfMinutesExtraTime;
+    getMinutesPerGameExt(): number {
+        return this.minutesPerGameExt;
     };
 
-    setNrOfMinutesExtraTime(nrOfMinutesExtraTime: number) {
-        this.nrOfMinutesExtraTime = nrOfMinutesExtraTime;
+    setMinutesPerGameExt(minutesPerGameExt: number) {
+        this.minutesPerGameExt = minutesPerGameExt;
     };
 
-    getNrOfMinutesInBetween(): number {
-        return this.nrOfMinutesInBetween;
+    getEnableTime(): boolean {
+        return this.enableTime;
     };
 
-    setNrOfMinutesInBetween(nrOfMinutesInBetween: number) {
-        this.nrOfMinutesInBetween = nrOfMinutesInBetween;
+    setEnableTime(enableTime: boolean) {
+        this.enableTime = enableTime;
+    };
+    
+    getMinutesPerGame(): number {
+        return this.minutesPerGame;
+    };
+
+    setMinutesPerGame(minutesPerGame: number) {
+        this.minutesPerGame = minutesPerGame;
+    };
+
+    getMinutesInBetween(): number {
+        return this.minutesInBetween;
+    };
+
+    setMinutesInBetween(minutesInBetween: number) {
+        this.minutesInBetween = minutesInBetween;
     };
 
     getMaximalNrOfMinutesPerGame( withMinutesInBetween: boolean = false ): number {
-        let nrOfMinutes = this.getNrOfMinutesPerGame();
-        if ( this.getHasExtraTime()) {
-            nrOfMinutes += this.getNrOfMinutesExtraTime();
+        let nrOfMinutes = this.getMinutesPerGame();
+        if ( this.getHasExtension()) {
+            nrOfMinutes += this.getMinutesPerGameExt();
         }
         if( withMinutesInBetween === true ) {
-            nrOfMinutes += this.getNrOfMinutesInBetween();
+            nrOfMinutes += this.getMinutesInBetween();
         }
         return nrOfMinutes;
     }

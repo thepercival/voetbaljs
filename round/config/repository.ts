@@ -31,11 +31,13 @@ export class RoundConfigRepository {
         roundConfig.setQualifyRule(json.qualifyRule);
         roundConfig.setWinPoints(json.winPoints);
         roundConfig.setDrawPoints(json.drawPoints);
-        roundConfig.setHasExtraTime(json.hasExtraTime);
-        roundConfig.setWinPointsExtraTime(json.winPointsExtraTime);
-        roundConfig.setNrOfMinutesPerGame(json.nrOfMinutesPerGame);
-        roundConfig.setNrOfMinutesExtraTime(json.nrOfMinutesExtraTime);
-        roundConfig.setNrOfMinutesInBetween(json.nrOfMinutesInBetween);
+        roundConfig.setHasExtension(json.hasExtension);
+        roundConfig.setWinPointsExt(json.winPointsExt);
+        roundConfig.setDrawPointsExt(json.drawPointsExt);
+        roundConfig.setMinutesPerGameExt(json.minutesPerGameExt);
+        roundConfig.setEnableTime(json.enableTime);
+        roundConfig.setMinutesPerGame(json.minutesPerGame);
+        roundConfig.setMinutesInBetween(json.minutesInBetween);
         return roundConfig;
     }
 
@@ -57,11 +59,13 @@ export class RoundConfigRepository {
             "qualifyRule": object.getQualifyRule(),
             "winPoints": object.getWinPoints(),
             "drawPoints": object.getDrawPoints(),
-            "hasExtraTime": object.getHasExtraTime(),
-            "winPointsExtraTime": object.getWinPointsExtraTime(),
-            "nrOfMinutesPerGame": object.getNrOfMinutesPerGame(),
-            "nrOfMinutesExtraTime": object.getNrOfMinutesExtraTime(),
-            "nrOfMinutesInBetween": object.getNrOfMinutesInBetween()
+            "hasExtension": object.getHasExtension(),
+            "winPointsExt": object.getWinPointsExt(),
+            "drawPointsExt": object.getDrawPointsExt(),
+            "minutesPerGameExt": object.getMinutesPerGameExt(),
+            "enableTime": object.getEnableTime(),
+            "minutesPerGame": object.getMinutesPerGame(),
+            "mMinutesInBetween": object.getMinutesInBetween()
         };
         return json;
     }

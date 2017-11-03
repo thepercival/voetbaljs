@@ -122,6 +122,19 @@ export class Round {
         this.scoreConfig = scoreConfig;
     }
 
+    getScoreConfigs(): RoundScoreConfig[]
+    {
+        let scoreConfigs: RoundScoreConfig[] = [];
+
+        let scoreConfig = this.getScoreConfig();
+        console.log(scoreConfig);
+        while ( scoreConfig != null ) {
+            scoreConfigs.push( scoreConfig );
+            scoreConfig = scoreConfig.getParent();
+        }
+        return scoreConfigs;
+    }
+
     getPoules(): Poule[] {
         return this.poules;
     }
