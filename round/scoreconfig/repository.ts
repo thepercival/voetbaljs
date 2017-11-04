@@ -13,13 +13,17 @@ export class RoundScoreConfigRepository {
 
     }
 
-    jsonToObjectHelper( json : any, round: Round, parent: RoundScoreConfig ): RoundScoreConfig
+    jsonToObjectHelper( json : any, round: Round ): RoundScoreConfig
     {
+        let parent = null;
+        if ( json.parent != null ) {
+            parent = this.jsonToObjectHelper( json.parent, round );
+        }
         let roundScoreConfig = new RoundScoreConfig( round, parent );
         roundScoreConfig.setId(json.id);
         roundScoreConfig.setName(json.name);
-        roundScoreConfig.setStart(json.start);
-        roundScoreConfig.setGoal(json.goal);
+        roundScoreConfig.setDirection(json.direction);
+        roundScoreConfig.setMaximum(json.maximum);
         return roundScoreConfig;
     }
 
@@ -38,8 +42,8 @@ export class RoundScoreConfigRepository {
         let json = {
             "id": object.getId(),
             "name": object.getName(),
-            "start": object.getStart(),
-            "goal": object.getGoal(),
+            "direction": object.getDirection(),
+            "maximum": object.getMaximum(),
             "parent": object.getParent() != null ? this.objectToJsonHelper( object.getParent() ) : null
         };
         return json;

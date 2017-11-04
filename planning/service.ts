@@ -28,7 +28,7 @@ export class PlanningService
     }
 
     reschedule( round: Round, startDateTime: Date = null ) {
-        if( startDateTime == null && round.getConfig().getMinutesPerGame() > 0 ) {
+        if( startDateTime == null && round.getConfig().getEnableTime() ) {
             startDateTime = this.calculateStartDateTime( round );
         }
         try{
@@ -40,7 +40,7 @@ export class PlanningService
     }
 
     protected calculateStartDateTime( round: Round ) {
-        if ( round.getConfig().getMinutesPerGame() === 0) {
+        if ( round.getConfig().getEnableTime() === false ) {
             return null;
         }
         const parentRound = round.getParentRound();
@@ -52,7 +52,7 @@ export class PlanningService
     }
 
     protected calculateEndDateTime( round: Round ) {
-        if ( round.getConfig().getMinutesPerGame() === 0) {
+        if ( round.getConfig().getEnableTime() === false) {
             return null;
         }
 
@@ -147,7 +147,7 @@ export class PlanningService
                     nrOfGamesSimultaneously = 0;
                 }
 
-                if (roundConfig.getMinutesPerGame() > 0 && addTime) {
+                if (roundConfig.getEnableTime() && addTime) {
                     const nrOfMinutes = roundConfig.getMaximalNrOfMinutesPerGame(true);
                     dateTime = new Date(dateTime.getTime());
                     dateTime.setMinutes(dateTime.getMinutes() + nrOfMinutes);

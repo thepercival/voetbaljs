@@ -5,9 +5,12 @@ export class RoundScoreConfig {
     protected round: Round;
     protected parent: RoundScoreConfig;
     protected name: string;
-    protected start: number;
-    protected goal: number;
+    protected direction: number;
+    protected maximum: number;
     protected child: RoundScoreConfig;
+
+    static readonly UPWARDS = 1;
+    static readonly DOWNWARDS = 2;
 
     // constructor
     constructor(round: Round, parent: RoundScoreConfig ) {
@@ -31,20 +34,20 @@ export class RoundScoreConfig {
         this.name = name;
     };
 
-    getStart(): number {
-        return this.start;
+    getDirection(): number {
+        return this.direction;
     };
 
-    setStart(start: number) {
-        this.start = start;
+    setDirection(direction: number) {
+        this.direction = direction;
     };
 
-    getGoal(): number {
-        return this.goal;
+    getMaximum(): number {
+        return this.maximum;
     };
 
-    setGoal(goal: number) {
-        this.goal = goal;
+    setMaximum(maximum: number) {
+        this.maximum = maximum;
     };
 
     getRound(): Round {
@@ -82,6 +85,8 @@ export class RoundScoreConfig {
         this.child = child;
     };
 
-
+    static getDirectionDescription( direction: number ) {
+        return direction === RoundScoreConfig.UPWARDS ? 'naar' : 'vanaf';
+    }
 }
 

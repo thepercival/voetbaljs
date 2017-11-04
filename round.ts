@@ -127,7 +127,6 @@ export class Round {
         let scoreConfigs: RoundScoreConfig[] = [];
 
         let scoreConfig = this.getScoreConfig();
-        console.log(scoreConfig);
         while ( scoreConfig != null ) {
             scoreConfigs.push( scoreConfig );
             scoreConfig = scoreConfig.getParent();

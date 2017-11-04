@@ -86,8 +86,7 @@ export class RoundRepository extends VoetbalRepository{
         round.setId(json.id);
         round.setName(json.name);
         this.configRepos.jsonToObjectHelper( json.config, round );
-        // @TODO hier wordt de parent niet goed gezet
-        round.setScoreConfig( this.scoreConfigRepos.jsonToObjectHelper( json.scoreConfig, round, json.parent ) );
+        round.setScoreConfig( this.scoreConfigRepos.jsonToObjectHelper( json.scoreConfig, round ) );
         this.pouleRepos.jsonArrayToObject( json.poules, round );
         this.jsonArrayToObject( json.childRounds, competitionseason, round );
         if ( parentRound != null ) {
