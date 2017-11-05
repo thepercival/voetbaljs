@@ -5,6 +5,7 @@
 import { Injectable } from '@angular/core';
 import { RoundConfig } from '../config';
 import { Round } from '../../round';
+import {QualifyRule} from "../../qualifyrule";
 
 @Injectable()
 export class RoundConfigRepository {
@@ -68,5 +69,57 @@ export class RoundConfigRepository {
             "mMinutesInBetween": object.getMinutesInBetween()
         };
         return json;
+    }
+
+//     public static function getDefaultRoundConfig( Round $round ) {
+//     $sportName = $round->getCompetitionseason()->getSport();
+//     $roundConfig = new Round\Config( $round );
+//     if ( $sportName === 'voetbal' ) {
+//     $roundConfig->setEnableTime( true );
+//     $roundConfig->setMinutesPerGame( 20 );
+//     $roundConfig->setHasExtension( !$round->needsRanking() );
+//     $roundConfig->setMinutesPerGameExt( 5 );
+//     $roundConfig->setMinutesInBetween( 5 );
+// }
+// return $roundConfig;
+// }
+
+    createObjectFromParent( round: Round ): RoundConfig {
+        let roundConfig = new RoundConfig( round );
+        if( round.getParentRound() != null ) {
+            const parentConfig = round.getParentRound().getConfig();
+            roundConfig.setQualifyRule( parentConfig.getQualifyRule() );
+            roundConfig.setNrOfHeadtoheadMatches( parentConfig.getNrOfHeadtoheadMatches() );
+            roundConfig.setWinPoints( parentConfig.getWinPoints() );
+            roundConfig.setDrawPoints( parentConfig.getDrawPoints() );
+            roundConfig.setHasExtension( parentConfig.getHasExtension() );
+            roundConfig.setWinPointsExt( parentConfig.getWinPointsExt() );
+            roundConfig.setDrawPointsExt( parentConfig.getDrawPointsExt() );
+            roundConfig.setMinutesPerGameExt( parentConfig.getMinutesPerGameExt() );
+            roundConfig.setEnableTime( parentConfig.getEnableTime() );
+            roundConfig.setMinutesPerGame( parentConfig.getMinutesPerGame() );
+            roundConfig.setMinutesInBetween( parentConfig.getMinutesInBetween(() );
+            return roundConfig;
+        }
+
+        roundConfig.setQualifyRule( QualifyRule.SOCCERWORLDCUP );
+        roundConfig.setNrOfHeadtoheadMatches( RoundConfig.DEFAULTNROFHEADTOHEADMATCHES );
+        roundConfig.setWinPoints( RoundConfig.DEFAULTWINPOINTS );
+        roundConfig.setDrawPoints( RoundConfig.DEFAULTDRAWPOINTS );
+        roundConfig.setHasExtension( RoundConfig.DEFAULTHASEXTENSION );
+        roundConfig.setWinPointsExt( roundConfig.getWinPoints() - 1 );
+        roundConfig.setDrawPointsExt( roundConfig.getDrawPoints() );
+        roundConfig.setMinutesPerGameExt( 0 );
+        roundConfig.setEnableTime( RoundConfig.DEFAULTENABLETIME );
+        roundConfig.setMinutesPerGame( 0 );
+        roundConfig.setMinutesInBetween( 0 );
+        if( round.getCompetitionseason().getSport() === 'voetbal' ) {
+            roundConfig.setHasExtension( !round.needsRanking() );
+            roundConfig.setMinutesPerGameExt( 5 );
+            roundConfig.setEnableTime( true );
+            roundConfig.setMinutesPerGame( 20 );
+            roundConfig.setMinutesInBetween( 5 );
+        }
+        return roundConfig;
     }
 }

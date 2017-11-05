@@ -2,13 +2,13 @@
  * Created by coen on 22-3-17.
  */
 
-import { Injectable } from '@angular/core';
 import { Competitionseason } from '../competitionseason';
 import { Round } from '../round';
 import { Poule } from '../poule';
 import { PoulePlace } from '../pouleplace';
-import { Game } from '../game';
+import { RoundConfigRepository } from '../round/config/repository';
 import { QualifyService } from '../qualifyrule/service';
+import { RoundScoreConfigRepository } from '../round/scoreconfig/repository';
 
 export class StructureService {
 
@@ -17,6 +17,8 @@ export class StructureService {
     constructor(
         private competitionseason: Competitionseason,
         private round : Round,
+        private configRepos: RoundConfigRepository,
+        private scoreConfigRepos: RoundScoreConfigRepository,
         rangeNrOfCompetitors
     )
     {
@@ -207,13 +209,15 @@ export class StructureService {
         // return pouleName + ' ' + ( String.fromCharCode( "A".charCodeAt(0) + previousNrOfPoules + ( poule.getNumber() - 1 ) ) );
     }
 
-
-
     addRound( parentRound: Round, winnersOrLosers: number ): Round {
         let round = new Round( this.competitionseason, parentRound, winnersOrLosers );
-        // @TODO ADD CONFIG!!  round.setNrofheadtoheadmatches(1)
+
         const poule = new Poule( round );
         const poulePlace = new PoulePlace( poule );
+
+        this.configRepos.createObjectFromParent( round );
+        round.setScoreConfig( this.scoreConfigRepos.createObjectFromParent( round ) );
+
         return round;
     }
 

@@ -13,6 +13,9 @@ export class QualifyRule {
     protected fromPoulePlaces: PoulePlace[] = [];
     protected toPoulePlaces: PoulePlace[] = [];
 
+    static readonly SOCCERWORLDCUP = 1;
+    static readonly SOCCEREUROPEANCUP = 2;
+
     // constructor
     constructor(fromRound: Round, toRound: Round ) {
         this.setFromRound(fromRound);

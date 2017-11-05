@@ -13,6 +13,7 @@ export class Competitionseason {
     protected association: Association;
     protected competition: Competition;
     protected season: Season;
+    protected sport: string;
     protected startDateTime: Date;
     protected state: number;
     protected fields: Field[] = [];
@@ -79,6 +80,14 @@ export class Competitionseason {
 
     setState( state: number): void {
         this.state = state;
+    };
+
+    getSport(): string {
+        return this.sport;
+    };
+
+    setSport( sport: string): void {
+        this.sport = sport;
     };
 
     getStateDescription(): string {

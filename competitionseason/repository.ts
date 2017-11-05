@@ -103,6 +103,7 @@ export class CompetitionseasonRepository extends VoetbalRepository{
         let competitionseason = new Competitionseason(association, competition, season);
         competitionseason.setId(json.id);
         competitionseason.setState(json.state);
+        competitionseason.setSport(json.sport);
         competitionseason.setStartDateTime( new Date( json.startDateTime ) );
         this.fieldRepository.jsonArrayToObject( json.fields, competitionseason );
         return competitionseason;
@@ -115,6 +116,7 @@ export class CompetitionseasonRepository extends VoetbalRepository{
             "association":this.associationRepository.objectToJsonHelper(object.getAssociation()),
             "competition":this.competitionRepository.objectToJsonHelper(object.getCompetition()),
             "season":this.seasonRepository.objectToJsonHelper(object.getSeason()),
+            "sport":object.getSport(),
             "startDateTime":object.getStartDateTime().toISOString(),
             "state":object.getState()
         };

@@ -15,6 +15,12 @@ export class RoundConfig {
     protected minutesPerGame: number;
     protected minutesInBetween: number;
 
+    static readonly DEFAULTNROFHEADTOHEADMATCHES = 1;
+    static readonly DEFAULTWINPOINTS = 3;
+    static readonly DEFAULTDRAWPOINTS = 1;
+    static readonly DEFAULTHASEXTENSION = false;
+    static readonly DEFAULTENABLETIME = false;
+
     // constructor
     constructor(round: Round ) {
         this.setRound(round);
