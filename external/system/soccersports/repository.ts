@@ -71,7 +71,7 @@ export class ExternalSystemSoccerSportsRepository{
     {
         let headers = new Headers(this.headers);
         if ( this.getToken() != null ) {
-            headers.append( 'X-Mashape-Key', this.getToken() );
+            headers = headers.append( 'X-Mashape-Key', this.getToken() );
         }
         return headers;
     }

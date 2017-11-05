@@ -279,6 +279,13 @@ export class Round {
         return winnersOrLosers === Round.WINNERS ? Round.LOSERS : Round.WINNERS;
     }
 
+    getOpposing() {
+        if( this.getParentRound() == null ) {
+            return null;
+        }
+        return this.getParentRound().getChildRound( Round.getOpposing( this.getWinnersOrLosers() ) );
+    }
+
     // getActiveQualifyRuleMul() {
     //     return ( ( this.getToQualifyRules() % this.getPoules().length ) === 0 );
     // }

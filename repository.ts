@@ -19,7 +19,7 @@ export class VoetbalRepository {
         let headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
         const token = VoetbalConfig.getToken();
         if ( token != null ) {
-            headers.append( 'Authorization', 'Bearer ' + token );
+            headers = headers.append( 'Authorization', 'Bearer ' + token );
         }
         return headers;
     }

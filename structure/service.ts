@@ -121,19 +121,68 @@ export class StructureService {
 
     getPouleName( poule: Poule, withPrefix: boolean ) {
         const round = poule.getRound();
-        let previousNrOfPoules = this.getNrOfPreviousPoules( round, poule );
+        let previousNrOfPoules = this.getNrOfPreviousPoules( round.getNumber(), round, poule );
         let pouleName = '';
         if ( withPrefix == true )
-            pouleName = round.getType() == Round.TYPE_KNOCKOUT ? 'wed.' : 'poule';
-        return pouleName + ' ' + ( String.fromCharCode( "A".charCodeAt(0) + previousNrOfPoules ) );
+            pouleName = round.getType() == Round.TYPE_KNOCKOUT ? 'wed. ' : 'poule ';
+
+        const secondLetter = previousNrOfPoules % 26;
+        if ( previousNrOfPoules >= 26 ) {
+            const firstLetter = ( previousNrOfPoules - secondLetter ) / 26;
+            pouleName += ( String.fromCharCode( "A".charCodeAt(0) + ( firstLetter - 1 ) ) );
+        }
+        pouleName += ( String.fromCharCode( "A".charCodeAt(0) + secondLetter ) );
+        return pouleName;
     }
 
-    private getNrOfPreviousPoules( round: Round, poule: Poule = null ) {
-        let nrOfPreviousPoules = poule != null ? ( poule.getNumber() - 1 ) : round.getPoules().length;
-        if( round.getParentRound() != null ) {
-            nrOfPreviousPoules += this.getNrOfPreviousPoules( round.getParentRound() );
+    private getNrOfPreviousPoules( roundNumber:number, round: Round, poule ): number {
+        let nrOfPoules = poule.getNumber() - 1;
+        nrOfPoules += this.getNrOfPoulesParentRounds( roundNumber );
+        nrOfPoules += this.getNrOfPoulesSiblingRounds( roundNumber, round );
+        return nrOfPoules;
+    }
+
+    private getNrOfPoulesParentRounds( roundNumber:number, round: Round = this.getFirstRound() ): number {
+        if ( round.getNumber() >= roundNumber ) {
+            return 0;
         }
-        return nrOfPreviousPoules;
+        let nrOfPoules = round.getPoules().length;
+        round.getChildRounds().forEach( ( childRound ) => {
+            nrOfPoules += this.getNrOfPoulesParentRounds( roundNumber, childRound );
+        });
+        return nrOfPoules;
+    }
+
+    private getNrOfPoulesSiblingRounds( roundNumber:number, round: Round ): number {
+        let nrOfPoules = 0;
+
+        let parentRound = round.getParentRound();
+        if( parentRound !== null ) {
+            nrOfPoules += this.getNrOfPoulesSiblingRounds( roundNumber, parentRound/* round */ );
+        }
+
+        if( round.getWinnersOrLosers() === Round.LOSERS ) {
+            const winningSibling = round.getOpposing();
+            if (winningSibling != null ) {
+                nrOfPoules += this.getNrOfPoulesForChildRounds( winningSibling, roundNumber );
+            }
+        }
+        return nrOfPoules;
+    }
+
+    private getNrOfPoulesForChildRounds( round: Round, roundNumber:number ): number {
+        let nrOfChildPoules = 0;
+        if ( round.getNumber() > roundNumber ) {
+            return nrOfChildPoules;
+        }
+        else if ( round.getNumber() === roundNumber ) {
+            return round.getPoules().length;
+        }
+
+        round.getChildRounds().forEach( ( childRound ) => {
+            nrOfChildPoules += this.getNrOfPoulesForChildRounds( childRound, roundNumber );
+        });
+        return nrOfChildPoules;
     }
 
     getPoulePlaceName( pouleplace: PoulePlace, teamName = false ) {
@@ -362,6 +411,21 @@ export class StructureService {
         else if ( nrOfPlacesLeftForOpposing === nrOfChildPlacesOpposing ) {
             qualifyService.oneMultipleToSingle();
         }
+    }
+
+    /**
+     * determine number of pouleplaces on left side
+     * @param round
+     */
+    getRankedPlace( round: Round, rankedPlace:number = 1 ) {
+        const parentRound = round.getParentRound();
+        if ( parentRound === null ) {
+            return rankedPlace;
+        }
+        if ( round.getWinnersOrLosers() === Round.LOSERS ) {
+            rankedPlace += parentRound.getPoulePlaces().length - round.getPoulePlaces().length;
+        }
+        return this.getRankedPlace( parentRound, rankedPlace );
     }
 
     // addQualifier( fromRound: Round, winnersOrLosers: number ) {
