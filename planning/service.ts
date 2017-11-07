@@ -110,7 +110,6 @@ export class PlanningService
         const tooMuchFieldsAvailable = fields.length > maxNrOfGamesSimultaneously;
 
         const referees = round.getCompetitionseason().getReferees();
-        console.log('referees',referees);
 
         let nrOfGamesSimultaneously = 0;
         let fieldNr = 0;
@@ -119,7 +118,6 @@ export class PlanningService
         let currentReferee = referees[refereeNr];
         let nextRoundStartDateTime: Date = null;
         const games = this.getGamesByNumber( round );
-        console.log("gamesbynumber",games);
         games.forEach(function (gamesPerRoundNumber) {
             gamesPerRoundNumber.forEach((game) => {
 

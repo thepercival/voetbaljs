@@ -2,12 +2,10 @@
  * Created by coen on 3-3-17.
  */
 
-import { Injectable } from '@angular/core';
 import { RoundConfig } from '../config';
 import { Round } from '../../round';
 import {QualifyRule} from "../../qualifyrule";
 
-@Injectable()
 export class RoundConfigRepository {
 
     constructor() {
@@ -98,7 +96,7 @@ export class RoundConfigRepository {
             roundConfig.setMinutesPerGameExt( parentConfig.getMinutesPerGameExt() );
             roundConfig.setEnableTime( parentConfig.getEnableTime() );
             roundConfig.setMinutesPerGame( parentConfig.getMinutesPerGame() );
-            roundConfig.setMinutesInBetween( parentConfig.getMinutesInBetween(() );
+            roundConfig.setMinutesInBetween( parentConfig.getMinutesInBetween() );
             return roundConfig;
         }
 

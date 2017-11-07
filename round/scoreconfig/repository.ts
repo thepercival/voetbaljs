@@ -2,11 +2,9 @@
  * Created by coen on 3-3-17.
  */
 
-import { Injectable } from '@angular/core';
 import { RoundScoreConfig } from '../scoreconfig';
 import { Round } from '../../round';
 
-@Injectable()
 export class RoundScoreConfigRepository {
 
     constructor() {
@@ -49,48 +47,73 @@ export class RoundScoreConfigRepository {
         return json;
     }
 
-    createObjectFromParent( round: Round ) {
+    createObjectFromParent( round: Round ): RoundScoreConfig {
 
-
-
+        let json = null;
         if( round.getParentRound() != null ) {
-
+            json = {
+                id: null,
+                name: 'punten',
+                direction: RoundScoreConfig.UPWARDS,
+                maximum: 0,
+                parent: null
+            }
+        }
+        else if( round.getCompetitionseason().getSport() === 'darten' ) {
+            json = {
+                id: null,
+                name: 'punten',
+                direction: RoundScoreConfig.DOWNWARDS,
+                maximum: 501,
+                parent: {
+                    id: null,
+                    name: 'legs',
+                    direction: RoundScoreConfig.UPWARDS,
+                    maximum: 2,
+                    parent: {
+                        id: null,
+                        name: 'sets',
+                        direction: RoundScoreConfig.UPWARDS,
+                        maximum: 0,
+                        parent: null
+                    }
+                }
+            }
+        }
+        else if( round.getCompetitionseason().getSport() === 'tafeltennis' ) {
+            json = {
+                id: null,
+                name: 'punten',
+                direction: RoundScoreConfig.UPWARDS,
+                maximum: 21,
+                parent: {
+                    id: null,
+                    name: 'sets',
+                    direction: RoundScoreConfig.UPWARDS,
+                    maximum: 0,
+                    parent: null
+                }
+            }
+        }
+        else if( round.getCompetitionseason().getSport() === 'voetbal' ) {
+            json = {
+                id: null,
+                name: 'goals',
+                direction: RoundScoreConfig.UPWARDS,
+                maximum: 0,
+                parent: null
+            }
+        }
+        else {
+            json = {
+                id: null,
+                name: 'punten',
+                direction: RoundScoreConfig.UPWARDS,
+                maximum: 0,
+                parent: null
+            };
         }
 
-        if( round.getCompetitionseason().getSport() === 'darten' ) {
-
-                return new Round\ScoreConfig( $round, 'punten', Round\ScoreConfig::DOWNWARDS, 501,
-                new Round\ScoreConfig( $round, 'legs', Round\ScoreConfig::UPWARDS, 2,
-                new Round\ScoreConfig( $round, 'sets', Round\ScoreConfig::UPWARDS, 0)
-            )
-
-        }
-
-        let scoreConfig = new RoundScoreConfig( round );
-        scoreConfig.setName( 'punten' );
-        scoreConfig.setDirection( RoundScoreConfig.UPWARDS );
-        scoreConfig.setMaximum( 0 );
-        return scoreConfig;
+        return this.jsonToObjectHelper( json, round )
     }
-
-    // public static function getDefaultRoundScoreConfig( Round $round )
-    // {
-    //     $sportName = $round->getCompetitionseason()->getSport();
-    //     if ( $sportName === 'darten' ) {
-    //     return new Round\ScoreConfig( $round, 'punten', Round\ScoreConfig::DOWNWARDS, 501,
-    //     new Round\ScoreConfig( $round, 'legs', Round\ScoreConfig::UPWARDS, 2,
-    //     new Round\ScoreConfig( $round, 'sets', Round\ScoreConfig::UPWARDS, 0)
-    // )
-    // );
-    // }
-    // else if ( $sportName === 'tafeltennis' ) {
-    //     return new Round\ScoreConfig( $round, 'punten', Round\ScoreConfig::UPWARDS, 21,
-    //         new Round\ScoreConfig( $round, 'sets', Round\ScoreConfig::UPWARDS, 0)
-    // );
-    // }
-    // else if ( $sportName === 'voetbal' ) {
-    //     return new Round\ScoreConfig( $round, 'goals', Round\ScoreConfig::UPWARDS, 0 );
-    // }
-    // return new Round\ScoreConfig( $round, "punten", Round\ScoreConfig::UPWARDS, 0 );
-    // }
 }
