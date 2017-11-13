@@ -270,6 +270,14 @@ export class Round {
         return this.toQualifyRules;
     }
 
+    getNrOfPlacesChildRounds(): number {
+        let nrOfPlacesChildRounds = 0;
+        this.getChildRounds().forEach(function (childRound) {
+            nrOfPlacesChildRounds += this.getNrOfPlacesChildRound( childRound.getWinnersOrLosers() );
+        }, this );
+        return nrOfPlacesChildRounds;
+    }
+
     getNrOfPlacesChildRound( winnersOrLosers: number ): number {
         const childRound = this.getChildRound( winnersOrLosers );
         return childRound != null ? childRound.getPoulePlaces().length : 0;
