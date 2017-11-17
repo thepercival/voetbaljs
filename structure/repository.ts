@@ -59,9 +59,18 @@ export class StructureRepository extends VoetbalRepository {
     }
 
     createObject(round: Round, competitionseason: Competitionseason): Observable<Round> {
+
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+        };
+
+        console.log('posted', this.roundRepos.objectToJsonHelper(round));
+
         return this.http
-            .post(this.url, this.roundRepos.objectToJsonHelper(round), { headers: super.getHeaders() })
+            .post(this.url, this.roundRepos.objectToJsonHelper(round), options)
             .map((res) => {
+                console.log(res);
                 const structure = this.roundRepos.jsonToObjectHelper(res, competitionseason);
                 this.structures.push(structure);
                 return structure;

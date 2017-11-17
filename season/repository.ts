@@ -36,7 +36,7 @@ export class SeasonRepository extends VoetbalRepository {
 
         return this.http.get(this.url, { headers: super.getHeaders() })
             .map((res) => {
-                let objects = this.jsonArrayToObject(res);
+                const objects = this.jsonArrayToObject(res);
                 this.objects = objects;
                 return this.objects;
             })
@@ -44,34 +44,33 @@ export class SeasonRepository extends VoetbalRepository {
     }
 
     jsonArrayToObject(jsonArray: any): Season[] {
-        let seasons: Season[] = [];
-        for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json);
+        const seasons: Season[] = [];
+        for (const json of jsonArray) {
+            const object = this.jsonToObjectHelper(json);
             seasons.push(object);
         }
         return seasons;
     }
 
     getObject(id: number): Observable<Season> {
-        let url = this.url + '/' + id;
+        const url = this.url + '/' + id;
         return this.http.get(url)
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res))
-            //...errors if any
             .catch((error: any) => Observable.throw(error.message || 'Server error'));
     }
 
     jsonToObjectHelper(json: any): Season {
         if (this.objects != null) {
-            let foundObjects = this.objects.filter(
-                objectIt => objectIt.getId() == json.id
+            const foundObjects = this.objects.filter(
+                objectIt => objectIt.getId() === json.id
             );
-            if (foundObjects.length == 1) {
+            if (foundObjects.length === 1) {
                 return foundObjects.shift();
             }
         }
 
-        let season = new Season(json.name);
+        const season = new Season(json.name);
         season.setId(json.id);
         // season.setStartdate(new Date(json.startdate.timestamp*1000));
         season.setStartdate(new Date(json.startdate));
@@ -84,36 +83,33 @@ export class SeasonRepository extends VoetbalRepository {
             .post(this.url, jsonObject, { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res))
-            //...errors if any
             .catch(this.handleError);
     }
 
     editObject(object: Season): Observable<Season> {
-        let url = this.url + '/' + object.getId();
+        const url = this.url + '/' + object.getId();
         return this.http
             .put(url, JSON.stringify(this.objectToJsonHelper(object)), { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
-            .map((res) => { return this.jsonToObjectHelper(res); })
-            //...errors if any
+            .map(res => this.jsonToObjectHelper(res))
             .catch(this.handleError);
     }
 
     removeObject(object: Season): Observable<void> {
-        let url = this.url + '/' + object.getId();
+        const url = this.url + '/' + object.getId();
         return this.http
             .delete(url, { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
             .map((res: Response) => res)
-            //...errors if any
             .catch(this.handleError);
     }
 
     objectToJsonHelper(object: Season): any {
-        let json = {
-            "id": object.getId(),
-            "name": object.getName(),
-            "startdate": object.getStartdate().toISOString(),
-            "enddate": object.getEnddate().toISOString()
+        const json = {
+            'id': object.getId(),
+            'name': object.getName(),
+            'startdate': object.getStartdate().toISOString(),
+            'enddate': object.getEnddate().toISOString()
         };
         return json;
     }

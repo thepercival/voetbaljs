@@ -11,37 +11,39 @@ import { Round } from '../round';
 @Injectable()
 export class PouleRepository {
 
-    constructor( private pouleplaceRepos: PoulePlaceRepository, private gameRepos: GameRepository ) {
+    constructor(private pouleplaceRepos: PoulePlaceRepository, private gameRepos: GameRepository) {
 
     }
 
-    jsonArrayToObject( jsonArray: any, round: Round ): Poule[] {
+    jsonArrayToObject(jsonArray: any, round: Round): Poule[] {
         const objects: Poule[] = [];
         for (const json of jsonArray) {
             const object = this.jsonToObjectHelper(json, round);
-            objects.push( object );
+            objects.push(object);
         }
         return objects;
     }
 
-    jsonToObjectHelper( json: any, round: Round ): Poule {
+    jsonToObjectHelper(json: any, round: Round): Poule {
         const poule = new Poule(round, json.number);
         poule.setName(json.name);
-        this.pouleplaceRepos.jsonArrayToObject( json.places, poule );
-        this.gameRepos.jsonArrayToObject( json.games, poule );
+        this.pouleplaceRepos.jsonArrayToObject(json.places, poule);
+        if (json.games != null) {
+            this.gameRepos.jsonArrayToObject(json.games, poule);
+        }
         return poule;
     }
 
-    objectsToJsonArray( objects: any[] ): any[] {
+    objectsToJsonArray(objects: any[]): any[] {
         const jsonArray: any[] = [];
         for (const object of objects) {
             const json = this.objectToJsonHelper(object);
-            jsonArray.push( json );
+            jsonArray.push(json);
         }
         return jsonArray;
     }
 
-    objectToJsonHelper( object: Poule ): any {
+    objectToJsonHelper(object: Poule): any {
         const json = {
             'id': object.getId(),
             'number': object.getNumber(),
