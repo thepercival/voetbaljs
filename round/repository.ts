@@ -66,10 +66,12 @@ export class RoundRepository {
         const json = {
             'id': object.getId(),
             'number': object.getNumber(),
+            'winnersOrLosers': object.getWinnersOrLosers(),
             'name': object.getName(),
             'config': this.configRepos.objectToJsonHelper(object.getConfig()),
             'scoreConfig': this.scoreConfigRepos.objectToJsonHelper(object.getScoreConfig()),
-            'poules': this.pouleRepos.objectsToJsonArray(object.getPoules())
+            'poules': this.pouleRepos.objectsToJsonArray(object.getPoules()),
+            'childRounds': this.objectsToJsonArray(object.getChildRounds())
         };
         return json;
     }
