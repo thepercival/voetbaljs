@@ -19,10 +19,10 @@ import { RoundScoreConfigRepository } from './scoreconfig/repository';
 import { QualifyRuleRepository } from '../qualifyrule/repository';
 
 @Injectable()
-export class RoundRepository extends VoetbalRepository{
+export class RoundRepository extends VoetbalRepository {
 
-    private url : string;
-    private structures : Round[] = [];
+    private url: string;
+    private structures: Round[] = [];
 
     constructor(
         private http: HttpClient,
@@ -30,19 +30,16 @@ export class RoundRepository extends VoetbalRepository{
         private scoreConfigRepos: RoundScoreConfigRepository,
         private pouleRepos: PouleRepository,
         private competitionseasonRepos: CompetitionseasonRepository,
-        private qualifyRuleRepos: QualifyRuleRepository)
-    {
+        private qualifyRuleRepos: QualifyRuleRepository) {
         super();
         this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
-    getUrlpostfix(): string
-    {
+    getUrlpostfix(): string {
         return 'rounds';
     }
 
-    getObject( competitionseason: Competitionseason ): Observable<Round>
-    {
+    getObject( competitionseason: Competitionseason ): Observable<Round> {
         const foundStructure = this.structures.find( function( structure ) {
             return structure.getCompetitionseason() === competitionseason;
         });
@@ -70,19 +67,17 @@ export class RoundRepository extends VoetbalRepository{
             .catch( this.handleError );
     }
 
-    jsonArrayToObject( jsonArray: any, competitionseason: Competitionseason, parentRound: Round = null ): Round[]
-    {
-        let objects: Round[] = [];
-        for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json, competitionseason, parentRound);
+    jsonArrayToObject( jsonArray: any, competitionseason: Competitionseason, parentRound: Round = null ): Round[] {
+        const objects: Round[] = [];
+        for (const json of jsonArray) {
+            const object = this.jsonToObjectHelper(json, competitionseason, parentRound);
             objects.push( object );
         }
         return objects;
     }
 
-    jsonToObjectHelper( json : any, competitionseason: Competitionseason, parentRound: Round = null ): Round
-    {
-        let round = new Round(competitionseason, parentRound, json.winnersOrLosers);
+    jsonToObjectHelper( json: any, competitionseason: Competitionseason, parentRound: Round = null ): Round {
+        const round = new Round(competitionseason, parentRound, json.winnersOrLosers);
         round.setId(json.id);
         round.setName(json.name);
         this.configRepos.jsonToObjectHelper( json.config, round );
@@ -96,50 +91,44 @@ export class RoundRepository extends VoetbalRepository{
         return round;
     }
 
-    objectsToJsonArray( objects: any[] ): any[]
-    {
-        let jsonArray: any[] = [];
-        for (let object of objects) {
-            let json = this.objectToJsonHelper(object);
+    objectsToJsonArray( objects: any[] ): any[] {
+        const jsonArray: any[] = [];
+        for (const object of objects) {
+            const json = this.objectToJsonHelper(object);
             jsonArray.push( json );
         }
         return jsonArray;
     }
 
-    objectToJsonHelper( object : Round ): any
-    {
-        let json = {
-            'id':object.getId(),
-            'number':object.getNumber(),
-            'name':object.getName(),
-            'competitionseason':this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionseason()),
-            'config':this.configRepos.objectToJsonHelper(object.getConfig()),
-            'scoreConfig':this.scoreConfigRepos.objectToJsonHelper(object.getScoreConfig()),
-            'poules':this.pouleRepos.objectsToJsonArray(object.getPoules())
+    objectToJsonHelper( object: Round ): any {
+        const json = {
+            'id': object.getId(),
+            'number': object.getNumber(),
+            'name': object.getName(),
+            'competitionseason': this.competitionseasonRepos.objectToJsonHelper(object.getCompetitionseason()),
+            'config': this.configRepos.objectToJsonHelper(object.getConfig()),
+            'scoreConfig': this.scoreConfigRepos.objectToJsonHelper(object.getScoreConfig()),
+            'poules': this.pouleRepos.objectsToJsonArray(object.getPoules())
         };
         return json;
     }
 
-    createObject( jsonObject: any, competitionseason: Competitionseason ): Observable<Round>
-    {
+    createObject( jsonObject: any, competitionseason: Competitionseason ): Observable<Round> {
         return this.http
             .post(this.url, jsonObject, { headers: super.getHeaders() } )
             // ...and calling .json() on the response to return data
             .map((res) => this.jsonToObjectHelper(res, competitionseason))
-            //...errors if any
             .catch(this.handleError);
     }
 
-    removeObject( object: Round): Observable<void>
-    {
-        let url = this.url + '/'+object.getId();
+    removeObject( object: Round): Observable<void> {
+        const url = this.url + '/' + object.getId();
         return this.http
             .delete(url, { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
-            .map((res:Response) => {
+            .map((res: Response) => {
 
             })
-            //...errors if any
             .catch(this.handleError);
     }
 

@@ -15,42 +15,38 @@ export class PouleRepository {
 
     }
 
-    jsonArrayToObject( jsonArray: any, round: Round ): Poule[]
-    {
-        let objects: Poule[] = [];
-        for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json, round);
+    jsonArrayToObject( jsonArray: any, round: Round ): Poule[] {
+        const objects: Poule[] = [];
+        for (const json of jsonArray) {
+            const object = this.jsonToObjectHelper(json, round);
             objects.push( object );
         }
         return objects;
     }
 
-    jsonToObjectHelper( json : any, round: Round ): Poule
-    {
-        let poule = new Poule(round, json.number);
+    jsonToObjectHelper( json: any, round: Round ): Poule {
+        const poule = new Poule(round, json.number);
         poule.setName(json.name);
         this.pouleplaceRepos.jsonArrayToObject( json.places, poule );
         this.gameRepos.jsonArrayToObject( json.games, poule );
         return poule;
     }
 
-    objectsToJsonArray( objects: any[] ): any[]
-    {
-        let jsonArray: any[] = [];
-        for (let object of objects) {
-            let json = this.objectToJsonHelper(object);
+    objectsToJsonArray( objects: any[] ): any[] {
+        const jsonArray: any[] = [];
+        for (const object of objects) {
+            const json = this.objectToJsonHelper(object);
             jsonArray.push( json );
         }
         return jsonArray;
     }
 
-    objectToJsonHelper( object : Poule ): any
-    {
-        let json = {
-            "id":object.getId(),
-            "number":object.getNumber(),
-            "name":object.getName(),
-            "places":this.pouleplaceRepos.objectsToJsonArray(object.getPlaces())
+    objectToJsonHelper( object: Poule ): any {
+        const json = {
+            'id': object.getId(),
+            'number': object.getNumber(),
+            'name': object.getName(),
+            'places': this.pouleplaceRepos.objectsToJsonArray(object.getPlaces())
         };
         return json;
     }

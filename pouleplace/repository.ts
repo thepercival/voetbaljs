@@ -10,48 +10,44 @@ import { TeamRepository } from '../team/repository';
 @Injectable()
 export class PoulePlaceRepository {
 
-    constructor( private teamRepos: TeamRepository ) {
+    constructor(private teamRepos: TeamRepository) {
 
     }
 
-    jsonArrayToObject( jsonArray: any, poule: Poule ): PoulePlace[]
-    {
-        let objects: PoulePlace[] = [];
-        for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json, poule);
-            objects.push( object );
+    jsonArrayToObject(jsonArray: any, poule: Poule): PoulePlace[] {
+        const objects: PoulePlace[] = [];
+        for (const json of jsonArray) {
+            const object = this.jsonToObjectHelper(json, poule);
+            objects.push(object);
         }
         return objects;
     }
 
-    jsonToObjectHelper( json : any, poule: Poule ): PoulePlace
-    {
-        let pouleplace = new PoulePlace(poule, json.number);
+    jsonToObjectHelper(json: any, poule: Poule): PoulePlace {
+        const pouleplace = new PoulePlace(poule, json.number);
         pouleplace.setId(json.id);
         poule.setName(json.name);
-        if (json.team){
+        if (json.team) {
             pouleplace.setTeam(this.teamRepos.jsonToObjectHelper(json.team));
         }
         return pouleplace;
     }
 
-    objectsToJsonArray( objects: any[] ): any[]
-    {
-        let jsonArray: any[] = [];
-        for (let object of objects) {
-            let json = this.objectToJsonHelper(object);
-            jsonArray.push( json );
+    objectsToJsonArray(objects: any[]): any[] {
+        const jsonArray: any[] = [];
+        for (const object of objects) {
+            const json = this.objectToJsonHelper(object);
+            jsonArray.push(json);
         }
         return jsonArray;
     }
 
-    objectToJsonHelper( object : PoulePlace ): any
-    {
-        let json = {
-            "id":object.getId(),
-            "number":object.getNumber(),
-            "name":object.getName(),
-            "team":this.teamRepos.objectToJsonHelper(object.getTeam())
+    objectToJsonHelper(object: PoulePlace): any {
+        const json = {
+            'id': object.getId(),
+            'number': object.getNumber(),
+            'name': object.getName(),
+            'team': object.getTeam() ? this.teamRepos.objectToJsonHelper(object.getTeam()) : null
         };
         return json;
     }
