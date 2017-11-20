@@ -48,7 +48,8 @@ export class PouleRepository {
             'id': object.getId(),
             'number': object.getNumber(),
             'name': object.getName(),
-            'places': this.pouleplaceRepos.objectsToJsonArray(object.getPlaces())
+            'places': this.pouleplaceRepos.objectsToJsonArray(object.getPlaces()),
+            'games': this.gameRepos.objectsToJsonArray(object.getGames())
         };
         return json;
     }

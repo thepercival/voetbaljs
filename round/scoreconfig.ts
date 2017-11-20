@@ -1,6 +1,9 @@
 import { Round } from '../round';
 
 export class RoundScoreConfig {
+    static readonly UPWARDS = 1;
+    static readonly DOWNWARDS = 2;
+
     protected id: number;
     protected round: Round;
     protected parent: RoundScoreConfig;
@@ -9,69 +12,70 @@ export class RoundScoreConfig {
     protected maximum: number;
     protected child: RoundScoreConfig;
 
-    static readonly UPWARDS = 1;
-    static readonly DOWNWARDS = 2;
-
     // constructor
-    constructor(round: Round, parent: RoundScoreConfig ) {
+    constructor(round: Round, parent: RoundScoreConfig) {
         this.setRound(round);
         this.setParent(parent);
     }
 
+    static getDirectionDescription(direction: number) {
+        return direction === RoundScoreConfig.UPWARDS ? 'naar' : 'vanaf';
+    }
+
     getId(): number {
         return this.id;
-    };
+    }
 
     setId(id: number) {
         this.id = id;
-    };
+    }
 
     getName(): string {
         return this.name;
-    };
+    }
 
     setName(name: string): void {
         this.name = name;
-    };
+    }
 
     getDirection(): number {
         return this.direction;
-    };
+    }
 
     setDirection(direction: number) {
         this.direction = direction;
-    };
+    }
 
     getMaximum(): number {
         return this.maximum;
-    };
+    }
 
     setMaximum(maximum: number) {
         this.maximum = maximum;
-    };
+    }
 
     getRound(): Round {
         return this.round;
-    };
+    }
 
-    private setRound( round: Round) {
+    private setRound(round: Round) {
         this.round = round;
-    };
+    }
 
     getParent(): RoundScoreConfig {
         return this.parent;
-    };
+    }
 
-    private setParent( parent: RoundScoreConfig) {
+    private setParent(parent: RoundScoreConfig) {
         this.parent = parent;
-        if( this.parent != null ) {
-            this.parent.setChild( this );
+        if (this.parent != null) {
+            this.parent.setChild(this);
         }
-    };
+    }
 
     getRoot() {
         const parent = this.getParent();
-        if( parent != null ) {
+        if (parent != null) {
             return parent.getRoot();
         }
         return this;
@@ -79,14 +83,10 @@ export class RoundScoreConfig {
 
     getChild(): RoundScoreConfig {
         return this.child;
-    };
+    }
 
-    setChild( child: RoundScoreConfig) {
+    setChild(child: RoundScoreConfig) {
         this.child = child;
-    };
-
-    static getDirectionDescription( direction: number ) {
-        return direction === RoundScoreConfig.UPWARDS ? 'naar' : 'vanaf';
     }
 }
 

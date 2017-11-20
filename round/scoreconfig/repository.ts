@@ -11,13 +11,12 @@ export class RoundScoreConfigRepository {
 
     }
 
-    jsonToObjectHelper( json : any, round: Round ): RoundScoreConfig
-    {
+    jsonToObjectHelper(json: any, round: Round): RoundScoreConfig {
         let parent = null;
-        if ( json.parent != null ) {
-            parent = this.jsonToObjectHelper( json.parent, round );
+        if (json.parent != null) {
+            parent = this.jsonToObjectHelper(json.parent, round);
         }
-        let roundScoreConfig = new RoundScoreConfig( round, parent );
+        const roundScoreConfig = new RoundScoreConfig(round, parent);
         roundScoreConfig.setId(json.id);
         roundScoreConfig.setName(json.name);
         roundScoreConfig.setDirection(json.direction);
@@ -25,41 +24,32 @@ export class RoundScoreConfigRepository {
         return roundScoreConfig;
     }
 
-    objectsToJsonArray( objects: any[] ): any[]
-    {
-        let jsonArray: any[] = [];
-        for (let object of objects) {
-            let json = this.objectToJsonHelper(object);
-            jsonArray.push( json );
+    objectsToJsonArray(objects: any[]): any[] {
+        const jsonArray: any[] = [];
+        for (const object of objects) {
+            const json = this.objectToJsonHelper(object);
+            jsonArray.push(json);
         }
         return jsonArray;
     }
 
-    objectToJsonHelper( object : RoundScoreConfig ): any
-    {
-        let json = {
-            "id": object.getId(),
-            "name": object.getName(),
-            "direction": object.getDirection(),
-            "maximum": object.getMaximum(),
-            "parent": object.getParent() != null ? this.objectToJsonHelper( object.getParent() ) : null
+    objectToJsonHelper(object: RoundScoreConfig): any {
+        const json = {
+            'id': object.getId(),
+            'name': object.getName(),
+            'direction': object.getDirection(),
+            'maximum': object.getMaximum(),
+            'parent': object.getParent() != null ? this.objectToJsonHelper(object.getParent()) : null
         };
         return json;
     }
 
-    createObjectFromParent( round: Round ): RoundScoreConfig {
+    createObjectFromParent(round: Round): RoundScoreConfig {
 
         let json = null;
-        if( round.getParentRound() != null ) {
-            json = {
-                id: null,
-                name: 'punten',
-                direction: RoundScoreConfig.UPWARDS,
-                maximum: 0,
-                parent: null
-            }
-        }
-        else if( round.getCompetitionseason().getSport() === 'darten' ) {
+        if (round.getParentRound() != null) {
+            json = this.objectToJsonHelper(round.getParentRound().getScoreConfig());
+        } else if (round.getCompetitionseason().getSport() === 'darten') {
             json = {
                 id: null,
                 name: 'punten',
@@ -78,9 +68,8 @@ export class RoundScoreConfigRepository {
                         parent: null
                     }
                 }
-            }
-        }
-        else if( round.getCompetitionseason().getSport() === 'tafeltennis' ) {
+            };
+        } else if (round.getCompetitionseason().getSport() === 'tafeltennis') {
             json = {
                 id: null,
                 name: 'punten',
@@ -93,18 +82,16 @@ export class RoundScoreConfigRepository {
                     maximum: 0,
                     parent: null
                 }
-            }
-        }
-        else if( round.getCompetitionseason().getSport() === 'voetbal' ) {
+            };
+        } else if (round.getCompetitionseason().getSport() === 'voetbal') {
             json = {
                 id: null,
                 name: 'goals',
                 direction: RoundScoreConfig.UPWARDS,
                 maximum: 0,
                 parent: null
-            }
-        }
-        else {
+            };
+        } else {
             json = {
                 id: null,
                 name: 'punten',
@@ -113,7 +100,6 @@ export class RoundScoreConfigRepository {
                 parent: null
             };
         }
-
-        return this.jsonToObjectHelper( json, round )
+        return this.jsonToObjectHelper(json, round);
     }
 }
