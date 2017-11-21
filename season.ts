@@ -9,12 +9,12 @@ export class Season {
 
     protected id: number;
     protected name: string;
-    protected startdate: Date;
-    protected enddate: Date;
+    protected startDateTime: Date;
+    protected endDateTime: Date;
 
 
     // constructor
-    constructor( name: string ) {
+    constructor(name: string) {
         this.setName(name);
     }
 
@@ -22,7 +22,7 @@ export class Season {
         return this.id;
     }
 
-    setId( id: number): void {
+    setId(id: number): void {
         this.id = id;
     }
 
@@ -34,19 +34,19 @@ export class Season {
         this.name = name;
     }
 
-    getStartdate(): Date {
-        return this.startdate;
+    getStartDateTime(): Date {
+        return this.startDateTime;
     }
 
-    setStartdate(startdate: Date): void {
-        this.startdate = startdate;
+    setStartDateTime(startDateTime: Date): void {
+        this.startDateTime = startDateTime;
     }
 
-    getEnddate(): Date {
-        return this.enddate;
+    getEndDateTime(): Date {
+        return this.endDateTime;
     }
 
-    setEnddate(enddate: Date): void {
-        this.enddate = enddate;
+    setEndDateTime(endDateTime: Date): void {
+        this.endDateTime = endDateTime;
     }
 }

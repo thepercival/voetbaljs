@@ -17,7 +17,7 @@ import { VoetbalRepository } from '../repository';
 export class StructureRepository extends VoetbalRepository {
 
     private url: string;
-    private structures: Round[] = [];
+    private cache: Round[] = [];
 
     constructor(
         private http: HttpClient,
@@ -31,9 +31,7 @@ export class StructureRepository extends VoetbalRepository {
     }
 
     getObject(competitionseason: Competitionseason): Observable<Round> {
-        const foundStructure = this.structures.find(function (structure) {
-            return structure.getCompetitionseason() === competitionseason;
-        });
+        const foundStructure = this.findObject(competitionseason);
         if (foundStructure != null) {
             console.log('getStructureFromCache', foundStructure);
             return Observable.create((observer: Observer<Round>) => {
@@ -52,7 +50,7 @@ export class StructureRepository extends VoetbalRepository {
                 const jsonRound = res.shift();
                 console.log(jsonRound);
                 const round = this.roundRepos.jsonToObjectHelper(jsonRound, competitionseason);
-                this.structures.push(round);
+                this.updateCache(round, competitionseason);
                 return round;
             })
             .catch(this.handleError);
@@ -71,21 +69,60 @@ export class StructureRepository extends VoetbalRepository {
             .post(this.url, this.roundRepos.objectToJsonHelper(round), options)
             .map((res) => {
                 console.log(res);
-                const structure = this.roundRepos.jsonToObjectHelper(res, competitionseason);
-                this.structures.push(structure);
-                return structure;
+                const roundOut = this.roundRepos.jsonToObjectHelper(res, competitionseason);
+                this.updateCache(roundOut, competitionseason);
+                return roundOut;
             })
             .catch(this.handleError);
     }
 
-    removeObject(object: Round): Observable<void> {
-        const url = this.url + '/' + object.getId();
+    editObject(round: Round, competitionseason: Competitionseason): Observable<Round> {
+
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+        };
+
+        console.log('puted', this.roundRepos.objectToJsonHelper(round));
+
+        return this.http
+            .put(this.url + '/' + round.getId(), this.roundRepos.objectToJsonHelper(round), options)
+            .map((res) => {
+                console.log(res);
+                const roundOut = this.roundRepos.jsonToObjectHelper(res, competitionseason);
+                this.updateCache(roundOut, competitionseason);
+                return roundOut;
+            })
+            .catch(this.handleError);
+    }
+
+    removeObject(round: Round): Observable<void> {
+        const url = this.url + '/' + round.getId();
         return this.http
             .delete(url, { headers: super.getHeaders() })
             .map((res: Response) => {
-
+                this.removeFromCache(round, round.getCompetitionseason());
             })
             .catch(this.handleError);
+    }
+
+    private findObject(competitionseason: Competitionseason) {
+        return this.cache.find(round => round.getCompetitionseason() === competitionseason);
+    }
+
+    private updateCache(round: Round, competitionseason: Competitionseason) {
+        this.removeFromCache(round, competitionseason);
+        this.cache.push(round);
+    }
+
+    private removeFromCache(structure: Round, competitionseason: Competitionseason) {
+        const foundRound = this.findObject(competitionseason);
+        if (foundRound != null) {
+            const index = this.cache.indexOf(foundRound);
+            if (index > -1) {
+                this.cache.splice(index, 1);
+            }
+        }
     }
 
     // this could also be a private method of the component class

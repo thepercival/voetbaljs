@@ -14,12 +14,11 @@ export class VoetbalRepository {
     getApiUrl(): string {
         return VoetbalConfig.apiurl;
     }
-    getHeaders(): HttpHeaders
-    {
-        let headers = new HttpHeaders({'Content-Type': 'application/json; charset=utf-8'});
+    getHeaders(): HttpHeaders {
+        let headers = new HttpHeaders({ 'Content-Type': 'application/json; charset=utf-8' });
         const token = VoetbalConfig.getToken();
-        if ( token != null ) {
-            headers = headers.append( 'Authorization', 'Bearer ' + token );
+        if (token != null) {
+            headers = headers.append('Authorization', 'Bearer ' + token);
         }
         return headers;
     }

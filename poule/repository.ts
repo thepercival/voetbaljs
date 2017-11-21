@@ -26,6 +26,7 @@ export class PouleRepository {
 
     jsonToObjectHelper(json: any, round: Round): Poule {
         const poule = new Poule(round, json.number);
+        poule.setId(json.id);
         poule.setName(json.name);
         this.pouleplaceRepos.jsonArrayToObject(json.places, poule);
         if (json.games != null) {

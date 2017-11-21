@@ -60,23 +60,10 @@ export class RoundConfigRepository {
             'minutesPerGameExt': object.getMinutesPerGameExt(),
             'enableTime': object.getEnableTime(),
             'minutesPerGame': object.getMinutesPerGame(),
-            'mMinutesInBetween': object.getMinutesInBetween()
+            'minutesInBetween': object.getMinutesInBetween()
         };
         return json;
     }
-
-    //     public static function getDefaultRoundConfig( Round $round ) {
-    //     $sportName = $round->getCompetitionseason()->getSport();
-    //     $roundConfig = new Round\Config( $round );
-    //     if ( $sportName === 'voetbal' ) {
-    //     $roundConfig->setEnableTime( true );
-    //     $roundConfig->setMinutesPerGame( 20 );
-    //     $roundConfig->setHasExtension( !$round->needsRanking() );
-    //     $roundConfig->setMinutesPerGameExt( 5 );
-    //     $roundConfig->setMinutesInBetween( 5 );
-    // }
-    // return $roundConfig;
-    // }
 
     createObjectFromParent(round: Round): RoundConfig {
         const roundConfig = new RoundConfig(round);

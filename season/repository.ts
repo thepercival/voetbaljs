@@ -73,8 +73,8 @@ export class SeasonRepository extends VoetbalRepository {
         const season = new Season(json.name);
         season.setId(json.id);
         // season.setStartdate(new Date(json.startdate.timestamp*1000));
-        season.setStartdate(new Date(json.startdate));
-        season.setEnddate(new Date(json.enddate));
+        season.setStartDateTime(new Date(json.startDateTime));
+        season.setEndDateTime(new Date(json.endDateTime));
         return season;
     }
 
@@ -108,8 +108,8 @@ export class SeasonRepository extends VoetbalRepository {
         const json = {
             'id': object.getId(),
             'name': object.getName(),
-            'startdate': object.getStartdate().toISOString(),
-            'enddate': object.getEnddate().toISOString()
+            'startDateTime': object.getStartDateTime().toISOString(),
+            'endDateTime': object.getEndDateTime().toISOString()
         };
         return json;
     }

@@ -26,18 +26,18 @@ export class Competitionseason {
     protected referees: Referee[] = [];
 
     // constructor
-    constructor( association: Association, competition: Competition, season: Season ) {
+    constructor(association: Association, competition: Competition, season: Season) {
         this.setAssociation(association);
         this.setCompetition(competition);
         this.setSeason(season);
-        this.setState( Competitionseason.STATE_CREATED );
+        this.setState(Competitionseason.STATE_CREATED);
     }
 
     getId(): any {
         return this.id;
     }
 
-    setId( id: any): void {
+    setId(id: any): void {
         this.id = id;
     }
 
@@ -45,7 +45,7 @@ export class Competitionseason {
         return this.association;
     }
 
-    setAssociation( association: Association): void {
+    setAssociation(association: Association): void {
         this.association = association;
     }
 
@@ -53,7 +53,7 @@ export class Competitionseason {
         return this.competition;
     }
 
-    setCompetition( competition: Competition): void {
+    setCompetition(competition: Competition): void {
         this.competition = competition;
     }
 
@@ -61,7 +61,7 @@ export class Competitionseason {
         return this.season;
     }
 
-    setSeason( season: Season): void {
+    setSeason(season: Season): void {
         this.season = season;
     }
 
@@ -77,7 +77,7 @@ export class Competitionseason {
         return this.state;
     }
 
-    setState( state: number): void {
+    setState(state: number): void {
         this.state = state;
     }
 
@@ -85,14 +85,14 @@ export class Competitionseason {
         return this.sport;
     }
 
-    setSport( sport: string): void {
+    setSport(sport: string): void {
         this.sport = sport;
     }
 
     getStateDescription(): string {
-        if ( this.state === Competitionseason.STATE_CREATED ){
+        if (this.state === Competitionseason.STATE_CREATED) {
             return 'aangemaakt';
-        } else if ( this.state === Competitionseason.STATE_PUBLISHED ){
+        } else if (this.state === Competitionseason.STATE_PUBLISHED) {
             return 'gepubliceerd';
         }
 
