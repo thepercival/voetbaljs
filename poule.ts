@@ -6,6 +6,7 @@ import { Round } from './round';
 import { PoulePlace } from './pouleplace';
 import { Team } from './team';
 import { Game } from './game';
+import { Competitionseason } from './competitionseason';
 
 export class Poule {
     static readonly classname = 'Poule';
@@ -47,6 +48,10 @@ export class Poule {
         // }
         this.round = round;
         this.round.getPoules().push(this);
+    }
+
+    getCompetitionseason(): Competitionseason {
+        return this.getRound().getCompetitionseason();
     }
 
     getNumber(): number {

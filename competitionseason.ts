@@ -107,6 +107,10 @@ export class Competitionseason {
         return this.fields;
     }
 
+    getFieldByNumber(number: number): Field {
+        return this.fields.find(fieldIt => number === fieldIt.getNumber());
+    }
+
     getReferees(): Referee[] {
         return this.referees;
     }

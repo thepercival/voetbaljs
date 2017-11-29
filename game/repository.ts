@@ -42,7 +42,7 @@ export class GameRepository {
         );
         game.setId(json.id);
         game.setState(json.state);
-        game.setField(this.fieldRepos.getObject(json.field.id));
+        game.setField(poule.getCompetitionseason().getFieldByNumber(json.field.number));
         // game.setReferee( this.refereeRepos.jsonToObjectHelper( json.referee ) );
         game.setStartDateTime(new Date(json.startDateTime));
         return game;
