@@ -9,8 +9,6 @@ import { Game } from './game';
 import { Competitionseason } from './competitionseason';
 
 export class Poule {
-    static readonly classname = 'Poule';
-
     protected id: number;
     protected round: Round;
     protected number: number;

@@ -11,7 +11,6 @@ import { VoetbalRepository } from '../repository';
 export class FieldRepository extends VoetbalRepository {
 
     private url: string;
-    // private cache: Field[] = [];
 
     constructor(
         private http: HttpClient) {
@@ -23,15 +22,11 @@ export class FieldRepository extends VoetbalRepository {
         return 'fields';
     }
 
-    // getObject(id: number): Field {
-    //     return this.cache.find(fieldIt => id === fieldIt.getId());
-    // }
-
     createObject(jsonField: IField, competitionseason: Competitionseason): Observable<Field> {
 
         const options = {
             headers: super.getHeaders(),
-            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId().toString())
         };
 
         console.log('field posted', jsonField);
@@ -40,7 +35,6 @@ export class FieldRepository extends VoetbalRepository {
             .post(this.url, jsonField, options)
             .map((res: IField) => {
                 const fieldRes = this.jsonToObjectHelper(res, competitionseason);
-                // this.cache.push(fieldRes);
                 return fieldRes;
             })
             .catch(this.handleError);
@@ -50,7 +44,7 @@ export class FieldRepository extends VoetbalRepository {
 
         const options = {
             headers: super.getHeaders(),
-            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId().toString())
         };
 
         return this.http
@@ -66,15 +60,11 @@ export class FieldRepository extends VoetbalRepository {
         return this.http
             .delete(url, { headers: super.getHeaders() })
             .map((res) => {
-                // const index = this.cache.indexOf(field);
-                // if (index > -1) {
-                //     this.cache.splice(index, 1);
-                // }
+                field.getCompetitionseason().removeField(field);
             })
             .catch(this.handleError);
     }
 
-    // this could also be a private method of the component class
     handleError(res: Response): Observable<any> {
         console.error(res);
         // throw an application level error
@@ -100,8 +90,8 @@ export class FieldRepository extends VoetbalRepository {
         return field;
     }
 
-    objectsToJsonArray(objects: any[]): any[] {
-        const jsonArray: any[] = [];
+    objectsToJsonArray(objects: Field[]): any[] {
+        const jsonArray: IField[] = [];
         for (const object of objects) {
             const json = this.objectToJsonHelper(object);
             jsonArray.push(json);
@@ -111,9 +101,9 @@ export class FieldRepository extends VoetbalRepository {
 
     objectToJsonHelper(object: Field): IField {
         const json: IField = {
-            'id': object.getId(),
-            'number': object.getNumber(),
-            'name': object.getName()
+            id: object.getId(),
+            number: object.getNumber(),
+            name: object.getName()
         };
         return json;
     }

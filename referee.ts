@@ -1,7 +1,6 @@
 import { Competitionseason } from './competitionseason';
 
 export class Referee {
-    static readonly classname = 'Referee';
     static readonly MIN_LENGTH_NAME = 1;
     static readonly MAX_LENGTH_NAME = 15;
 
@@ -10,7 +9,7 @@ export class Referee {
     protected number: number;
     protected name: string;
 
-    constructor( competitionseason: Competitionseason, number: number ) {
+    constructor(competitionseason: Competitionseason, number: number) {
         this.setCompetitionseason(competitionseason);
         this.setNumber(number);
     }
@@ -19,7 +18,7 @@ export class Referee {
         return this.id;
     }
 
-    setId( id: number): void {
+    setId(id: number): void {
         this.id = id;
     }
 
@@ -27,7 +26,7 @@ export class Referee {
         return this.competitionseason;
     }
 
-    setCompetitionseason( competitionseason: Competitionseason): void {
+    protected setCompetitionseason(competitionseason: Competitionseason): void {
         this.competitionseason = competitionseason;
         this.competitionseason.getReferees().push(this);
     }
@@ -36,7 +35,7 @@ export class Referee {
         return this.number;
     }
 
-    setNumber( number: number): void {
+    setNumber(number: number): void {
         this.number = number;
     }
 

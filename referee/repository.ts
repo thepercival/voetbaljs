@@ -1,16 +1,78 @@
-
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, Observer } from 'rxjs/Rx';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 import { Referee } from '../referee';
 import { Competitionseason } from '../competitionseason';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class RefereeRepository {
+export class RefereeRepository extends VoetbalRepository {
 
-    constructor() {
+    private url: string;
 
+    constructor(
+        private http: HttpClient) {
+        super();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
-    jsonArrayToObject(jsonArray: any, competitionseason: Competitionseason): Referee[] {
+    getUrlpostfix(): string {
+        return 'referees';
+    }
+
+    createObject(jsonReferee: IReferee, competitionseason: Competitionseason): Observable<Referee> {
+
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId().toString())
+        };
+
+        console.log('referee posted', jsonReferee);
+
+        return this.http
+            .post(this.url, jsonReferee, options)
+            .map((res: IReferee) => {
+                const refereeRes = this.jsonToObjectHelper(res, competitionseason);
+                return refereeRes;
+            })
+            .catch(this.handleError);
+    }
+
+    editObject(referee: Referee, competitionseason: Competitionseason): Observable<Referee> {
+
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId().toString())
+        };
+
+        return this.http
+            .put(this.url + '/' + referee.getId(), this.objectToJsonHelper(referee), options)
+            .map((res: IReferee) => {
+                return this.jsonToObjectHelper(res, competitionseason, referee);
+            })
+            .catch(this.handleError);
+    }
+
+    removeObject(referee: Referee): Observable<void> {
+        const url = this.url + '/' + referee.getId();
+        return this.http
+            .delete(url, { headers: super.getHeaders() })
+            .map((res) => {
+                referee.getCompetitionseason().removeReferee(referee);
+            })
+            .catch(this.handleError);
+    }
+
+    // this could also be a private method of the component class
+    handleError(res: Response): Observable<any> {
+        console.error(res);
+        // throw an application level error
+        return Observable.throw(res.statusText);
+    }
+
+    jsonArrayToObject(jsonArray: IReferee[], competitionseason: Competitionseason): Referee[] {
         const objects: Referee[] = [];
         for (const json of jsonArray) {
             const object = this.jsonToObjectHelper(json, competitionseason);
@@ -19,9 +81,13 @@ export class RefereeRepository {
         return objects;
     }
 
-    jsonToObjectHelper(json: any, competitionseason: Competitionseason): Referee {
-        const referee = new Referee(competitionseason, json.number);
+    jsonToObjectHelper(json: IReferee, competitionseason: Competitionseason, referee: Referee = null): Referee {
+        if (referee == null) {
+            referee = new Referee(competitionseason, json.number);
+        }
+        referee.setId(json.id);
         referee.setName(json.name);
+        // this.cache.push(referee);
         return referee;
     }
 
@@ -34,12 +100,18 @@ export class RefereeRepository {
         return jsonArray;
     }
 
-    objectToJsonHelper(object: Referee): any {
-        const json = {
+    objectToJsonHelper(object: Referee): IReferee {
+        const json: IReferee = {
             'id': object.getId(),
             'number': object.getNumber(),
             'name': object.getName()
         };
         return json;
     }
+}
+
+export interface IReferee {
+    id?: number;
+    number: number;
+    name: string;
 }

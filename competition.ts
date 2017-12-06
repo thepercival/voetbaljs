@@ -3,7 +3,6 @@
  */
 
 export class Competition {
-    static readonly classname = 'Competition';
     static readonly MIN_LENGTH_NAME = 3;
     static readonly MAX_LENGTH_NAME = 30;
     static readonly MAX_LENGTH_ABBREVIATION = 7;
@@ -13,7 +12,7 @@ export class Competition {
     protected abbreviation: string;
 
     // constructor
-    constructor( name: string ) {
+    constructor(name: string) {
         this.setName(name);
     }
 
@@ -21,7 +20,7 @@ export class Competition {
         return this.id;
     }
 
-    setId( id: number): void {
+    setId(id: number): void {
         this.id = id;
     }
 

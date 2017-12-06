@@ -42,7 +42,7 @@ export class StructureRepository extends VoetbalRepository {
 
         const options = {
             headers: super.getHeaders(),
-            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId().toString())
         };
 
         return this.http.get<Array<Round>>(this.url, options)
@@ -60,7 +60,7 @@ export class StructureRepository extends VoetbalRepository {
 
         const options = {
             headers: super.getHeaders(),
-            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId().toString())
         };
 
         console.log('posted', this.roundRepos.objectToJsonHelper(round));
@@ -80,7 +80,7 @@ export class StructureRepository extends VoetbalRepository {
 
         const options = {
             headers: super.getHeaders(),
-            params: new HttpParams().set('competitionseasonid', competitionseason.getId())
+            params: new HttpParams().set('competitionseasonid', competitionseason.getId().toString())
         };
 
         console.log('puted', this.roundRepos.objectToJsonHelper(round));

@@ -9,21 +9,20 @@ import { Field } from './field';
 import { Referee } from './referee';
 
 export class Competitionseason {
-    static readonly classname = 'Competitionseason';
     static readonly STATE_CREATED = 1;
     static readonly STATE_PUBLISHED = 2;
     static readonly QUALIFICATION_RULE_WC = 1;
     static readonly QUALIFICATION_RULE_EC = 2;
 
-    protected id: any;
+    protected id: number;
     protected association: Association;
     protected competition: Competition;
     protected season: Season;
     protected sport: string;
     protected startDateTime: Date;
     protected state: number;
-    protected fields: Field[] = [];
     protected referees: Referee[] = [];
+    protected fields: Field[] = [];
 
     // constructor
     constructor(association: Association, competition: Competition, season: Season) {
@@ -33,11 +32,11 @@ export class Competitionseason {
         this.setState(Competitionseason.STATE_CREATED);
     }
 
-    getId(): any {
+    getId(): number {
         return this.id;
     }
 
-    setId(id: any): void {
+    setId(id: number): void {
         this.id = id;
     }
 
@@ -111,7 +110,25 @@ export class Competitionseason {
         return this.fields.find(fieldIt => number === fieldIt.getNumber());
     }
 
+    removeField(field: Field) {
+        const index = this.fields.indexOf(field);
+        if (index > -1) {
+            this.fields.splice(index, 1);
+        }
+    }
+
     getReferees(): Referee[] {
         return this.referees;
+    }
+
+    getRefereeByNumber(number: number): Referee {
+        return this.referees.find(refereeIt => number === refereeIt.getNumber());
+    }
+
+    removeReferee(referee: Referee) {
+        const index = this.referees.indexOf(referee);
+        if (index > -1) {
+            this.referees.splice(index, 1);
+        }
     }
 }

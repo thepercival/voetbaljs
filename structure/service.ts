@@ -257,12 +257,6 @@ export class StructureService {
         return this.addRoundHelper(parentRound, winnersOrLosers, nrOfPlaces, opposing);
     }
 
-    // private addRoundHelper( parentRound: Round, winnersLosers: number, nrOfPlaces: number ): Round {
-    //     [Round.WINNERS, Round.LOSERS].forEach( (winnerLoser) => {
-    //         this.addRoundHelperHelper( parentRound, winnersLosers, nrOfPlaces )
-    //     }
-    // }
-
     private addRoundHelper(parentRound: Round, winnersOrLosers: number, nrOfPlaces: number, opposing: number): Round {
         const round = new Round(this.competitionseason, parentRound, winnersOrLosers);
         if (nrOfPlaces <= 0) {

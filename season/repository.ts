@@ -121,3 +121,10 @@ export class SeasonRepository extends VoetbalRepository {
         return Observable.throw(res.statusText);
     }
 }
+
+export interface ISeason {
+    id?: number;
+    name: string;
+    startDateTime: string;
+    endDateTime: string;
+}

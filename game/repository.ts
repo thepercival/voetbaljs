@@ -43,7 +43,9 @@ export class GameRepository {
         game.setId(json.id);
         game.setState(json.state);
         game.setField(poule.getCompetitionseason().getFieldByNumber(json.field.number));
-        // game.setReferee( this.refereeRepos.jsonToObjectHelper( json.referee ) );
+        if (json.referee != null) {
+            game.setReferee(poule.getCompetitionseason().getRefereeByNumber(json.referee.number));
+        }
         game.setStartDateTime(new Date(json.startDateTime));
         return game;
     }
@@ -59,16 +61,28 @@ export class GameRepository {
 
     objectToJsonHelper(object: Game): any {
         const json = {
-            'id': object.getId(),
-            'homePoulePlace': this.pouleplaceRepos.objectToJsonHelper(object.getHomePoulePlace()),
-            'awayPoulePlace': this.pouleplaceRepos.objectToJsonHelper(object.getAwayPoulePlace()),
-            'roundNumber': object.getRoundNumber(),
-            'subNumber': object.getSubNumber(),
-            'startDateTime': object.getStartDateTime().toISOString(),
-            'field': this.fieldRepos.objectToJsonHelper(object.getField()),
-            'referee': object.getReferee() ? this.refereeRepos.objectToJsonHelper(object.getReferee()) : null,
-            'state': object.getState()
+            id: object.getId(),
+            homePoulePlace: this.pouleplaceRepos.objectToJsonHelper(object.getHomePoulePlace()),
+            awayPoulePlace: this.pouleplaceRepos.objectToJsonHelper(object.getAwayPoulePlace()),
+            roundNumber: object.getRoundNumber(),
+            subNumber: object.getSubNumber(),
+            startDateTime: object.getStartDateTime().toISOString(),
+            field: this.fieldRepos.objectToJsonHelper(object.getField()),
+            referee: object.getReferee() ? this.refereeRepos.objectToJsonHelper(object.getReferee()) : null,
+            state: object.getState()
         };
         return json;
     }
+}
+
+export interface IGame {
+    id?: number;
+    // association: IAssociation;
+    // competition: ICompetition;
+    // season: ISeason;
+    // fields: IField[];
+    // referees: IReferee[];
+    // sport: string;
+    // startDateTime: string;
+    // state: number;
 }

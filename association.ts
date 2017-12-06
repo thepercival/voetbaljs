@@ -2,16 +2,17 @@
  * Created by coen on 30-1-17.
  */
 
-export class Association {
-    static readonly classname = 'Association';
+import { Team } from './team';
 
+export class Association {
     protected id: number;
     protected name: string;
     protected description: string;
     protected parent: Association;
+    protected teams: Team[] = [];
 
     // constructor
-    constructor( name: string ) {
+    constructor(name: string) {
         this.setName(name);
     }
 
@@ -19,7 +20,7 @@ export class Association {
         return this.id;
     }
 
-    setId( id: number): void {
+    setId(id: number): void {
         this.id = id;
     }
 
@@ -45,5 +46,13 @@ export class Association {
 
     setParent(parent: Association): void {
         this.parent = parent;
+    }
+
+    getTeams(): Team[] {
+        return this.teams;
+    }
+
+    getTeamByName(name: string): Team {
+        return this.teams.find(teamIt => name === teamIt.getName());
     }
 }

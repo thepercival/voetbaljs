@@ -3,7 +3,6 @@
  */
 
 export class Season {
-    static readonly classname = 'Season';
     static readonly MIN_LENGTH_NAME = 2;
     static readonly MAX_LENGTH_NAME = 9;
 

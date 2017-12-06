@@ -11,7 +11,6 @@ export class Game {
     static readonly STATE_CREATED = 1;
     static readonly STATE_INPLAY = 2;
     static readonly STATE_PLAYED = 4;
-    static readonly classname = 'Game';
 
     protected id: number;
     protected poule: Poule;

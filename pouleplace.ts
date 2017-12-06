@@ -17,8 +17,6 @@ export class PoulePlace {
     protected fromQualifyRule: QualifyRule;
     protected toQualifyRules: QualifyRule[] = [];
 
-    static readonly classname = "PoulePlace";
-
     // constructor
     constructor(poule: Poule, number: number = null) {
         if (number === null) {

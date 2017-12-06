@@ -5,15 +5,16 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
-import {Observable} from 'rxjs/Rx';
+import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Competitionseason } from '../competitionseason';
-import { AssociationRepository } from '../association/repository';
-import { CompetitionRepository } from '../competition/repository';
-import { SeasonRepository } from '../season/repository';
+import { AssociationRepository, IAssociation } from '../association/repository';
+import { CompetitionRepository, ICompetition } from '../competition/repository';
+import { SeasonRepository, ISeason } from '../season/repository';
 import { VoetbalRepository } from '../repository';
-import { FieldRepository } from '../field/repository';
+import { FieldRepository, IField } from '../field/repository';
+import { RefereeRepository, IReferee } from '../referee/repository';
 
 @Injectable()
 export class CompetitionseasonRepository extends VoetbalRepository {
@@ -21,11 +22,12 @@ export class CompetitionseasonRepository extends VoetbalRepository {
     private url: string;
     private objects: Competitionseason[];
 
-    constructor( private http: HttpClient,
-         private associationRepository: AssociationRepository,
-         private competitionRepository: CompetitionRepository,
-         private seasonRepository: SeasonRepository,
-         private fieldRepository: FieldRepository
+    constructor(private http: HttpClient,
+        private associationRepository: AssociationRepository,
+        private competitionRepository: CompetitionRepository,
+        private seasonRepository: SeasonRepository,
+        private fieldRepository: FieldRepository,
+        private refereeRepository: RefereeRepository
     ) {
         super();
         this.http = http;
@@ -37,31 +39,31 @@ export class CompetitionseasonRepository extends VoetbalRepository {
     }
 
     getObjects(): Observable<Competitionseason[]> {
-        if ( this.objects != null ) {
+        if (this.objects != null) {
             return Observable.create(observer => {
                 observer.next(this.objects);
                 observer.complete();
             });
         }
 
-        return this.http.get(this.url, { headers: super.getHeaders() } )
-            .map((res) => {
+        return this.http.get(this.url, { headers: super.getHeaders() })
+            .map((res: ICompetitionseason[]) => {
                 this.objects = this.jsonArrayToObject(res);
                 return this.objects;
             })
-            .catch( this.handleError );
+            .catch(this.handleError);
     }
 
-    jsonArrayToObject( jsonArray: any ): Competitionseason[] {
+    jsonArrayToObject(jsonArray: ICompetitionseason[]): Competitionseason[] {
         const competitionseasons: Competitionseason[] = [];
         for (const json of jsonArray) {
             const object = this.jsonToObjectHelper(json);
-            competitionseasons.push( object );
+            competitionseasons.push(object);
         }
         return competitionseasons;
     }
 
-    getObject( id: number): Observable<Competitionseason> {
+    getObject(id: number): Observable<Competitionseason> {
         // console.log('id',id);
         const observable = Observable.create(observer => {
             this.getObjects().subscribe(
@@ -73,18 +75,18 @@ export class CompetitionseasonRepository extends VoetbalRepository {
                     observer.complete();
                 },
                 /* error path */ e => { this.handleError(e); },
-                /* onComplete */ () => { }
+                /* onComplete */() => { }
             );
         });
         return observable;
     }
 
-    jsonToObjectHelper( json: any ): Competitionseason {
-        if ( this.objects != null ) {
+    jsonToObjectHelper(json: ICompetitionseason): Competitionseason {
+        if (this.objects != null) {
             const foundObjects = this.objects.filter(
                 objectIt => objectIt.getId() === json.id
             );
-            if ( foundObjects.length === 1 ) {
+            if (foundObjects.length === 1) {
                 return foundObjects.shift();
             }
         }
@@ -97,44 +99,46 @@ export class CompetitionseasonRepository extends VoetbalRepository {
         competitionseason.setId(json.id);
         competitionseason.setState(json.state);
         competitionseason.setSport(json.sport);
-        competitionseason.setStartDateTime( new Date( json.startDateTime ) );
-        this.fieldRepository.jsonArrayToObject( json.fields, competitionseason );
+        competitionseason.setStartDateTime(new Date(json.startDateTime));
+        this.fieldRepository.jsonArrayToObject(json.fields, competitionseason);
+        this.refereeRepository.jsonArrayToObject(json.referees, competitionseason);
         return competitionseason;
     }
 
-    objectToJsonHelper( object: Competitionseason ): any {
-        const json = {
-            'id': object.getId(),
-            'association': this.associationRepository.objectToJsonHelper(object.getAssociation()),
-            'competition': this.competitionRepository.objectToJsonHelper(object.getCompetition()),
-            'season': this.seasonRepository.objectToJsonHelper(object.getSeason()),
-            'fields': this.fieldRepository.objectsToJsonArray( object.getFields() ),
-            'sport': object.getSport(),
-            'startDateTime': object.getStartDateTime().toISOString(),
-            'state': object.getState()
+    objectToJsonHelper(object: Competitionseason): ICompetitionseason {
+        const json: ICompetitionseason = {
+            id: object.getId(),
+            association: this.associationRepository.objectToJsonHelper(object.getAssociation()),
+            competition: this.competitionRepository.objectToJsonHelper(object.getCompetition()),
+            season: this.seasonRepository.objectToJsonHelper(object.getSeason()),
+            fields: this.fieldRepository.objectsToJsonArray(object.getFields()),
+            referees: this.refereeRepository.objectsToJsonArray(object.getReferees()),
+            sport: object.getSport(),
+            startDateTime: object.getStartDateTime().toISOString(),
+            state: object.getState()
         };
         return json;
     }
 
-    createObject( jsonObject: any ): Observable<Competitionseason> {
+    createObject(jsonObject: ICompetitionseason): Observable<Competitionseason> {
         return this.http
             .post(this.url, jsonObject, { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
-            .map((res) => this.jsonToObjectHelper(res))
+            .map((res: ICompetitionseason) => this.jsonToObjectHelper(res))
             .catch(this.handleError);
     }
 
-    editObject( object: Competitionseason ): Observable<Competitionseason> {
+    editObject(object: Competitionseason): Observable<Competitionseason> {
         const url = this.url + '/' + object.getId();
 
         return this.http
-            .put(url, JSON.stringify( object ), { headers: super.getHeaders() })
+            .put(url, JSON.stringify(object), { headers: super.getHeaders() })
             // ...and calling .json() on the response to return data
-            .map((res) => { console.log(res); return this.jsonToObjectHelper(res); })
+            .map((res: ICompetitionseason) => { console.log(res); return this.jsonToObjectHelper(res); })
             .catch(this.handleError);
     }
 
-    removeObject( object: Competitionseason): Observable<void> {
+    removeObject(object: Competitionseason): Observable<void> {
         const url = this.url + '/' + object.getId();
         return this.http
             .delete(url, { headers: super.getHeaders() })
@@ -145,9 +149,20 @@ export class CompetitionseasonRepository extends VoetbalRepository {
 
     // this could also be a private method of the component class
     handleError(res: Response): Observable<any> {
-        console.error( res );
+        console.error(res);
         // throw an application level error
-        return Observable.throw( res.statusText );
+        return Observable.throw(res.statusText);
     }
 }
 
+export interface ICompetitionseason {
+    id?: number;
+    association: IAssociation;
+    competition: ICompetition;
+    season: ISeason;
+    fields: IField[];
+    referees: IReferee[];
+    sport: string;
+    startDateTime: string;
+    state: number;
+}

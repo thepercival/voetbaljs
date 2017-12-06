@@ -4,150 +4,125 @@
 
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
-import {Observable} from 'rxjs/Rx';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Team } from '../team';
-import { AssociationRepository } from '../association/repository';
 import { VoetbalRepository } from '../repository';
+import { Association } from 'voetbaljs/association';
 
 @Injectable()
-export class TeamRepository extends VoetbalRepository{
+export class TeamRepository extends VoetbalRepository {
 
-    private url : string;
-    private objects: Team[];
+    private url: string;
+    // private teams: Team[];
 
-    constructor(
-        private http: HttpClient,
-        private associationRepository: AssociationRepository ) {
+    constructor(private http: HttpClient) {
         super();
         this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
     }
 
-    getUrlpostfix(): string
-    {
+    getUrlpostfix(): string {
         return 'teams';
     }
 
-    getObjects(): Observable<Team[]>
-    {
-        if ( this.objects != null ){
-            return Observable.create(observer => {
-                observer.next(this.objects);
-                observer.complete();
-            });
-        }
+    // getObject(id: number): Observable<Team> {
+    //     const url = this.url + '/' + id;
+    //     return this.http.get(url)
+    //         // ...and calling .json() on the response to return data
+    //         .map((res) => this.jsonToObjectHelper(res))
+    //         .catch((error: any) => Observable.throw(error.message || 'Server error'));
+    // }
 
-        return this.http.get(this.url, { headers: super.getHeaders() } )
-            .map((res) => {
-                let objects = this.jsonArrayToObject(res);
-                this.objects = objects;
-                return this.objects;
+    // getObjects(): Observable<Team[]> {
+    //     if (this.objects != null) {
+    //         return Observable.create(observer => {
+    //             observer.next(this.objects);
+    //             observer.complete();
+    //         });
+    //     }
+
+    //     return this.http.get(this.url, { headers: super.getHeaders() })
+    //         .map((res) => {
+    //             const objects = this.jsonArrayToObject(res);
+    //             this.objects = objects;
+    //             return this.objects;
+    //         })
+    //         .catch(this.handleError);
+    // }
+
+    createObject(jsonTeam: ITeam, association: Association): Observable<Team> {
+
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('associationid', '' + association.getId())
+        };
+
+        return this.http
+            .post(this.url, jsonTeam, options)
+            .map((res: ITeam) => {
+                const teamRes = this.jsonToObjectHelper(res, association);
+                return teamRes;
             })
-            .catch( this.handleError );
+            .catch(this.handleError);
     }
 
-    jsonArrayToObject( jsonArray : any ): Team[]
-    {
-        let teams: Team[] = [];
-        for (let json of jsonArray) {
-            let object = this.jsonToObjectHelper(json);
-            teams.push( object );
+    editObject(team: Team, association: Association): Observable<Team> {
+
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('associationid', '' + association.getId())
+        };
+
+        return this.http
+            .put(this.url + '/' + team.getId(), this.objectToJsonHelper(team), options)
+            .map((res: ITeam) => {
+                return this.jsonToObjectHelper(res, association, team);
+            })
+            .catch(this.handleError);
+    }
+
+    jsonArrayToObject(jsonArray: Array<ITeam>, association: Association): Team[] {
+        const teams: Team[] = [];
+        for (const json of jsonArray) {
+            const object = this.jsonToObjectHelper(json, association);
+            teams.push(object);
         }
         return teams;
     }
 
-    getObject( id: number): Observable<Team>
-    {
-        let url = this.url + '/'+id;
-        return this.http.get(url)
-        // ...and calling .json() on the response to return data
-            .map((res) => this.jsonToObjectHelper(res))
-            //...errors if any
-            .catch((error:any) => Observable.throw(error.message || 'Server error' ));
-    }
-
-    jsonToObjectHelper( json : any ): Team
-    {
-        if ( this.objects != null ){
-            let foundObjects = this.objects.filter(
-                objectIt => objectIt.getId() == json.id
-            );
-            if ( foundObjects.length == 1) {
-                return foundObjects.shift();
-            }
+    jsonToObjectHelper(json: ITeam, association: Association, team: Team = null): Team {
+        if (team == null && json.id != null) {
+            team = association.getTeamByName(json.name);
         }
-
-        let association = this.associationRepository.jsonToObjectHelper(json.association);
-
-        let team = new Team(json.name);
+        if (team == null) {
+            team = new Team(association, json.name);
+        }
         team.setId(json.id);
         team.setAbbreviation(json.abbreviation);
-        team.setAssociation(association);
         return team;
     }
 
-    createObject( jsonObject: any ): Observable<Team>
-    {
-        try {
-            return this.http
-                .post(this.url, jsonObject, { headers: super.getHeaders() } )
-                // ...and calling .json() on the response to return data
-                .map((res) => this.jsonToObjectHelper(res))
-                //...errors if any
-                .catch(this.handleError);
-        }
-        catch( e ) {
-            console.log(e);
-            return Observable.throw( e );
-        }
-    }
-
-    editObject( object: Team ): Observable<Team>
-    {
-        let url = this.url + '/'+object.getId();
-
-        try {
-            return this.http
-                .put(url, this.objectToJsonHelper( object ), { headers: super.getHeaders() })
-                // ...and calling .json() on the response to return data
-                .map((res) => { console.log(res); return this.jsonToObjectHelper(res); })
-                //...errors if any
-                .catch(this.handleError);
-        }
-        catch( e ) {
-            console.log(e);
-            return Observable.throw( e );
-        }
-    }
-
-    removeObject( object: Team): Observable<void>
-    {
-        let url = this.url + '/'+object.getId();
-        return this.http
-            .delete(url, { headers: super.getHeaders() } )
-            // ...and calling .json() on the response to return data
-            .map((res:Response) => res)
-            //...errors if any
-            .catch(this.handleError);
-    }
-
-    objectToJsonHelper( object : Team ): any
-    {
-        let json = {
-            "id":object.getId(),
-            "name":object.getName(),
-            "abbreviation":object.getAbbreviation(),
-            "association": this.associationRepository.objectToJsonHelper(object.getAssociation())
+    objectToJsonHelper(object: Team): ITeam {
+        const json: ITeam = {
+            id: object.getId(),
+            name: object.getName(),
+            abbreviation: object.getAbbreviation(),
         };
         return json;
     }
 
     // this could also be a private method of the component class
     handleError(res: Response): Observable<any> {
-        console.error( res );
+        console.error(res);
         // throw an application level error
-        return Observable.throw( res.statusText );
+        return Observable.throw(res.statusText);
     }
+}
+
+export interface ITeam {
+    id?: number;
+    name: string;
+    abbreviation?: string;
 }

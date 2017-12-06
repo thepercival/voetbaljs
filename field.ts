@@ -2,7 +2,6 @@
 import { Competitionseason } from './competitionseason';
 
 export class Field {
-    static readonly classname = 'Field';
     static readonly MIN_LENGTH_NAME = 1;
     static readonly MAX_LENGTH_NAME = 2;
 
@@ -12,7 +11,7 @@ export class Field {
     protected name: string;
 
     // constructor
-    constructor( competitionseason: Competitionseason, number: number ) {
+    constructor(competitionseason: Competitionseason, number: number) {
         this.setCompetitionseason(competitionseason);
         this.setNumber(number);
     }
@@ -21,7 +20,7 @@ export class Field {
         return this.id;
     }
 
-    setId( id: number): void {
+    setId(id: number): void {
         this.id = id;
     }
 
@@ -29,7 +28,7 @@ export class Field {
         return this.competitionseason;
     }
 
-    setCompetitionseason( competitionseason: Competitionseason): void {
+    protected setCompetitionseason(competitionseason: Competitionseason): void {
         this.competitionseason = competitionseason;
         this.competitionseason.getFields().push(this);
     }
@@ -38,7 +37,7 @@ export class Field {
         return this.number;
     }
 
-    setNumber( number: number): void {
+    setNumber(number: number): void {
         this.number = number;
     }
 

@@ -3,9 +3,9 @@
  */
 
 import { Injectable } from '@angular/core';
-import { PoulePlaceRepository } from '../pouleplace/repository';
+import { PoulePlaceRepository, IPoulePlace } from '../pouleplace/repository';
 import { Poule } from '../poule';
-import { GameRepository } from '../game/repository';
+import { GameRepository, IGame } from '../game/repository';
 import { Round } from '../round';
 
 @Injectable()
@@ -35,23 +35,30 @@ export class PouleRepository {
         return poule;
     }
 
-    objectsToJsonArray(objects: any[]): any[] {
-        const jsonArray: any[] = [];
+    objectsToJsonArray(objects: any[]): IPoule[] {
+        const jsonArray: IPoule[] = [];
         for (const object of objects) {
-            const json = this.objectToJsonHelper(object);
-            jsonArray.push(json);
+            jsonArray.push(this.objectToJsonHelper(object));
         }
         return jsonArray;
     }
 
-    objectToJsonHelper(object: Poule): any {
-        const json = {
-            'id': object.getId(),
-            'number': object.getNumber(),
-            'name': object.getName(),
-            'places': this.pouleplaceRepos.objectsToJsonArray(object.getPlaces()),
-            'games': this.gameRepos.objectsToJsonArray(object.getGames())
+    objectToJsonHelper(object: Poule): IPoule {
+        const json: IPoule = {
+            id: object.getId(),
+            number: object.getNumber(),
+            name: object.getName(),
+            places: this.pouleplaceRepos.objectsToJsonArray(object.getPlaces()),
+            games: this.gameRepos.objectsToJsonArray(object.getGames())
         };
         return json;
     }
+}
+
+export interface IPoule {
+    id?: number;
+    number: number;
+    name: string;
+    places: IPoulePlace[];
+    games: IGame[];
 }

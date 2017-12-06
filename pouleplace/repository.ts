@@ -3,15 +3,48 @@
  */
 
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { PoulePlace } from '../pouleplace';
 import { Poule } from '../poule';
-import { TeamRepository } from '../team/repository';
+import { TeamRepository, ITeam } from '../team/repository';
+import { Observable, Observer } from 'rxjs/Rx';
+import { VoetbalRepository } from '../repository';
 
 @Injectable()
-export class PoulePlaceRepository {
+export class PoulePlaceRepository extends VoetbalRepository {
 
-    constructor(private teamRepos: TeamRepository) {
+    private url: string;
 
+    constructor(
+        private http: HttpClient,
+        private teamRepos: TeamRepository) {
+        super();
+        this.url = super.getApiUrl() + 'voetbal/' + this.getUrlpostfix();
+    }
+
+    getUrlpostfix(): string {
+        return 'pouleplaces';
+    }
+
+    editObject(poulePlace: PoulePlace, poule: Poule): Observable<PoulePlace> {
+
+        const options = {
+            headers: super.getHeaders(),
+            params: new HttpParams().set('pouleid', poule.getId().toString())
+        };
+
+        return this.http
+            .put(this.url + '/' + poulePlace.getId(), this.objectToJsonHelper(poulePlace), options)
+            .map((res: IPoulePlace) => {
+                return this.jsonToObjectHelper(res, poulePlace.getPoule(), poulePlace);
+            })
+            .catch(this.handleError);
+    }
+
+    handleError(res: Response): Observable<any> {
+        console.error(res);
+        // throw an application level error
+        return Observable.throw(res.statusText);
     }
 
     jsonArrayToObject(jsonArray: any, poule: Poule): PoulePlace[] {
@@ -23,32 +56,39 @@ export class PoulePlaceRepository {
         return objects;
     }
 
-    jsonToObjectHelper(json: any, poule: Poule): PoulePlace {
-        const pouleplace = new PoulePlace(poule, json.number);
-        pouleplace.setId(json.id);
+    jsonToObjectHelper(json: IPoulePlace, poule: Poule, poulePlace: PoulePlace = null): PoulePlace {
+        if (poulePlace == null) {
+            poulePlace = new PoulePlace(poule, json.number);
+        }
+        poulePlace.setId(json.id);
         poule.setName(json.name);
         if (json.team) {
-            pouleplace.setTeam(this.teamRepos.jsonToObjectHelper(json.team));
+            poulePlace.setTeam(this.teamRepos.jsonToObjectHelper(json.team, poule.getCompetitionseason().getAssociation()));
         }
-        return pouleplace;
+        return poulePlace;
     }
 
-    objectsToJsonArray(objects: any[]): any[] {
-        const jsonArray: any[] = [];
+    objectsToJsonArray(objects: PoulePlace[]): IPoulePlace[] {
+        const jsonArray: IPoulePlace[] = [];
         for (const object of objects) {
-            const json = this.objectToJsonHelper(object);
-            jsonArray.push(json);
+            jsonArray.push(this.objectToJsonHelper(object));
         }
         return jsonArray;
     }
 
-    objectToJsonHelper(object: PoulePlace): any {
-        const json = {
-            'id': object.getId(),
-            'number': object.getNumber(),
-            'name': object.getName(),
-            'team': object.getTeam() ? this.teamRepos.objectToJsonHelper(object.getTeam()) : null
+    objectToJsonHelper(object: PoulePlace): IPoulePlace {
+        return {
+            id: object.getId(),
+            number: object.getNumber(),
+            name: object.getName(),
+            team: object.getTeam() ? this.teamRepos.objectToJsonHelper(object.getTeam()) : null
         };
-        return json;
     }
+}
+
+export interface IPoulePlace {
+    id?: number;
+    number: number;
+    name: string;
+    team?: ITeam;
 }

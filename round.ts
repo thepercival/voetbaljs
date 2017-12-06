@@ -12,7 +12,6 @@ import { RoundConfig } from './round/config';
 import { RoundScoreConfig } from './round/scoreconfig';
 
 export class Round {
-    static readonly classname = 'Round';
     static readonly TYPE_POULE = 1;
     static readonly TYPE_KNOCKOUT = 2;
     static readonly TYPE_WINNER = 4;
