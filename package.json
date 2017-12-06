@@ -1,7 +1,7 @@
 {
   "name": "voetbaljs",
-  "version": "0.0.8",
-  "description": "jslib for voetbal and angular 4",
+  "version": "0.0.9",
+  "description": "jslib for voetbal and angular 5",
   "main": "library",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
