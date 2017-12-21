@@ -1,12 +1,12 @@
 /**
  * Created by coen on 16-2-17.
  */
-
 import { Association } from './association';
 import { Competition } from './competition';
-import { Season } from './season';
 import { Field } from './field';
 import { Referee } from './referee';
+import { Season } from './season';
+
 
 export class Competitionseason {
     static readonly STATE_CREATED = 1;
@@ -95,7 +95,7 @@ export class Competitionseason {
             return 'gepubliceerd';
         }
 
-        return null;
+        return undefined;
     }
 
     getName(): string {

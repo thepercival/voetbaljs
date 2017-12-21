@@ -1,10 +1,10 @@
 /**
  * Created by coen on 3-3-17.
  */
-
-import { RoundConfig } from '../config';
-import { Round } from '../../round';
 import { QualifyRule } from '../../qualifyrule';
+import { Round } from '../../round';
+import { RoundConfig } from '../config';
+
 
 export class RoundConfigRepository {
 
@@ -12,7 +12,7 @@ export class RoundConfigRepository {
 
     }
 
-    jsonArrayToObject(jsonArray: any, round: Round): RoundConfig[] {
+    jsonArrayToObject(jsonArray: IRoundConfig[], round: Round): RoundConfig[] {
         const objects: RoundConfig[] = [];
         for (const json of jsonArray) {
             const object = this.jsonToObjectHelper(json, round);
@@ -21,7 +21,7 @@ export class RoundConfigRepository {
         return objects;
     }
 
-    jsonToObjectHelper(json: any, round: Round): RoundConfig {
+    jsonToObjectHelper(json: IRoundConfig, round: Round): RoundConfig {
         const roundConfig = new RoundConfig(round);
         roundConfig.setId(json.id);
         roundConfig.setNrOfHeadtoheadMatches(json.nrOfHeadtoheadMatches);
@@ -38,8 +38,8 @@ export class RoundConfigRepository {
         return roundConfig;
     }
 
-    objectsToJsonArray(objects: any[]): any[] {
-        const jsonArray: any[] = [];
+    objectsToJsonArray(objects: RoundConfig[]): IRoundConfig[] {
+        const jsonArray: IRoundConfig[] = [];
         for (const object of objects) {
             const json = this.objectToJsonHelper(object);
             jsonArray.push(json);
@@ -47,27 +47,26 @@ export class RoundConfigRepository {
         return jsonArray;
     }
 
-    objectToJsonHelper(object: RoundConfig): any {
-        const json = {
-            'id': object.getId(),
-            'nrOfHeadtoheadMatches': object.getNrOfHeadtoheadMatches(),
-            'qualifyRule': object.getQualifyRule(),
-            'winPoints': object.getWinPoints(),
-            'drawPoints': object.getDrawPoints(),
-            'hasExtension': object.getHasExtension(),
-            'winPointsExt': object.getWinPointsExt(),
-            'drawPointsExt': object.getDrawPointsExt(),
-            'minutesPerGameExt': object.getMinutesPerGameExt(),
-            'enableTime': object.getEnableTime(),
-            'minutesPerGame': object.getMinutesPerGame(),
-            'minutesInBetween': object.getMinutesInBetween()
+    objectToJsonHelper(object: RoundConfig): IRoundConfig {
+        return {
+            id: object.getId(),
+            nrOfHeadtoheadMatches: object.getNrOfHeadtoheadMatches(),
+            qualifyRule: object.getQualifyRule(),
+            winPoints: object.getWinPoints(),
+            drawPoints: object.getDrawPoints(),
+            hasExtension: object.getHasExtension(),
+            winPointsExt: object.getWinPointsExt(),
+            drawPointsExt: object.getDrawPointsExt(),
+            minutesPerGameExt: object.getMinutesPerGameExt(),
+            enableTime: object.getEnableTime(),
+            minutesPerGame: object.getMinutesPerGame(),
+            minutesInBetween: object.getMinutesInBetween()
         };
-        return json;
     }
 
     createObjectFromParent(round: Round): RoundConfig {
         const roundConfig = new RoundConfig(round);
-        if (round.getParentRound() != null) {
+        if (round.getParentRound() !== undefined) {
             const parentConfig = round.getParentRound().getConfig();
             roundConfig.setQualifyRule(parentConfig.getQualifyRule());
             roundConfig.setNrOfHeadtoheadMatches(parentConfig.getNrOfHeadtoheadMatches());
@@ -103,4 +102,19 @@ export class RoundConfigRepository {
         }
         return roundConfig;
     }
+}
+
+export interface IRoundConfig {
+    id?: number;
+    nrOfHeadtoheadMatches: number;
+    qualifyRule: number;
+    winPoints: number;
+    drawPoints: number;
+    hasExtension: boolean;
+    winPointsExt: number;
+    drawPointsExt: number;
+    minutesPerGameExt: number;
+    enableTime: boolean;
+    minutesPerGame: number;
+    minutesInBetween: number;
 }

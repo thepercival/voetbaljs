@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, Observer } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { Field } from '../field';
+import 'rxjs/add/operator/map';
+
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+
 import { Competitionseason } from '../competitionseason';
+import { Field } from '../field';
 import { VoetbalRepository } from '../repository';
 
 @Injectable()
@@ -65,12 +67,6 @@ export class FieldRepository extends VoetbalRepository {
             .catch(this.handleError);
     }
 
-    handleError(res: Response): Observable<any> {
-        console.error(res);
-        // throw an application level error
-        return Observable.throw(res.statusText);
-    }
-
     jsonArrayToObject(jsonArray: IField[], competitionseason: Competitionseason): Field[] {
         const objects: Field[] = [];
         for (const json of jsonArray) {
@@ -80,8 +76,8 @@ export class FieldRepository extends VoetbalRepository {
         return objects;
     }
 
-    jsonToObjectHelper(json: IField, competitionseason: Competitionseason, field: Field = null): Field {
-        if (field == null) {
+    jsonToObjectHelper(json: IField, competitionseason: Competitionseason, field?: Field): Field {
+        if (field === undefined) {
             field = new Field(competitionseason, json.number);
         }
         field.setId(json.id);

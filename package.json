@@ -1,15 +1,67 @@
 {
-  "name": "voetbaljs",
-  "version": "0.0.9",
+  "_args": [
+    [
+      {
+        "raw": "voetbaljs@^0.x",
+        "scope": null,
+        "escapedName": "voetbaljs",
+        "name": "voetbaljs",
+        "rawSpec": "^0.x",
+        "spec": ">=0.0.0 <1.0.0",
+        "type": "range"
+      },
+      "/home/coen/Projecten/fctoernooi/frontend"
+    ]
+  ],
+  "_from": "voetbaljs@>=0.0.0 <1.0.0",
+  "_id": "voetbaljs@0.0.9",
+  "_inCache": true,
+  "_location": "/voetbaljs",
+  "_nodeVersion": "6.12.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/voetbaljs-0.0.9.tgz_1512566753478_0.9563991837203503"
+  },
+  "_npmUser": {
+    "name": "thepercival",
+    "email": "coendunnink@gmail.com"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "voetbaljs@^0.x",
+    "scope": null,
+    "escapedName": "voetbaljs",
+    "name": "voetbaljs",
+    "rawSpec": "^0.x",
+    "spec": ">=0.0.0 <1.0.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/voetbaljs/-/voetbaljs-0.0.9.tgz",
+  "_shasum": "5a30e997fc5a0b78b0211be026210e0850de65ed",
+  "_shrinkwrap": null,
+  "_spec": "voetbaljs@^0.x",
+  "_where": "/home/coen/Projecten/fctoernooi/frontend",
+  "author": {
+    "name": "Coen Dunnink"
+  },
+  "bugs": {
+    "url": "https://github.com/thepercival/voetbaljs/issues"
+  },
+  "dependencies": {},
   "description": "jslib for voetbal and angular 5",
-  "main": "library",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "5a30e997fc5a0b78b0211be026210e0850de65ed",
+    "tarball": "https://registry.npmjs.org/voetbaljs/-/voetbaljs-0.0.9.tgz"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/thepercival/voetbaljs.git"
-  },
+  "gitHead": "7424d3d736f9a01d00144c62117ac5e51d59961f",
+  "homepage": "https://github.com/thepercival/voetbaljs#readme",
   "keywords": [
     "football",
     "voetbal",
@@ -17,10 +69,23 @@
     "library",
     "bibliotheek"
   ],
-  "author": "Coen Dunnink",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/thepercival/voetbaljs/issues"
+  "main": "library",
+  "maintainers": [
+    {
+      "name": "thepercival",
+      "email": "coendunnink@gmail.com"
+    }
+  ],
+  "name": "voetbaljs",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thepercival/voetbaljs.git"
   },
-  "homepage": "https://github.com/thepercival/voetbaljs#readme"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.9"
 }

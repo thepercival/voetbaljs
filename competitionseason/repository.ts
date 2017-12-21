@@ -1,20 +1,22 @@
 /**
  * Created by coen on 16-2-17.
  */
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import { Competitionseason } from '../competitionseason';
+
 import { AssociationRepository, IAssociation } from '../association/repository';
 import { CompetitionRepository, ICompetition } from '../competition/repository';
-import { SeasonRepository, ISeason } from '../season/repository';
-import { VoetbalRepository } from '../repository';
+import { Competitionseason } from '../competitionseason';
 import { FieldRepository, IField } from '../field/repository';
-import { RefereeRepository, IReferee } from '../referee/repository';
+import { IReferee, RefereeRepository } from '../referee/repository';
+import { VoetbalRepository } from '../repository';
+import { ISeason, SeasonRepository } from '../season/repository';
+
 
 @Injectable()
 export class CompetitionseasonRepository extends VoetbalRepository {
@@ -39,7 +41,7 @@ export class CompetitionseasonRepository extends VoetbalRepository {
     }
 
     getObjects(): Observable<Competitionseason[]> {
-        if (this.objects != null) {
+        if (this.objects !== undefined) {
             return Observable.create(observer => {
                 observer.next(this.objects);
                 observer.complete();
@@ -82,7 +84,7 @@ export class CompetitionseasonRepository extends VoetbalRepository {
     }
 
     jsonToObjectHelper(json: ICompetitionseason): Competitionseason {
-        if (this.objects != null) {
+        if (this.objects !== undefined) {
             const foundObjects = this.objects.filter(
                 objectIt => objectIt.getId() === json.id
             );
@@ -145,13 +147,6 @@ export class CompetitionseasonRepository extends VoetbalRepository {
             // ...and calling .json() on the response to return data
             .map((res: Response) => res)
             .catch(this.handleError);
-    }
-
-    // this could also be a private method of the component class
-    handleError(res: Response): Observable<any> {
-        console.error(res);
-        // throw an application level error
-        return Observable.throw(res.statusText);
     }
 }
 

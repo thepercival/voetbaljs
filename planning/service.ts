@@ -1,18 +1,17 @@
-
-import { Round } from '../round';
 import { Game } from '../game';
 import { PoulePlace } from '../pouleplace';
-import { Referee } from '../referee';
+import { Round } from '../round';
+
 
 export class PlanningService {
     private startDateTime: Date;
 
-    constructor(startDateTime: Date = null) {
+    constructor(startDateTime?: Date) {
         this.startDateTime = startDateTime;
     }
 
-    create(round: Round, startDateTime: Date = null) {
-        if (startDateTime == null) {
+    create(round: Round, startDateTime?: Date) {
+        if (startDateTime === undefined) {
             startDateTime = this.calculateStartDateTime(round);
         }
         try {
@@ -26,8 +25,8 @@ export class PlanningService {
         }
     }
 
-    reschedule(round: Round, startDateTime: Date = null) {
-        if (startDateTime == null && round.getConfig().getEnableTime()) {
+    reschedule(round: Round, startDateTime?: Date) {
+        if (startDateTime === undefined && this.canCalculateStartDateTime(round)) {
             startDateTime = this.calculateStartDateTime(round);
         }
         try {
@@ -38,32 +37,42 @@ export class PlanningService {
         }
     }
 
+
+    canCalculateStartDateTime(round: Round) {
+        if (round.getConfig().getEnableTime() === false) {
+            return false;
+        }
+        if (round.getParentRound() !== undefined) {
+            return this.canCalculateStartDateTime(round.getParentRound());
+        }
+        return true;
+    }
+
     protected calculateStartDateTime(round: Round) {
         if (round.getConfig().getEnableTime() === false) {
-            return null;
+            return undefined;
         }
         const parentRound = round.getParentRound();
-        if (parentRound == null) {
+        if (parentRound === undefined) {
             return this.startDateTime;
         }
-
         return this.calculateEndDateTime(parentRound);
     }
 
     protected calculateEndDateTime(round: Round) {
         if (round.getConfig().getEnableTime() === false) {
-            return null;
+            return undefined;
         }
 
-        let endDateTime = null;
+        let endDateTime;
         round.getGames().forEach(function (game) {
-            if (endDateTime == null || game.getStartDateTime() > endDateTime) {
+            if (endDateTime === undefined || game.getStartDateTime() > endDateTime) {
                 endDateTime = game.getStartDateTime();
             }
         });
 
-        if (endDateTime == null) {
-            return null;
+        if (endDateTime === undefined) {
+            return undefined;
         }
 
         const copiedEndDateTime = new Date(endDateTime.getTime());
@@ -87,7 +96,7 @@ export class PlanningService {
 
                     let subNumber = 1;
                     schedRoundGames.forEach(function (schedGame) {
-                        if (schedGame[0] === null || schedGame[1] === null) {
+                        if (schedGame[0] === undefined || schedGame[1] === undefined) {
                             return;
                         }
                         const homePoulePlace = (headToHead % 2 === 0) ? schedGame[1] : schedGame[0];
@@ -102,7 +111,7 @@ export class PlanningService {
     protected rescheduleHelper(round: Round, pStartDateTime: Date): Date {
         const roundConfig = round.getConfig();
 
-        let dateTime = (pStartDateTime != null) ? new Date(pStartDateTime.getTime()) : null;
+        let dateTime = (pStartDateTime !== undefined) ? new Date(pStartDateTime.getTime()) : undefined;
         const fields = round.getCompetitionseason().getFields(); // order by number
 
         const maxNrOfGamesSimultaneously = this.getMaxNrOfGamesSimultaneously(round);
@@ -115,7 +124,7 @@ export class PlanningService {
         let currentField = fields[fieldNr];
         let refereeNr = 0;
         let currentReferee = referees[refereeNr];
-        let nextRoundStartDateTime: Date = null;
+        let nextRoundStartDateTime: Date;
         const games = this.getGamesByNumber(round);
         games.forEach(function (gamesPerRoundNumber) {
             gamesPerRoundNumber.forEach((game) => {
@@ -127,13 +136,13 @@ export class PlanningService {
                 let addTime = false;
 
                 currentField = fields[++fieldNr];
-                if (currentField == null) {
+                if (currentField === undefined) {
                     fieldNr = 0;
                     currentField = fields[fieldNr];
                     addTime = true;
                 }
                 currentReferee = referees[++refereeNr];
-                if (referees.length > 0 && currentReferee == null) {
+                if (referees.length > 0 && currentReferee === undefined) {
                     refereeNr = 0;
                     currentReferee = referees[refereeNr];
                     addTime = true;
@@ -144,11 +153,11 @@ export class PlanningService {
                     nrOfGamesSimultaneously = 0;
                 }
 
-                if (roundConfig.getEnableTime() && addTime) {
+                if (roundConfig.getEnableTime() && dateTime && addTime) {
                     const nrOfMinutes = roundConfig.getMaximalNrOfMinutesPerGame(true);
                     dateTime = new Date(dateTime.getTime());
                     dateTime.setMinutes(dateTime.getMinutes() + nrOfMinutes);
-                    if (nextRoundStartDateTime == null || dateTime > nextRoundStartDateTime) {
+                    if (nextRoundStartDateTime === undefined || dateTime > nextRoundStartDateTime) {
                         nextRoundStartDateTime = dateTime;
                         nrOfGamesSimultaneously = 0;
                     }
@@ -163,7 +172,7 @@ export class PlanningService {
         round.getPoules().forEach(function (poule) {
             let number = 1;
             poule.getGames().forEach(function (game) {
-                if (games[number] == null) {
+                if (games[number] === undefined) {
                     games[number] = [];
                 }
                 games[number++].push(game);
@@ -196,7 +205,7 @@ export class PlanningService {
 
         // add a placeholder if the count is odd
         if ((nrOfPlaces % 2) !== 0) {
-            places.push(null);
+            places.push(undefined);
             nrOfPlaces++;
         }
 

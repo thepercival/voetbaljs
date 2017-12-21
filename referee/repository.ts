@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, Observer } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { Referee } from '../referee';
+import 'rxjs/add/operator/map';
+
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+
 import { Competitionseason } from '../competitionseason';
+import { Referee } from '../referee';
 import { VoetbalRepository } from '../repository';
 
 @Injectable()
@@ -65,13 +67,6 @@ export class RefereeRepository extends VoetbalRepository {
             .catch(this.handleError);
     }
 
-    // this could also be a private method of the component class
-    handleError(res: Response): Observable<any> {
-        console.error(res);
-        // throw an application level error
-        return Observable.throw(res.statusText);
-    }
-
     jsonArrayToObject(jsonArray: IReferee[], competitionseason: Competitionseason): Referee[] {
         const objects: Referee[] = [];
         for (const json of jsonArray) {
@@ -81,8 +76,8 @@ export class RefereeRepository extends VoetbalRepository {
         return objects;
     }
 
-    jsonToObjectHelper(json: IReferee, competitionseason: Competitionseason, referee: Referee = null): Referee {
-        if (referee == null) {
+    jsonToObjectHelper(json: IReferee, competitionseason: Competitionseason, referee?: Referee): Referee {
+        if (referee === undefined) {
             referee = new Referee(competitionseason, json.number);
         }
         referee.setId(json.id);

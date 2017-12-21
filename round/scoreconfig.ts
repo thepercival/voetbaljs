@@ -68,14 +68,14 @@ export class RoundScoreConfig {
 
     private setParent(parent: RoundScoreConfig) {
         this.parent = parent;
-        if (this.parent != null) {
+        if (this.parent !== undefined) {
             this.parent.setChild(this);
         }
     }
 
     getRoot() {
         const parent = this.getParent();
-        if (parent != null) {
+        if (parent !== undefined) {
             return parent.getRoot();
         }
         return this;

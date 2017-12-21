@@ -1,12 +1,12 @@
 /**
  * Created by coen on 27-2-17.
  */
-
-import { Round } from './round';
-import { PoulePlace } from './pouleplace';
-import { Team } from './team';
-import { Game } from './game';
 import { Competitionseason } from './competitionseason';
+import { Game } from './game';
+import { PoulePlace } from './pouleplace';
+import { Round } from './round';
+import { Team } from './team';
+
 
 export class Poule {
     protected id: number;
@@ -17,8 +17,8 @@ export class Poule {
     protected games: Game[] = [];
 
     // constructor
-    constructor(round: Round, number: number = null) {
-        if (number === null) {
+    constructor(round: Round, number?: number) {
+        if (number === undefined) {
             number = round.getPoules().length + 1;
         }
         this.setRound(round);
@@ -38,7 +38,7 @@ export class Poule {
     }
 
     setRound(round: Round): void {
-        // if( this.round != null ){ // remove from old round
+        // if( this.round != undefined ){ // remove from old round
         //     var index = this.round.getPoules().indexOf(this);
         //     if (index > -1) {
         //         this.round.getPoules().splice(index, 1);
@@ -76,7 +76,7 @@ export class Poule {
         const teams: Team[] = [];
         for (const pouleplace of this.getPlaces()) {
             const team = pouleplace.getTeam();
-            if (team != null) {
+            if (team !== undefined) {
                 teams.push(team);
             }
         }
@@ -114,13 +114,13 @@ export class Poule {
             return false;
         }
         this.places.splice(index, 1);
-        place.setPoule(null);
+        place.setPoule(undefined);
         this.places.forEach(function (placeIt) {
             if (placeIt.getNumber() > place.getNumber()) {
                 placeIt.setNumber(placeIt.getNumber() - 1);
             }
         });
-        place.setNumber(null);
+        place.setNumber(undefined);
         return true;
     }
 

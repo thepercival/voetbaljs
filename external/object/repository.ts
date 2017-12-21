@@ -1,21 +1,22 @@
 /**
  * Created by coen on 13-2-17.
  */
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
+
+import { Injectable } from '@angular/core';
+import { Http, RequestOptions, Response } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
+
+import { VoetbalRepository } from '../../repository';
+import { ExternalObject } from '../object';
+import { ExternalSystem } from '../system';
+import { ExternalSystemRepository } from '../system/repository';
+
 
 /**
  * Created by cdunnink on 7-2-2017.
  */
-
-import { ExternalObject } from '../object';
-import { ExternalSystemRepository } from '../system/repository';
-import { Injectable } from '@angular/core';
-
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import { ExternalSystem } from '../system';
-import { VoetbalRepository } from '../../repository';
 
 @Injectable()
 export class ExternalObjectRepository extends VoetbalRepository{
@@ -53,12 +54,12 @@ export class ExternalObjectRepository extends VoetbalRepository{
 
     jsonToObjectHelper( json : any, importableObjectRepository:any ): ExternalObject
     {
-        let externalSystem = null;
-        if ( json.externalsystem != null ){
+        let externalSystem = undefined;
+        if (json.externalsystem != undefined ){
             externalSystem = this.externalSystemRepository.jsonToObjectHelper( json.externalsystem );
         }
-        let importableObject = null;
-        if ( json.importableobject != null ){
+        let importableObject = undefined;
+        if (json.importableobject != undefined ){
             importableObject = importableObjectRepository.jsonToObjectHelper( json.importableobject );
         }
         let externalObject = new ExternalObject(importableObject, externalSystem, json.externalid );
@@ -98,7 +99,7 @@ export class ExternalObjectRepository extends VoetbalRepository{
     }
 
     getExternalObjects(externalobjects: ExternalObject[], importableObject: any): ExternalObject[] {
-        if ( externalobjects == null){
+        if ( externalobjects == undefined){
             return [];
         }
         return externalobjects.filter(
@@ -109,8 +110,8 @@ export class ExternalObjectRepository extends VoetbalRepository{
     getExternalObject(externalobjects: ExternalObject[], externalsystem: any, externalid: string, importableObject: any): ExternalObject {
         return externalobjects.filter(
             extobjIt => extobjIt.getExternalSystem() == externalsystem
-            && ( externalid == null || extobjIt.getExternalid() == externalid )
-            && ( importableObject == null || extobjIt.getImportableObject() == importableObject )
+            && ( externalid == undefined || extobjIt.getExternalid() == externalid )
+                && (importableObject == undefined || extobjIt.getImportableObject() == importableObject )
         ).shift();
     }
 }

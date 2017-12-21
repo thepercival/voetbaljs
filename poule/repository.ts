@@ -1,12 +1,13 @@
 /**
  * Created by coen on 3-3-17.
  */
-
 import { Injectable } from '@angular/core';
-import { PoulePlaceRepository, IPoulePlace } from '../pouleplace/repository';
-import { Poule } from '../poule';
+
 import { GameRepository, IGame } from '../game/repository';
+import { Poule } from '../poule';
+import { IPoulePlace, PoulePlaceRepository } from '../pouleplace/repository';
 import { Round } from '../round';
+
 
 @Injectable()
 export class PouleRepository {
@@ -29,7 +30,7 @@ export class PouleRepository {
         poule.setId(json.id);
         poule.setName(json.name);
         this.pouleplaceRepos.jsonArrayToObject(json.places, poule);
-        if (json.games != null) {
+        if (json.games !== undefined) {
             this.gameRepos.jsonArrayToObject(json.games, poule);
         }
         return poule;

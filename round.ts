@@ -1,15 +1,15 @@
 /**
  * Created by coen on 27-2-17.
  */
-
 import { Competitionseason } from './competitionseason';
-import { Poule } from './poule';
-import { Team } from './team';
 import { Game } from './game';
+import { Poule } from './poule';
 import { PoulePlace } from './pouleplace';
 import { QualifyRule } from './qualifyrule';
 import { RoundConfig } from './round/config';
 import { RoundScoreConfig } from './round/scoreconfig';
+import { Team } from './team';
+
 
 export class Round {
     static readonly TYPE_POULE = 1;
@@ -30,8 +30,6 @@ export class Round {
     protected poules: Poule[] = [];
     protected fromQualifyRules: QualifyRule[] = [];
     protected toQualifyRules: QualifyRule[] = [];
-
-
 
     // constructor
     constructor(competitionseason: Competitionseason, parentRound: Round, winnersOrLosers: number) {
@@ -66,8 +64,8 @@ export class Round {
 
     protected setParentRound(round: Round) {
         this.parentRound = round;
-        this.number = this.parentRound !== null ? (this.parentRound.getNumber() + 1) : 1;
-        if (this.parentRound !== null) {
+        this.number = this.parentRound !== undefined ? (this.parentRound.getNumber() + 1) : 1;
+        if (this.parentRound !== undefined) {
             const childRounds = this.parentRound.getChildRounds();
             if (childRounds.length === 1 && this.getWinnersOrLosers() === Round.WINNERS) {
                 childRounds.unshift(this);
@@ -75,6 +73,16 @@ export class Round {
                 childRounds.push(this);
             }
         }
+    }
+
+    isAncestorOf(aParentRound: Round) {
+        if (this.getParentRound() === undefined) {
+            return false;
+        }
+        if (this.getParentRound() === aParentRound) {
+            return true;
+        }
+        return this.getParentRound().isAncestorOf(aParentRound);
     }
 
     getNumber(): number {
@@ -86,12 +94,11 @@ export class Round {
     }
 
     getChildRound(winnersOrLosers: number): Round {
-        const childRound = this.childRounds.find((roundIt) => roundIt.getWinnersOrLosers() === winnersOrLosers);
-        return (childRound == null) ? null : childRound;
+        return this.childRounds.find(roundIt => roundIt.getWinnersOrLosers() === winnersOrLosers);
     }
 
     getRootRound() {
-        if (this.getParentRound() != null) {
+        if (this.getParentRound() !== undefined) {
             return this.getParentRound().getRootRound();
         }
         return this;
@@ -129,7 +136,7 @@ export class Round {
         const scoreConfigs: RoundScoreConfig[] = [];
 
         let scoreConfig = this.getScoreConfig();
-        while (scoreConfig != null) {
+        while (scoreConfig !== undefined) {
             scoreConfigs.push(scoreConfig);
             scoreConfig = scoreConfig.getParent();
         }
@@ -190,7 +197,7 @@ export class Round {
                 });
             });
 
-            if (poulePlaces == null) {
+            if (poulePlaces === undefined) {
                 poulePlaces = [];
                 this.push(poulePlaces);
             }
@@ -246,7 +253,7 @@ export class Round {
         });
     }
 
-    movePoulePlace(poulePlace: PoulePlace, toPoule: Poule, toNumber: number = null) {
+    movePoulePlace(poulePlace: PoulePlace, toPoule: Poule, toNumber?: number) {
         const removed = poulePlace.getPoule().removePlace(poulePlace);
         if (!removed) {
             return false;
@@ -256,7 +263,7 @@ export class Round {
         poulePlace.setNumber(toPoule.getPlaces().length + 1);
         toPoule.addPlace(poulePlace);
 
-        if (toNumber === null) {
+        if (toNumber === undefined) {
             return true;
         }
         return toPoule.movePlace(poulePlace, toNumber);
@@ -280,14 +287,14 @@ export class Round {
 
     getNrOfPlacesChildRound(winnersOrLosers: number): number {
         const childRound = this.getChildRound(winnersOrLosers);
-        return childRound != null ? childRound.getPoulePlaces().length : 0;
+        return childRound !== undefined ? childRound.getPoulePlaces().length : 0;
     }
 
 
 
     getOpposing() {
-        if (this.getParentRound() == null) {
-            return null;
+        if (this.getParentRound() === undefined) {
+            return undefined;
         }
         return this.getParentRound().getChildRound(Round.getOpposing(this.getWinnersOrLosers()));
     }
@@ -298,7 +305,7 @@ export class Round {
 
     // isFromQualifyingAllSingle(): boolean{
     //     const lastFromQualifyRule = this.fromQualifyRules[this.fromQualifyRules.length - 1];
-    //     return lastFromQualifyRule != null && lastFromQualifyRule.isMultiple()  {
+    //     return lastFromQualifyRule !== undefined && lastFromQualifyRule.isMultiple()  {
     //         return true;
     //     }
     // }

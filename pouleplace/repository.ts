@@ -1,14 +1,15 @@
 /**
  * Created by coen on 3-3-17.
  */
-
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { PoulePlace } from '../pouleplace';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+
 import { Poule } from '../poule';
-import { TeamRepository, ITeam } from '../team/repository';
-import { Observable, Observer } from 'rxjs/Rx';
+import { PoulePlace } from '../pouleplace';
 import { VoetbalRepository } from '../repository';
+import { ITeam, TeamRepository } from '../team/repository';
+
 
 @Injectable()
 export class PoulePlaceRepository extends VoetbalRepository {
@@ -41,12 +42,6 @@ export class PoulePlaceRepository extends VoetbalRepository {
             .catch(this.handleError);
     }
 
-    handleError(res: Response): Observable<any> {
-        console.error(res);
-        // throw an application level error
-        return Observable.throw(res.statusText);
-    }
-
     jsonArrayToObject(jsonArray: any, poule: Poule): PoulePlace[] {
         const objects: PoulePlace[] = [];
         for (const json of jsonArray) {
@@ -56,8 +51,8 @@ export class PoulePlaceRepository extends VoetbalRepository {
         return objects;
     }
 
-    jsonToObjectHelper(json: IPoulePlace, poule: Poule, poulePlace: PoulePlace = null): PoulePlace {
-        if (poulePlace == null) {
+    jsonToObjectHelper(json: IPoulePlace, poule: Poule, poulePlace?: PoulePlace): PoulePlace {
+        if (poulePlace === undefined) {
             poulePlace = new PoulePlace(poule, json.number);
         }
         poulePlace.setId(json.id);
@@ -81,7 +76,7 @@ export class PoulePlaceRepository extends VoetbalRepository {
             id: object.getId(),
             number: object.getNumber(),
             name: object.getName(),
-            team: object.getTeam() ? this.teamRepos.objectToJsonHelper(object.getTeam()) : null
+            team: object.getTeam() ? this.teamRepos.objectToJsonHelper(object.getTeam()) : undefined
         };
     }
 }

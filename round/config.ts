@@ -40,7 +40,7 @@ export class RoundConfig {
 
     private setRound(round: Round) {
         this.round = round;
-        if (round != null) {
+        if (round !== undefined) {
             round.setConfig(this);
         }
     }

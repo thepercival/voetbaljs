@@ -1,16 +1,17 @@
 /**
  * Created by coen on 26-2-17.
  */
-
-import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import { Team } from '../team';
-import { VoetbalRepository } from '../repository';
+import 'rxjs/add/operator/map';
+
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 import { Association } from 'voetbaljs/association';
+
+import { VoetbalRepository } from '../repository';
+import { Team } from '../team';
+
 
 @Injectable()
 export class TeamRepository extends VoetbalRepository {
@@ -36,7 +37,7 @@ export class TeamRepository extends VoetbalRepository {
     // }
 
     // getObjects(): Observable<Team[]> {
-    //     if (this.objects != null) {
+    //     if (this.objects !== undefined) {
     //         return Observable.create(observer => {
     //             observer.next(this.objects);
     //             observer.complete();
@@ -92,11 +93,11 @@ export class TeamRepository extends VoetbalRepository {
         return teams;
     }
 
-    jsonToObjectHelper(json: ITeam, association: Association, team: Team = null): Team {
-        if (team == null && json.id != null) {
+    jsonToObjectHelper(json: ITeam, association: Association, team?: Team): Team {
+        if (team === undefined && json.id !== undefined) {
             team = association.getTeamByName(json.name);
         }
-        if (team == null) {
+        if (team === undefined) {
             team = new Team(association, json.name);
         }
         team.setId(json.id);
@@ -111,13 +112,6 @@ export class TeamRepository extends VoetbalRepository {
             abbreviation: object.getAbbreviation(),
         };
         return json;
-    }
-
-    // this could also be a private method of the component class
-    handleError(res: Response): Observable<any> {
-        console.error(res);
-        // throw an application level error
-        return Observable.throw(res.statusText);
     }
 }
 

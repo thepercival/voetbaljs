@@ -1,9 +1,9 @@
 /**
  * Created by coen on 3-3-17.
  */
-
-import { RoundScoreConfig } from '../scoreconfig';
 import { Round } from '../../round';
+import { RoundScoreConfig } from '../scoreconfig';
+
 
 export class RoundScoreConfigRepository {
 
@@ -11,9 +11,9 @@ export class RoundScoreConfigRepository {
 
     }
 
-    jsonToObjectHelper(json: any, round: Round): RoundScoreConfig {
-        let parent = null;
-        if (json.parent != null) {
+    jsonToObjectHelper(json: IRoundScoreConfig, round: Round): RoundScoreConfig {
+        let parent;
+        if (json.parent !== undefined) {
             parent = this.jsonToObjectHelper(json.parent, round);
         }
         const roundScoreConfig = new RoundScoreConfig(round, parent);
@@ -24,8 +24,8 @@ export class RoundScoreConfigRepository {
         return roundScoreConfig;
     }
 
-    objectsToJsonArray(objects: any[]): any[] {
-        const jsonArray: any[] = [];
+    objectsToJsonArray(objects: RoundScoreConfig[]): IRoundScoreConfig[] {
+        const jsonArray: IRoundScoreConfig[] = [];
         for (const object of objects) {
             const json = this.objectToJsonHelper(object);
             jsonArray.push(json);
@@ -33,73 +33,80 @@ export class RoundScoreConfigRepository {
         return jsonArray;
     }
 
-    objectToJsonHelper(object: RoundScoreConfig): any {
-        const json = {
-            'id': object.getId(),
-            'name': object.getName(),
-            'direction': object.getDirection(),
-            'maximum': object.getMaximum(),
-            'parent': object.getParent() != null ? this.objectToJsonHelper(object.getParent()) : null
+    objectToJsonHelper(object: RoundScoreConfig): IRoundScoreConfig {
+        return {
+            id: object.getId(),
+            name: object.getName(),
+            direction: object.getDirection(),
+            maximum: object.getMaximum(),
+            parent: object.getParent() !== undefined ? this.objectToJsonHelper(object.getParent()) : undefined
         };
-        return json;
     }
 
     createObjectFromParent(round: Round): RoundScoreConfig {
 
-        let json = null;
-        if (round.getParentRound() != null) {
+        let json: IRoundScoreConfig;
+        if (round.getParentRound() !== undefined) {
             json = this.objectToJsonHelper(round.getParentRound().getScoreConfig());
         } else if (round.getCompetitionseason().getSport() === 'darten') {
             json = {
-                id: null,
+                id: undefined,
                 name: 'punten',
                 direction: RoundScoreConfig.DOWNWARDS,
                 maximum: 501,
                 parent: {
-                    id: null,
+                    id: undefined,
                     name: 'legs',
                     direction: RoundScoreConfig.UPWARDS,
                     maximum: 2,
                     parent: {
-                        id: null,
+                        id: undefined,
                         name: 'sets',
                         direction: RoundScoreConfig.UPWARDS,
                         maximum: 0,
-                        parent: null
+                        parent: undefined
                     }
                 }
             };
         } else if (round.getCompetitionseason().getSport() === 'tafeltennis') {
             json = {
-                id: null,
+                id: undefined,
                 name: 'punten',
                 direction: RoundScoreConfig.UPWARDS,
                 maximum: 21,
                 parent: {
-                    id: null,
+                    id: undefined,
                     name: 'sets',
                     direction: RoundScoreConfig.UPWARDS,
                     maximum: 0,
-                    parent: null
+                    parent: undefined
                 }
             };
         } else if (round.getCompetitionseason().getSport() === 'voetbal') {
             json = {
-                id: null,
+                id: undefined,
                 name: 'goals',
                 direction: RoundScoreConfig.UPWARDS,
                 maximum: 0,
-                parent: null
+                parent: undefined
             };
         } else {
             json = {
-                id: null,
+                id: undefined,
                 name: 'punten',
                 direction: RoundScoreConfig.UPWARDS,
                 maximum: 0,
-                parent: null
+                parent: undefined
             };
         }
         return this.jsonToObjectHelper(json, round);
     }
+}
+
+export interface IRoundScoreConfig {
+    id?: number;
+    name: string;
+    direction: number;
+    maximum: number;
+    parent: IRoundScoreConfig;
 }

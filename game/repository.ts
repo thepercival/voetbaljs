@@ -1,17 +1,17 @@
 /**
  * Created by coen on 20-3-17.
  */
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+import { FieldRepository, IField } from '../field/repository';
 import { Game } from '../game';
 import { Poule } from '../poule';
-import { PoulePlaceRepository } from '../pouleplace/repository';
-import { FieldRepository } from '../field/repository';
-import { RefereeRepository } from '../referee/repository';
+import { IPoulePlace, PoulePlaceRepository } from '../pouleplace/repository';
+import { IReferee, RefereeRepository } from '../referee/repository';
+
 
 @Injectable()
 export class GameRepository {
@@ -21,10 +21,9 @@ export class GameRepository {
         private fieldRepos: FieldRepository,
         private refereeRepos: RefereeRepository,
     ) {
-
     }
 
-    jsonArrayToObject(jsonArray: any, poule: Poule): Game[] {
+    jsonArrayToObject(jsonArray: IGame[], poule: Poule): Game[] {
         const objects: Game[] = [];
         for (const json of jsonArray) {
             const object = this.jsonToObjectHelper(json, poule);
@@ -33,7 +32,7 @@ export class GameRepository {
         return objects;
     }
 
-    jsonToObjectHelper(json: any, poule: Poule): Game {
+    jsonToObjectHelper(json: IGame, poule: Poule): Game {
         const game = new Game(
             poule,
             poule.getPlaces().find(pouleplaceIt => json.homePoulePlace.number === pouleplaceIt.getNumber()),
@@ -43,15 +42,17 @@ export class GameRepository {
         game.setId(json.id);
         game.setState(json.state);
         game.setField(poule.getCompetitionseason().getFieldByNumber(json.field.number));
-        if (json.referee != null) {
+        if (json.referee !== undefined) {
             game.setReferee(poule.getCompetitionseason().getRefereeByNumber(json.referee.number));
         }
-        game.setStartDateTime(new Date(json.startDateTime));
+        if (json.startDateTime !== undefined) {
+            game.setStartDateTime(new Date(json.startDateTime));
+        }
         return game;
     }
 
-    objectsToJsonArray(objects: any[]): any[] {
-        const jsonArray: any[] = [];
+    objectsToJsonArray(objects: Game[]): IGame[] {
+        const jsonArray: IGame[] = [];
         for (const object of objects) {
             const json = this.objectToJsonHelper(object);
             jsonArray.push(json);
@@ -59,30 +60,29 @@ export class GameRepository {
         return jsonArray;
     }
 
-    objectToJsonHelper(object: Game): any {
-        const json = {
+    objectToJsonHelper(object: Game): IGame {
+        return {
             id: object.getId(),
             homePoulePlace: this.pouleplaceRepos.objectToJsonHelper(object.getHomePoulePlace()),
             awayPoulePlace: this.pouleplaceRepos.objectToJsonHelper(object.getAwayPoulePlace()),
             roundNumber: object.getRoundNumber(),
             subNumber: object.getSubNumber(),
-            startDateTime: object.getStartDateTime().toISOString(),
             field: this.fieldRepos.objectToJsonHelper(object.getField()),
-            referee: object.getReferee() ? this.refereeRepos.objectToJsonHelper(object.getReferee()) : null,
-            state: object.getState()
+            state: object.getState(),
+            referee: object.getReferee() ? this.refereeRepos.objectToJsonHelper(object.getReferee()) : undefined,
+            startDateTime: object.getStartDateTime() ? object.getStartDateTime().toISOString() : undefined
         };
-        return json;
     }
 }
 
 export interface IGame {
     id?: number;
-    // association: IAssociation;
-    // competition: ICompetition;
-    // season: ISeason;
-    // fields: IField[];
-    // referees: IReferee[];
-    // sport: string;
-    // startDateTime: string;
-    // state: number;
+    homePoulePlace: IPoulePlace;
+    awayPoulePlace: IPoulePlace;
+    roundNumber: number;
+    subNumber: number;
+    field: IField;
+    state: number;
+    startDateTime?: string;
+    referee?: IReferee;
 }
