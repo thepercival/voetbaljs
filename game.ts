@@ -1,11 +1,13 @@
 /**
  * Created by coen on 20-3-17.
  */
+import { Round } from 'voetbaljs/round';
 
-import { PoulePlace } from './pouleplace';
 import { Field } from './field';
-import { Referee } from './referee';
 import { Poule } from './poule';
+import { PoulePlace } from './pouleplace';
+import { Referee } from './referee';
+
 
 export class Game {
     static readonly STATE_CREATED = 1;
@@ -118,5 +120,9 @@ export class Game {
 
     setState(state: number): void {
         this.state = state;
+    }
+
+    getRound(): Round {
+        return this.getPoule().getRound();
     }
 }

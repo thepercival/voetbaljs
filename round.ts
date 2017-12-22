@@ -132,6 +132,17 @@ export class Round {
         this.scoreConfig = scoreConfig;
     }
 
+    getInputScoreConfig() {
+        let scoreConfig = this.getScoreConfigs().pop();
+        while (scoreConfig.getChild()) {
+            if (scoreConfig.getMaximum() !== 0) {
+                break;
+            }
+            scoreConfig = scoreConfig.getChild();
+        }
+        return scoreConfig;
+    }
+
     getScoreConfigs(): RoundScoreConfig[] {
         const scoreConfigs: RoundScoreConfig[] = [];
 
@@ -289,8 +300,6 @@ export class Round {
         const childRound = this.getChildRound(winnersOrLosers);
         return childRound !== undefined ? childRound.getPoulePlaces().length : 0;
     }
-
-
 
     getOpposing() {
         if (this.getParentRound() === undefined) {
