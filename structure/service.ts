@@ -420,7 +420,7 @@ export class StructureService {
     }
 
     private removePouleHelper(poule: Poule): boolean {
-        if (poule.getGames().length > poule.getGamesNotStarted().length) {
+        if (poule.getGames().length > poule.getGamesWithState(Game.STATE_CREATED).length) {
             throw new Error('de poule kan niet verwijderd worden, omdat er al gestarte wedstrijden aanwezig aan');
         }
 

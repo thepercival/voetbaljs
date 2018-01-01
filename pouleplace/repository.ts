@@ -10,7 +10,6 @@ import { PoulePlace } from '../pouleplace';
 import { VoetbalRepository } from '../repository';
 import { ITeam, TeamRepository } from '../team/repository';
 
-
 @Injectable()
 export class PoulePlaceRepository extends VoetbalRepository {
 

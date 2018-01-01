@@ -87,8 +87,8 @@ export class Poule {
         return this.games;
     }
 
-    getGamesNotStarted(): Game[] {
-        return this.getGames().filter((gameIt) => gameIt.getState() === Game.STATE_CREATED);
+    getGamesWithState(state: number): Game[] {
+        return this.getGames().filter((gameIt) => gameIt.getState() === state);
     }
 
     needsRanking(): boolean {

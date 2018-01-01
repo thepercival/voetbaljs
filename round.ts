@@ -231,10 +231,8 @@ export class Round {
 
     getGames(): Game[] {
         const games = [];
-        this.getPoules().forEach(function (poule) {
-            poule.getGames().forEach(function (game) {
-                games.push(game);
-            });
+        this.getPoules().forEach(poule => {
+            poule.getGames().forEach(game => games.push(game));
         });
         return games;
     }
@@ -249,6 +247,14 @@ export class Round {
             }
             return g1.getRoundNumber() - g2.getRoundNumber();
         });
+    }
+
+    getGamesWithState(state: number): Game[] {
+        const games = [];
+        this.getPoules().forEach(poule => {
+            poule.getGamesWithState(state).forEach(game => games.push(game));
+        });
+        return games;
     }
 
     getType(): number {

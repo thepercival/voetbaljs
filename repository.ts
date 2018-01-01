@@ -10,7 +10,6 @@ import { VoetbalConfig } from './config';
 export class VoetbalRepository {
 
     constructor() {
-
     }
 
     getApiUrl(): string {

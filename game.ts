@@ -4,6 +4,7 @@
 import { Round } from 'voetbaljs/round';
 
 import { Field } from './field';
+import { GameScore } from './game/score';
 import { Poule } from './poule';
 import { PoulePlace } from './pouleplace';
 import { Referee } from './referee';
@@ -24,7 +25,7 @@ export class Game {
     protected awayPoulePlace: PoulePlace;
     protected startDateTime: Date;
     protected state: number;
-
+    protected scores: GameScore[] = [];
 
     // constructor
     constructor(
@@ -124,5 +125,9 @@ export class Game {
 
     getRound(): Round {
         return this.getPoule().getRound();
+    }
+
+    getScores(): GameScore[] {
+        return this.scores;
     }
 }
