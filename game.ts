@@ -11,6 +11,8 @@ import { Referee } from './referee';
 
 
 export class Game {
+    static readonly HOME = true;
+    static readonly AWAY = false;
     static readonly STATE_CREATED = 1;
     static readonly STATE_INPLAY = 2;
     static readonly STATE_PLAYED = 4;
@@ -115,6 +117,10 @@ export class Game {
         this.awayPoulePlace = awayPoulePlace;
     }
 
+    getPoulePlace(homeAway: boolean): PoulePlace {
+        return homeAway === Game.HOME ? this.getHomePoulePlace() : this.getAwayPoulePlace();
+    }
+
     getState(): number {
         return this.state;
     }
@@ -129,5 +135,9 @@ export class Game {
 
     getScores(): GameScore[] {
         return this.scores;
+    }
+
+    getFinalScore(): GameScore {
+        return this.getScores()[0];
     }
 }

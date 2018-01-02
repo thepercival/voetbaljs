@@ -109,4 +109,8 @@ export class PoulePlace {
     getGames(): Game[] {
         return this.getPoule().getGames().filter((gameIt) => gameIt.getHomePoulePlace() === this || gameIt.getAwayPoulePlace() === this);
     }
+
+    getPenaltyPoints(): number {
+        return 0;
+    }
 }

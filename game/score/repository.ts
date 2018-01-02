@@ -25,6 +25,7 @@ export class GameScoreRepository {
         gameScore.setId(json.id);
         gameScore.setHome(json.home);
         gameScore.setAway(json.away);
+        gameScore.setExtraTime(json.extraTime);
 
         return gameScore;
     }
@@ -43,7 +44,8 @@ export class GameScoreRepository {
             id: object.getId(),
             number: object.getNumber(),
             home: object.getHome(),
-            away: object.getAway()
+            away: object.getAway(),
+            extraTime: object.getExtraTime()
         };
     }
 }
@@ -53,4 +55,5 @@ export interface IGameScore {
     number: number;
     home: number;
     away: number;
+    extraTime: boolean;
 }

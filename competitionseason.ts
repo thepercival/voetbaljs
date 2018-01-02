@@ -11,8 +11,6 @@ import { Season } from './season';
 export class Competitionseason {
     static readonly STATE_CREATED = 1;
     static readonly STATE_PUBLISHED = 2;
-    static readonly QUALIFICATION_RULE_WC = 1;
-    static readonly QUALIFICATION_RULE_EC = 2;
 
     protected id: number;
     protected association: Association;
