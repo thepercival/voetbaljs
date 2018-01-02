@@ -1,6 +1,8 @@
 import { Game } from 'voetbaljs/game';
 import { PoulePlace } from 'voetbaljs/pouleplace';
 
+/* tslint:disable:no-bitwise */
+
 export class Ranking {
     static readonly SCORED = 1;
     static readonly RECEIVED = 2;
