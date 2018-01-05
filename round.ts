@@ -257,6 +257,15 @@ export class Round {
         return games;
     }
 
+    getState(): number {
+        if (this.getPoules().every(poule => poule.getState() === Game.STATE_PLAYED)) {
+            return Game.STATE_PLAYED;
+        } else if (this.getPoules().some(poule => poule.getState() !== Game.STATE_CREATED)) {
+            return Game.STATE_INPLAY;
+        }
+        return Game.STATE_CREATED;
+    }
+
     getType(): number {
         if (this.getPoules().length === 1 && this.getPoulePlaces().length < 2) {
             return Round.TYPE_WINNER;
@@ -290,7 +299,10 @@ export class Round {
         return this.fromQualifyRules;
     }
 
-    getToQualifyRules(): QualifyRule[] {
+    getToQualifyRules(winnersOrLosers?: number): QualifyRule[] {
+        if (winnersOrLosers !== undefined) {
+            return this.toQualifyRules.filter(toQualifyRule => toQualifyRule.getToRound().getWinnersOrLosers() === winnersOrLosers);
+        }
         return this.toQualifyRules;
     }
 

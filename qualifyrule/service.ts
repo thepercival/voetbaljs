@@ -1,6 +1,11 @@
 /**
  * Created by coen on 18-10-17.
  */
+import { Game } from 'voetbaljs/game';
+import { Poule } from 'voetbaljs/poule';
+import { PoulePlace } from 'voetbaljs/pouleplace';
+import { Team } from 'voetbaljs/team';
+
 import { QualifyRule } from '../qualifyrule';
 import { Round } from '../round';
 
@@ -51,7 +56,7 @@ export class QualifyService {
                 qualifyRule.addToPoulePlace(toPoulePlace);
             }
         }
-    };
+    }
 
     removeObjectsForParentRound() {
         let fromQualifyRules = this.childRound.getFromQualifyRules().slice();
@@ -78,7 +83,7 @@ export class QualifyService {
         }
 
         const multiple = multiples.pop();
-        console.log(multiple.getWinnersOrLosers(), multiple);
+        // console.log(multiple.getWinnersOrLosers(), multiple);
         const multipleFromPlaces = multiple.getFromPoulePlaces().slice();
         while (multiple.getFromPoulePlaces().length > 1) {
             multiple.removeFromPoulePlace(multipleFromPlaces.pop());
@@ -99,6 +104,110 @@ export class QualifyService {
     getActivePoulePlaceNumber(winnersOrLosers: number) {
         // als winners dan
     }
+
+    getNewQualifiers(parentPoule: Poule): INewQualifier[] {
+        if (parentPoule.getRound() !== this.parentRound) {
+            return [];
+        }
+        const rules = this.getRulesToProcess(parentPoule);
+        console.log(rules);
+        let qualifiers: INewQualifier[] = [];
+        rules.forEach(rule => {
+            qualifiers = qualifiers.concat(this.getQualifiers(rule));
+        });
+
+        return [{ team: undefined, poulePlace: undefined }, { team: undefined, poulePlace: undefined }];
+    }
+
+    protected getRulesToProcess(parentPoule: Poule): QualifyRule[] {
+        if (parentPoule.getRound().getState() === Game.STATE_PLAYED) {
+            return parentPoule.getRound().getToQualifyRules();
+        }
+        let qualifyRules = [];
+        if (parentPoule.getState() === Game.STATE_PLAYED) {
+            parentPoule.getPlaces().forEach(poulePlace => {
+                qualifyRules = qualifyRules.concat(poulePlace.getToQualifyRules().filter(qualifyRule => !qualifyRule.isMultiple()));
+            });
+        }
+        return qualifyRules;
+    }
+
+    protected getQualifiers(rule: QualifyRule): INewQualifier[] {
+        // bij meerdere fromPoulePlace moet ik bepalen wie de beste is
+        return [];
+    }
+
+    ////////////////////////////////////////// old
+    // $oPoulePlaceDbWriter = Voetbal_PoulePlace_Factory::createDbWriter();
+
+    //         $oRankedPoulePlaces = $oPoule->getPlacesByRank();
+
+    //         $oPoulePlaces = $oPoule->getPlaces();
+    //         foreach ( $oPoulePlaces as $oPoulePlace )
+    //         {
+    //             $oQualifyRulePP = $oPoulePlace->getToQualifyRule();
+    //             if ( $oQualifyRulePP === null )
+    //                 continue;
+
+    //             $oQualifyRule = $oQualifyRulePP->getQualifyRule();
+    //             if ( $oQualifyRule->isSingle() )
+    //             {
+    //                 $oToPoulePlace = $oQualifyRulePP->getToPoulePlace();
+    //                 $oToPoulePlace->addObserver( $oPoulePlaceDbWriter );
+
+    //                 $oQualifiedTeam = $oRankedPoulePlaces[ $oPoulePlace->getNumber() + 1 ]->getTeam();
+    //                 $oToPoulePlace->putTeam( $oQualifiedTeam );
+    //             }
+    //             else
+    //             {
+    //                 if ( $oRound->getState() != Voetbal_Factory::STATE_PLAYED )
+    //                     continue;
+
+    //                 $oRankedFromPlaces = Voetbal_PoulePlace_Factory::createObjects();
+    //                 {
+    //                     $oFromPoulePlaces = $oQualifyRule->getFromPoulePlaces();
+    //                     foreach( $oFromPoulePlaces as $oFromPoulePlace )
+    //                     {
+    //                         $oRankedPlacesTmp = $oFromPoulePlace->getPoule()->getPlacesByRank()[ $oFromPoulePlace->getNumber() + 1 ];
+    //                         $oRankedFromPlaces->add( $oRankedPlacesTmp );
+    //                     }
+    //                 }
+
+    //                 Voetbal_Ranking::putPromotionRule( $oRound->getCompetitionSeason()->getPromotionRule() );
+    //                 Voetbal_Ranking::putGameStates( Voetbal_Factory::STATE_PLAYED );
+    //                 Voetbal_Ranking::updatePoulePlaceRankings( null, $oRankedFromPlaces );
+    //                 $oRankedPlaces = Voetbal_Ranking::getPoulePlacesByRanking( null, $oRankedFromPlaces );
+
+    //                 $oToPlaces = $oQualifyRule->getToPoulePlaces();
+    //                 $nNrOfToPlaces = $oToPlaces->count();
+    //                 $arrConfigs = $oQualifyRule->getConfig();
+
+    //                 $nTotalRank = 0; $nCount = 1;
+    //                 foreach( $oRankedPlaces as $oRankedPlace ) {
+
+    //                     if ( $nCount++ > $nNrOfToPlaces ) { break; }
+    //                     $nTotalRank += pow( 2, $oRankedPlace->getPoule()->getNumber() );
+    //                 }
+
+    //                 $arrConfig = $arrConfigs[ $nTotalRank ];
+
+    //                 $nCount = 1;
+    //                 foreach( $oRankedPlaces as $oRankedPlace )
+    //                 {
+    //                     if ( $nCount++ > $nNrOfToPlaces ) { break; }
+    //                     $nIndex = array_search( pow( 2, $oRankedPlace->getPoule()->getNumber() ), $arrConfig );
+    //                     $nI = 0;
+    //                     foreach ( $oToPlaces as $oToPlace )
+    //                     {
+    //                         if ( $nI++ === $nIndex ) {
+    //                             $oToPlace->addObserver( $oPoulePlaceDbWriter );
+    //                             $oToPlace->putTeam( $oRankedPlace->getTeam() );
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    ///////////////////////////////////////// old end
 
     // 1 ( removing qualifier & adding/removing poule,  poule ) : rearrange qualifyrules over active-placenumber-line
     // 2 ( adding qualifier ) : determine new active-placenumber-line and do 1
@@ -153,4 +262,9 @@ export class QualifyService {
             qualifyRule.addToPoulePlace( toPlace );
         }
     }*/
+}
+
+export interface INewQualifier {
+    team: Team;
+    poulePlace: PoulePlace;
 }

@@ -91,6 +91,15 @@ export class Poule {
         return this.getGames().filter((gameIt) => gameIt.getState() === state);
     }
 
+    getState(): number {
+        if (this.getGames().every(game => game.getState() === Game.STATE_PLAYED)) {
+            return Game.STATE_PLAYED;
+        } else if (this.getGames().some(game => game.getState() !== Game.STATE_CREATED)) {
+            return Game.STATE_INPLAY;
+        }
+        return Game.STATE_CREATED;
+    }
+
     needsRanking(): boolean {
         return (this.getPlaces().length > 2);
     }
