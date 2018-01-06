@@ -4,6 +4,7 @@
 import { Game } from 'voetbaljs/game';
 import { Poule } from 'voetbaljs/poule';
 import { PoulePlace } from 'voetbaljs/pouleplace';
+import { Ranking } from 'voetbaljs/ranking';
 import { Team } from 'voetbaljs/team';
 
 import { QualifyRule } from '../qualifyrule';
@@ -115,8 +116,7 @@ export class QualifyService {
         rules.forEach(rule => {
             qualifiers = qualifiers.concat(this.getQualifiers(rule));
         });
-
-        return [{ team: undefined, poulePlace: undefined }, { team: undefined, poulePlace: undefined }];
+        return qualifiers;
     }
 
     protected getRulesToProcess(parentPoule: Poule): QualifyRule[] {
@@ -134,20 +134,72 @@ export class QualifyService {
 
     protected getQualifiers(rule: QualifyRule): INewQualifier[] {
         // bij meerdere fromPoulePlace moet ik bepalen wie de beste is
+
+        const newQualifiers: INewQualifier[] = [];
+
+        if (!rule.isMultiple()) {
+            const toPoulePlace = rule.getToPoulePlaces()[0];
+            const fromPoulePlace = rule.getFromPoulePlaces()[0];
+            const fromRankNr = fromPoulePlace.getNumber();
+            const rankingService = new Ranking(Ranking.RULESSET_WC);
+            const fromPoule = fromPoulePlace.getPoule();
+            const ranking: PoulePlace[] = rankingService.getPoulePlacesByRankSingle(fromPoule.getPlaces(), fromPoule.getGames());
+            const qualifiedTeam = ranking[fromRankNr - 1].getTeam();
+            return [{ poulePlace: toPoulePlace, team: qualifiedTeam }];
+        }
+
+        // multiple
+
+        // {
+        //     if ( $oRound->getState() != Voetbal_Factory::STATE_PLAYED )
+        //         continue;
+
+        //     $oRankedFromPlaces = Voetbal_PoulePlace_Factory::createObjects();
+        //     {
+        //         $oFromPoulePlaces = $oQualifyRule->getFromPoulePlaces();
+        //         foreach( $oFromPoulePlaces as $oFromPoulePlace )
+        //         {
+        //             $oRankedPlacesTmp = $oFromPoulePlace->getPoule()->getPlacesByRank()[ $oFromPoulePlace->getNumber() + 1 ];
+        //             $oRankedFromPlaces->add( $oRankedPlacesTmp );
+        //         }
+        //     }
+
+        //     Voetbal_Ranking::putPromotionRule( $oRound->getCompetitionSeason()->getPromotionRule() );
+        //     Voetbal_Ranking::putGameStates( Voetbal_Factory::STATE_PLAYED );
+        //     Voetbal_Ranking::updatePoulePlaceRankings( null, $oRankedFromPlaces );
+        //     $oRankedPlaces = Voetbal_Ranking::getPoulePlacesByRanking( null, $oRankedFromPlaces );
+
+        //     $oToPlaces = $oQualifyRule->getToPoulePlaces();
+        //     $nNrOfToPlaces = $oToPlaces->count();
+        //     $arrConfigs = $oQualifyRule->getConfig();
+
+        //     $nTotalRank = 0; $nCount = 1;
+        //     foreach( $oRankedPlaces as $oRankedPlace ) {
+
+        //         if ( $nCount++ > $nNrOfToPlaces ) { break; }
+        //         $nTotalRank += pow( 2, $oRankedPlace->getPoule()->getNumber() );
+        //     }
+
+        //     $arrConfig = $arrConfigs[ $nTotalRank ];
+
+        //     $nCount = 1;
+        //     foreach( $oRankedPlaces as $oRankedPlace )
+        //     {
+        //         if ( $nCount++ > $nNrOfToPlaces ) { break; }
+        //         $nIndex = array_search( pow( 2, $oRankedPlace->getPoule()->getNumber() ), $arrConfig );
+        //         $nI = 0;
+        //         foreach ( $oToPlaces as $oToPlace )
+        //         {
+        //             if ( $nI++ === $nIndex ) {
+        //                 $oToPlace->addObserver( $oPoulePlaceDbWriter );
+        //                 $oToPlace->putTeam( $oRankedPlace->getTeam() );
+        //             }
+        //         }
+        //     }
+        // }
+
         return [];
     }
-
-    ////////////////////////////////////////// old
-    // $oPoulePlaceDbWriter = Voetbal_PoulePlace_Factory::createDbWriter();
-
-    //         $oRankedPoulePlaces = $oPoule->getPlacesByRank();
-
-    //         $oPoulePlaces = $oPoule->getPlaces();
-    //         foreach ( $oPoulePlaces as $oPoulePlace )
-    //         {
-    //             $oQualifyRulePP = $oPoulePlace->getToQualifyRule();
-    //             if ( $oQualifyRulePP === null )
-    //                 continue;
 
     //             $oQualifyRule = $oQualifyRulePP->getQualifyRule();
     //             if ( $oQualifyRule->isSingle() )
@@ -206,7 +258,6 @@ export class QualifyService {
     //                     }
     //                 }
     //             }
-    //         }
     ///////////////////////////////////////// old end
 
     // 1 ( removing qualifier & adding/removing poule,  poule ) : rearrange qualifyrules over active-placenumber-line

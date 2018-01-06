@@ -9,10 +9,12 @@ export class Ranking {
     static readonly RULESSET_WC = 1;
     static readonly RULESSET_EC = 2;
     private rulesSet: number;
-    private gameStates: number;
-    private subtractPenaltyPoints = true;
     private rankFunctions: Function[] = [];
     private maxPoulePlaces = 64;
+
+    private gameStates: number;
+    private subtractPenaltyPoints = true;
+
 
     constructor(
         rulesSet: number,
@@ -57,6 +59,12 @@ export class Ranking {
                 }
             });
         }
+        return ranking;
+    }
+
+    getPoulePlacesByRankSingle(p_poulePlaces: PoulePlace[], games: Game[]): PoulePlace[] {
+        let ranking: PoulePlace[] = [];
+        this.getPoulePlacesByRank(p_poulePlaces, games).forEach(poulePlaces => ranking = ranking.concat(poulePlaces));
         return ranking;
     }
 
@@ -123,16 +131,11 @@ export class Ranking {
         let poulePlacesRet: PoulePlace[] = [];
         p_poulePlaces.forEach(p_poulePlaceIt => {
             const goalDifference = this.getGoalDifference(p_poulePlaceIt, games);
-            if (bestGoalDifference == null) {
-                bestGoalDifference = goalDifference;
+            if (goalDifference === bestGoalDifference || bestGoalDifference === undefined) {
                 poulePlacesRet.push(p_poulePlaceIt);
-            } else {
-                if (goalDifference === bestGoalDifference) {
-                    poulePlacesRet.push(p_poulePlaceIt);
-                } else if (goalDifference > bestGoalDifference) {
-                    bestGoalDifference = goalDifference;
-                    poulePlacesRet = [p_poulePlaceIt];
-                }
+            } else if (goalDifference > bestGoalDifference) {
+                bestGoalDifference = goalDifference;
+                poulePlacesRet = [p_poulePlaceIt];
             }
         });
         return poulePlacesRet;
