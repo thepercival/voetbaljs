@@ -49,7 +49,7 @@ export class Ranking {
         const ranking: PoulePlace[][] = [];
         const poulePlaces = p_poulePlaces.slice(0);
         let nrOfIterations = 0;
-        while (poulePlaces.length > 0 || ++nrOfIterations <= this.maxPoulePlaces) {
+        while (poulePlaces.length > 0 && ++nrOfIterations <= this.maxPoulePlaces) {
             const bestPoulePlaces = this.getBestPoulePlaces(poulePlaces, games, false);
             ranking.push(bestPoulePlaces);
             bestPoulePlaces.forEach(bestPoulePlace => {
@@ -109,7 +109,7 @@ export class Ranking {
         let fewestGames;
         let poulePlacesRet: PoulePlace[] = [];
         p_poulePlaces.forEach(p_poulePlaceIt => {
-            const nrOfGames = this.getNrOfGamesWithState(p_poulePlaceIt, games, this.gameStates);
+            const nrOfGames = this.getNrOfGamesWithState(p_poulePlaceIt, games);
             if (fewestGames === undefined || nrOfGames === fewestGames) {
                 fewestGames = nrOfGames;
                 poulePlacesRet.push(p_poulePlaceIt);
@@ -175,7 +175,7 @@ export class Ranking {
         const config = poulePlace.getPoule().getRound().getConfig();
         let points = 0;
         games.forEach(game => {
-            if (game.getState() !== Game.STATE_INPLAY) {
+            if ((game.getState() & this.gameStates) === 0) {
                 return;
             }
             const finalScore = game.getFinalScore();
@@ -213,7 +213,7 @@ export class Ranking {
     protected getNrOfGoals(poulePlace: PoulePlace, games: Game[], scoredReceived: number): number {
         let nrOfGoals = 0;
         games.forEach(game => {
-            if (game.getState() !== Game.STATE_INPLAY) {
+            if ((game.getState() & this.gameStates) === 0) {
                 return;
             }
             [Game.HOME, Game.AWAY].forEach(homeAway => {
@@ -225,10 +225,10 @@ export class Ranking {
         return nrOfGoals;
     }
 
-    getNrOfGamesWithState(poulePlace: PoulePlace, games: Game[], state: number): number {
+    getNrOfGamesWithState(poulePlace: PoulePlace, games: Game[]): number {
         let nrOfGames = 0;
         games.forEach(game => {
-            if ((game.getState() & state) === 0) {
+            if ((game.getState() & this.gameStates) === 0) {
                 return;
             }
             [Game.HOME, Game.AWAY].forEach(homeAway => {

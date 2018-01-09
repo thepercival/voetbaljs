@@ -67,6 +67,12 @@ export class GameRepository extends VoetbalRepository {
                 poule.getPlaces().find(pouleplaceIt => json.awayPoulePlace.number === pouleplaceIt.getNumber()),
                 json.roundNumber, json.subNumber
             );
+        } else {
+            game.setReferee(undefined);
+            game.setStartDateTime(undefined);
+            while (game.getScores().length > 0) {
+                game.getScores().pop();
+            }
         }
 
         game.setId(json.id);
