@@ -266,6 +266,10 @@ export class Round {
         return Game.STATE_CREATED;
     }
 
+    isStarted(): boolean {
+        return this.getState() > Game.STATE_CREATED;
+    }
+
     getType(): number {
         if (this.getPoules().length === 1 && this.getPoulePlaces().length < 2) {
             return Round.TYPE_WINNER;

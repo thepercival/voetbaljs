@@ -121,6 +121,15 @@ export class Game {
         return homeAway === Game.HOME ? this.getHomePoulePlace() : this.getAwayPoulePlace();
     }
 
+    getHomeAway(poulePlace: PoulePlace): boolean {
+        if (poulePlace === this.getHomePoulePlace()) {
+            return Game.HOME;
+        } else if (poulePlace === this.getAwayPoulePlace()) {
+            return Game.AWAY;
+        }
+        return;
+    }
+
     getState(): number {
         return this.state;
     }
